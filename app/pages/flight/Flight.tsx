@@ -8,14 +8,17 @@ import * as turf from "@turf/turf";
 import {AllGeoJSON} from "@turf/turf";
 import {Feature, FeatureCollection, LineString, Point, Polygon} from "geojson";
 import {selectSelectedPoint} from "@slices/selectedPointSlice";
-import {selectCompletedPoints, setCompletedPoints, removeCompletedPoints} from '@slices/completedPointsSlice'
-import {getTerrainData} from "@/api/api";
+import {removeCompletedPoints, selectCompletedPoints, setCompletedPoints} from '@slices/completedPointsSlice'
+import {getTiffBlob} from "@/api/api";
 import {FlightParameters} from "@interfaces/FlightParameters";
 import {selectFlightParameters, setFlightParameters} from "@slices/flightParametersSlice"
+import {setElevationProfile} from '@slices/elevationProfileSlice'
 import mav from '@/api/mav-connection'
 import {DroneStatus} from "@interfaces/DroneStatus";
 import {selectDroneStatus} from "@slices/droneStatusSlice";
-import {TerrainData} from "@interfaces/TerrainData";
+// @ts-ignore
+import * as GeoTIFF from 'geotiff'
+import MapControl from "@/components/MapControl/MapControl";
 
 const useStyles = makeStyles({
     root: {
@@ -48,7 +51,8 @@ const useStyles = makeStyles({
         border: '1px solid lightgray',
         borderRadius: 8,
         position: 'relative',
-        height: '100%',
+        height: '80%',
+        marginBottom: '1rem'
     }
 })
 
@@ -75,6 +79,8 @@ export default function Flight() {
     const [features, setFeatures] = useState<Feature[]>([])
     const [sortedPoints, setSortedPoints] = useState<Feature<Point>[]>([])
 
+    const [elevationBitmap, setElevationBitmap] = useState<any>(undefined)
+
     useEffect(() => {
         if (!selectedArea) {
             setFeatures([])
@@ -87,7 +93,7 @@ export default function Flight() {
         const bbox = turf.bbox(data) // [minX, minY, maxX, maxY]
 
         const bboxPolygon: Feature<Polygon> = turf.bboxPolygon(bbox) as Feature<Polygon>;
-        featuresToRender.push(bboxPolygon)
+        // featuresToRender.push(bboxPolygon)
 
         const xLength = turf.distance(turf.point(bboxPolygon.geometry.coordinates[0][0]), turf.point(bboxPolygon.geometry.coordinates[0][1]), {units: 'meters'})
         const yLength = turf.distance(turf.point(bboxPolygon.geometry.coordinates[0][1]), turf.point(bboxPolygon.geometry.coordinates[0][2]), {units: 'meters'})
@@ -149,8 +155,8 @@ export default function Flight() {
         dispatch(removeCompletedPoints())
     }, [selectedArea, selectedPoint, searchRadius, searchRadiusOverlap])
 
-    useEffect(() => {
-        if (sortedPoints.length === 0 || completedPoints.features.length >= sortedPoints.length) return
+    /*useEffect(() => {
+        if (sortedPoints.length === 0 || completedPoints.features.length >= sortedPoints.length || !selectedPoint) return
 
         const completedPointIds: string[] = completedPoints.features.map(feature => `${feature.id}`)
         const incompletePoints = sortedPoints.filter(point => !completedPointIds.includes(`${point.id}`))
@@ -189,7 +195,48 @@ export default function Flight() {
                     features: [...completedPoints.features, ...newCompletedPoints].sort((a: any, b: any) => +a?.id - +b?.id) as Feature<Point>[]
                 }))
             })
-    }, [completedPoints, sortedPoints])
+    }, [completedPoints, sortedPoints, selectedPoint])*/
+
+    useEffect(() => {
+        if (sortedPoints.length === 0 || !selectedPoint) return;
+
+        if (!elevationBitmap) {
+            dispatch(setCompletedPoints({
+                type: "FeatureCollection",
+                features: sortedPoints.map(feature => ({...feature, properties: {...feature.properties, relativeElevation: 0}})) as Feature<Point>[]
+            }))
+            return;
+        }
+
+        const originCoordinates = elevationBitmap.getOrigin()
+
+        const newCompletedPoints: Feature<Point>[] = []
+
+        Promise.all(sortedPoints.map(feature => {
+            const pointCoordinates = feature.geometry.coordinates
+            const xMeters = turf.distance(turf.point([originCoordinates[0], originCoordinates[1]]), turf.point([pointCoordinates[0], originCoordinates[1]]), {units: 'meters'})
+            const yMeters = turf.distance(turf.point([originCoordinates[0], originCoordinates[1]]), turf.point([originCoordinates[0], pointCoordinates[1]]), {units: 'meters'})
+
+            const x = Math.round(xMeters)
+            const y = Math.round(yMeters)
+
+            const xLeftOffset = x > xMeters ? 1 : 0
+            const xRightOffset = x <= xMeters ? 1 : 0
+            const yTopOffset = y > yMeters ? 1 : 0
+            const yBottomOffset = y <= yMeters ? 1 : 0
+
+            return elevationBitmap.readRasters({window: [x-xLeftOffset, y-yTopOffset, x+xRightOffset, y+yBottomOffset]}).then((result: any) => {
+                newCompletedPoints.push({...feature, properties: {...feature.properties, relativeElevation: +result[0][0]/10}})
+            })
+        })).then(() => {
+            const calibrationElevation: number = newCompletedPoints?.[0]?.properties?.relativeElevation ?? 0
+            newCompletedPoints.forEach(feature => feature?.properties?.relativeElevation !== undefined && (feature.properties.relativeElevation = +(feature.properties.relativeElevation - calibrationElevation).toFixed(1)))
+            dispatch(setCompletedPoints({
+                type: "FeatureCollection",
+                features: newCompletedPoints.sort((a: any, b: any) => +a?.id - +b?.id) as Feature<Point>[]
+            }))
+        })
+    }, [sortedPoints, selectedPoint, elevationBitmap])
 
 
     useEffect(() => {
@@ -207,13 +254,43 @@ export default function Flight() {
             const point1 = completedPoints.features[i-1];
             const point2 = completedPoints.features[i];
             const distance = turf.distance(point1.geometry.coordinates, point2.geometry.coordinates, {units: "meters"})
-            const heightDifference = Math.abs(Math.max(point1?.properties?.elevation || 0, 0) - Math.max(point2?.properties?.elevation || 0, 0))
+            const heightDifference = Math.abs((point1?.properties?.relativeElevation || 0) - (point2?.properties?.relativeElevation || 0))
             calculatedLength += Math.sqrt(distance ** 2 + heightDifference ** 2)
         }
 
         setRouteLength(calculatedLength)
 
     }, [completedPoints, sortedPoints, flightParameters])
+
+    useEffect(() => {
+        if (!selectedArea || !selectedPoint) return
+
+        const bbox = turf.bbox({
+            type: "FeatureCollection",
+            features: [selectedArea, selectedPoint]
+        })
+
+        const xLength = Math.ceil(turf.distance(turf.point([bbox[0], bbox[1]]), turf.point([bbox[2], bbox[1]]), {units: 'meters'}))
+        const yLength = Math.ceil(turf.distance(turf.point([bbox[0], bbox[1]]), turf.point([bbox[0], bbox[3]]), {units: 'meters'}))
+
+        dispatch(setElevationProfile({
+            bbox,
+            width: xLength,
+            height: yLength,
+        }))
+
+        ;(async function() {
+            // const tiff = await GeoTIFF.fromUrl(`https://wms.geonorge.no/skwms1/wms.hoyde-dom_somlos_prosjekter?REQUEST=GetMap&crs=EPSG:4326&bbox=${bbox[1]},${bbox[0]},${bbox[3]},${bbox[2]}&width=${xLength}&height=${yLength}&format=image/geotiff&layers=las_dom_somlos`);
+            const tiffBlob = await getTiffBlob(bbox, xLength, yLength)
+            const tiff = await GeoTIFF.fromBlob(tiffBlob)
+            const image = await tiff.getImage()
+            // const data = await image.readRasters()
+            // console.log('ALT', data)
+            // const origin = await image.getOrigin(); // [10, 63, 0]
+            // console.log({origin})
+            setElevationBitmap(image)
+        })()
+    }, [selectedArea, selectedPoint])
 
     return (
         <div className={classes.root}>
@@ -268,6 +345,21 @@ export default function Flight() {
                             />
                         </div>
                         <div className={classes.formSection}>
+                            <Typography id="acceptance-radius-slider" gutterBottom>
+                                Acceptance radius ({flightParameters.acceptanceRadius}m)
+                            </Typography>
+                            <Slider
+                                aria-labelledby={'acceptance-radius-slider'}
+                                className={classes.slider}
+                                value={flightParameters.acceptanceRadius}
+                                onChange={(_, value) => dispatch(setFlightParameters({acceptanceRadius: +value}))}
+                                step={1}
+                                min={1}
+                                max={20}
+                                marks={[1, 10, 20].map(v => ({value: v, label: v + 'm'}))}
+                            />
+                        </div>
+                        <div className={classes.formSection}>
                             <Typography id="drone-velocity-slider" gutterBottom>
                                 Drone velocity ({flightParameters.velocity}m/s)
                             </Typography>
@@ -307,6 +399,7 @@ export default function Flight() {
                 <div className={classes.map}>
                     <Map features={features} />
                 </div>
+                <MapControl/>
             </main>
         </div>
     )

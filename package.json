@@ -293,7 +293,8 @@
         "redux-thunk": "^2.3.0",
         "regenerator-runtime": "^0.13.5",
         "source-map-support": "^0.5.19",
-        "xml-js": "^1.6.11"
+        "xml-js": "^1.6.11",
+        "geotiff": "^1.0.0-beta.16"
     },
     "devEngines": {
         "node": ">=7.x",

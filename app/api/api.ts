@@ -14,3 +14,12 @@ export async function getTerrainData(latitude: number, longitude: number): Promi
         })
 
 }
+
+export async function getTiffBlob(bbox: any, xLength: any, yLength: any): Promise<Blob | undefined> {
+    return await fetch(`https://wms.geonorge.no/skwms1/wms.hoyde-dtm_somlos_prosjekter?REQUEST=GetMap&crs=EPSG:4326&bbox=${bbox[1]},${bbox[0]},${bbox[3]},${bbox[2]}&width=${xLength}&height=${yLength}&format=image/geotiff&layers=las_dtm_somlos`)
+        .then(async (response: Response) => {
+            if (response.ok) {
+                return await response.blob()
+            }
+        })
+}

@@ -8,10 +8,19 @@ import {removeSelectedPoint, setSelectedPoint} from '@slices/selectedPointSlice'
 import {selectCompletedPoints} from "@slices/completedPointsSlice";
 import {selectDroneStatus} from "@slices/droneStatusSlice";
 import {DroneStatus} from "@interfaces/DroneStatus";
+import {selectElevationProfile} from "@slices/elevationProfileSlice";
+import {ElevationProfile} from "@interfaces/ElevationProfile";
+import {MapParameters} from "@interfaces/MapParameters";
+import {selectMapParameters} from "@slices/mapParametersSlice";
+import {FlightParameters} from "@interfaces/FlightParameters";
+import {selectFlightParameters} from "@slices/flightParametersSlice";
+import * as turf from "@turf/turf";
 
 const SOURCES = {
     COMPLETED_POINTS: 'completed-points',
+    ACCEPTANCE_RADIUS: 'acceptance-radius',
     DRONE: 'drone',
+    ELEVATION_PROFILE: 'elevation-profile'
 }
 
 const LAYERS = ({
@@ -31,7 +40,11 @@ export default function Map({features = []}: Props) {
     const mapContainerRef = useRef(null);
 
     const completedPoints = useSelector(selectCompletedPoints)
-    const droneStatus = useSelector(selectDroneStatus)
+    const droneStatus: DroneStatus = useSelector(selectDroneStatus)
+    const flightParameters: FlightParameters = useSelector(selectFlightParameters)
+    const elevationProfile: ElevationProfile | undefined = useSelector(selectElevationProfile)
+
+    const mapParameters: MapParameters = useSelector(selectMapParameters)
 
     const [map, setMap] = useState<mapboxgl.Map>()
     const element = document.createElement('div')
@@ -39,50 +52,6 @@ export default function Map({features = []}: Props) {
     const [droneMarker] = useState<mapboxgl.Marker>(new mapboxgl.Marker(element))
 
     let DrawControl: MapboxDraw
-
-    function drawDrone(droneStatus: DroneStatus) {
-        if (droneStatus.latitude !== undefined && droneStatus.longitude !== undefined) {
-            if (droneStatus.connected) {
-                const droneAbsoluteVelocity = Math.sqrt((droneStatus.vx ?? 0)**2 + (droneStatus.vy ?? 0)**2 + (droneStatus.vz ?? 0)**2)
-                if (droneAbsoluteVelocity >= 1) {
-                    droneMarker.getElement().className = 'drone droneMoving'
-                } else {
-                    droneMarker.getElement().className = 'drone droneConnected'
-                }
-            } else {
-                droneMarker.getElement().className = 'drone'
-            }
-
-            // @ts-ignore
-            droneMarker.setLngLat([droneStatus.longitude, droneStatus.latitude]).setRotation(droneStatus.yaw ?? 0).addTo(map)
-        }
-    }
-
-    function drawCompletedPoints(completedPoints: FeatureCollection<Point>) {
-        if (map?.getLayer(SOURCES.COMPLETED_POINTS)) {
-            map?.removeLayer(SOURCES.COMPLETED_POINTS)
-        }
-
-        if (map?.getSource(SOURCES.COMPLETED_POINTS)) {
-            map?.removeSource(SOURCES.COMPLETED_POINTS)
-        }
-
-        map?.addSource(SOURCES.COMPLETED_POINTS, {
-            type: "geojson",
-            data: completedPoints,
-        })
-
-        map?.addLayer({
-            'id': SOURCES.COMPLETED_POINTS,
-            'type': 'circle',
-            'source': SOURCES.COMPLETED_POINTS,
-            'paint': {
-                'circle-radius': 4,
-                'circle-color': '#be0952'
-            },
-            'filter': ['==', '$type', 'Point']
-        });
-    }
 
     function drawFeatures(features: Feature[]) {
         [LAYERS.SEARCH_AREA, LAYERS.LINE, LAYERS.POINT].forEach(layerId => {
@@ -105,11 +74,12 @@ export default function Map({features = []}: Props) {
 
         map?.addLayer({
             'id': LAYERS.SEARCH_AREA,
-            'type': 'fill',
+            'type': 'line',
             'source': 'generated-data',
             'paint': {
-                'fill-color': '#37638a',
-                'fill-opacity': 0.2
+                'line-color': '#2a2a2a',
+                'line-width': 2,
+                'line-dasharray': [3, 4],
             },
             'filter': ['==', '$type', 'Polygon']
         });
@@ -135,7 +105,7 @@ export default function Map({features = []}: Props) {
             'source': 'generated-data',
             'paint': {
                 'circle-radius': 3,
-                'circle-color': '#00cfff'
+                'circle-color': '#00cfff',
             },
             'filter': ['==', '$type', 'Point']
         });
@@ -172,8 +142,6 @@ export default function Map({features = []}: Props) {
     useEffect(() => {
         // mapboxgl.accessToken = process.env.MAPBOX_API_KEY || '';
 
-        console.log(location.origin+__dirname+"/api/countries/{z}/{x}/{y}.pbf")
-
         const initializeMap = (setMap: Function, mapContainer: any) => {
             const map = new mapboxgl.Map({
                 container: mapContainer.current,
@@ -184,6 +152,7 @@ export default function Map({features = []}: Props) {
                         'kartverket': {
                             'type': 'raster',
                             // 'minzoom': minZoomThreshold,
+                            'maxzoom': 20,
                             'tiles': [
                                 'https://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?'
                                 + 'Service=WMTS&'
@@ -300,10 +269,8 @@ export default function Map({features = []}: Props) {
 
                 const coordinates = point.geometry.coordinates.slice();
                 const description = `
-                    <strong>Point #${point.properties?.pointId}</strong>
-                    <p>Place name: ${point.properties?.placeName}</p>
-                    <p>Elevation: ${point.properties?.elevation}m</p>
-                    <p>Terrain type: "${point.properties?.terrain}"</p>
+                    <strong>Point #${point.id}</strong>
+                    <p>Relative elevation: ${point.properties?.relativeElevation} m</p>
                 `
 
                 // Ensure that if the map is zoomed out such that multiple
@@ -330,16 +297,116 @@ export default function Map({features = []}: Props) {
     }, [map]);
 
     useEffect(() => {
+        map?.setPaintProperty(SOURCES.ELEVATION_PROFILE, 'raster-opacity', mapParameters.elevationProfileVisibility/100)
+    }, [mapParameters])
+
+    useEffect(() => {
         drawFeatures(features)
     }, [features])
 
     useEffect(() => {
-        drawCompletedPoints(completedPoints)
+        if (map?.getLayer(SOURCES.COMPLETED_POINTS)) {
+            map?.removeLayer(SOURCES.COMPLETED_POINTS)
+        }
+
+        if (map?.getSource(SOURCES.COMPLETED_POINTS)) {
+            map?.removeSource(SOURCES.COMPLETED_POINTS)
+        }
+
+        map?.addSource(SOURCES.COMPLETED_POINTS, {
+            type: "geojson",
+            data: completedPoints,
+        })
+
+        map?.addLayer({
+            'id': SOURCES.COMPLETED_POINTS,
+            'type': 'circle',
+            'source': SOURCES.COMPLETED_POINTS,
+            'paint': {
+                'circle-radius': 4,
+                'circle-color': '#be0952'
+            },
+            'filter': ['==', '$type', 'Point']
+        })
     }, [completedPoints])
 
     useEffect(() => {
-        drawDrone(droneStatus)
+        if (map?.getLayer(SOURCES.ACCEPTANCE_RADIUS)) {
+            map?.removeLayer(SOURCES.ACCEPTANCE_RADIUS)
+        }
+
+        if (map?.getSource(SOURCES.ACCEPTANCE_RADIUS)) {
+            map?.removeSource(SOURCES.ACCEPTANCE_RADIUS)
+        }
+
+        map?.addSource(SOURCES.ACCEPTANCE_RADIUS, {
+            type: "geojson",
+            data: {
+                type: 'FeatureCollection',
+                features: completedPoints.features.map(point => turf.circle(point, flightParameters.acceptanceRadius ?? 0, {units: "meters"}) as Feature<Polygon>)
+            },
+        })
+
+        map?.addLayer({
+            'id': SOURCES.ACCEPTANCE_RADIUS,
+            'type': 'fill',
+            'source': SOURCES.ACCEPTANCE_RADIUS,
+            'paint': {
+                'fill-opacity': 0.4,
+                'fill-color': '#be0952'
+            },
+        })
+    }, [completedPoints, flightParameters.acceptanceRadius])
+
+    useEffect(() => {
+        if (droneStatus.latitude !== undefined && droneStatus.longitude !== undefined) {
+            if (droneStatus.connected) {
+                const droneAbsoluteVelocity = Math.sqrt((droneStatus.vx ?? 0)**2 + (droneStatus.vy ?? 0)**2 + (droneStatus.vz ?? 0)**2)
+                if (droneAbsoluteVelocity >= 1) {
+                    droneMarker.getElement().className = 'drone droneMoving'
+                } else {
+                    droneMarker.getElement().className = 'drone droneConnected'
+                }
+            } else {
+                droneMarker.getElement().className = 'drone'
+            }
+
+            // @ts-ignore
+            droneMarker.setLngLat([droneStatus.longitude, droneStatus.latitude]).setRotation(droneStatus.yaw ?? 0).addTo(map)
+        }
     }, [droneStatus])
+
+    useEffect(() => {
+        if (map?.getLayer(SOURCES.ELEVATION_PROFILE)) {
+            map?.removeLayer(SOURCES.ELEVATION_PROFILE)
+        }
+
+        if (map?.getSource(SOURCES.ELEVATION_PROFILE)) {
+            map?.removeSource(SOURCES.ELEVATION_PROFILE)
+        }
+
+        if (elevationProfile) {
+            const {bbox, height, width} = elevationProfile
+
+            map?.addSource(SOURCES.ELEVATION_PROFILE, {
+                'type': 'image',
+                    'url': `https://wms.geonorge.no/skwms1/wms.hoyde-dom_somlos_prosjekter?REQUEST=GetMap&crs=EPSG:4326&bbox=${bbox[1]},${bbox[0]},${bbox[3]},${bbox[2]}&width=${width}&height=${height}&format=image/jpeg&layers=las_dom_somlos`,
+                    'coordinates': [
+                        [bbox[0], bbox[3]],
+                        [bbox[2], bbox[3]],
+                        [bbox[2], bbox[1]],
+                        [bbox[0], bbox[1]]
+                    ]
+            })
+
+            map?.addLayer({
+                'id': SOURCES.ELEVATION_PROFILE,
+                'source': SOURCES.ELEVATION_PROFILE,
+                'type': 'raster',
+                'paint': { 'raster-opacity': mapParameters.elevationProfileVisibility/100 }
+            })
+        }
+    }, [elevationProfile])
 
     return <div style={{position: 'absolute', top: 0, bottom: 0, width: '100%', borderRadius: 8}} ref={mapContainerRef} />
 }

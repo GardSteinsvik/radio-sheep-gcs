@@ -17,6 +17,8 @@ import {makeStyles, Theme} from "@material-ui/core/styles";
 import Drone from "@/components/Drone/Drone";
 import Home from "@/pages/home/Home";
 import {ConnectedRouter} from "connected-react-router";
+import {hot} from "react-hot-loader/root";
+
 
 const store = configuredStore()
 
@@ -77,7 +79,7 @@ const AppLayout = (props: { children: ReactNode }) => {
     )
 }
 
-export default function App() {
+function App() {
     return (
         <ThemeProvider theme={theme}>
             <Provider store={store}>
@@ -91,5 +93,7 @@ export default function App() {
                 </ConnectedRouter>
             </Provider>
         </ThemeProvider>
-    );
+    )
 }
+
+export default hot(App)

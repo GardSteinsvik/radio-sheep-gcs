@@ -352,12 +352,12 @@ function uploadMission(flightParameters: FlightParameters, completedPoints: Feat
             Object.assign(missionItem, {
                 command: MavCmd.MAV_CMD_NAV_WAYPOINT,
                 param1: 0, // Hold time
-                param2: 5, // Accept radius
-                param3: 0, // Pass radius
+                param2: flightParameters.acceptanceRadius ?? 10, // Accept radius
+                param3: 0, // Pass radius. 0 to pass through the WP, if > 0 radius to pass by WP. Positive value for clockwise orbit, negative value for counter-clockwise orbit. Allows trajectory control.
                 param4: NaN, // Yaw
                 x: currentPoint.geometry.coordinates[1],
                 y: currentPoint.geometry.coordinates[0],
-                z: flightParameters.elevation + (currentPoint.properties?.elevation ?? 0),
+                z: flightParameters.elevation + (currentPoint.properties?.relativeElevation ?? 0),
             })
         }
         missionItemList.push(missionItem)
