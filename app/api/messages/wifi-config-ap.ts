@@ -1,5 +1,4 @@
-import {MAVLinkMessage} from '@ifrunistuttgart/node-mavlink';
-import {readInt64LE, readUInt64LE} from '@ifrunistuttgart/node-mavlink';
+import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
 import {WifiConfigApMode} from '../enums/wifi-config-ap-mode';
 import {WifiConfigApResponse} from '../enums/wifi-config-ap-response';
 /*

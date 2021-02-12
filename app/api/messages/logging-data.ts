@@ -1,5 +1,4 @@
-import {MAVLinkMessage} from '@ifrunistuttgart/node-mavlink';
-import {readInt64LE, readUInt64LE} from '@ifrunistuttgart/node-mavlink';
+import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
 /*
 A message containing logged data (see also MAV_CMD_LOGGING_START)
 */

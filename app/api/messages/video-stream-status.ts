@@ -1,5 +1,4 @@
-import {MAVLinkMessage} from '@ifrunistuttgart/node-mavlink';
-import {readInt64LE, readUInt64LE} from '@ifrunistuttgart/node-mavlink';
+import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
 import {VideoStreamStatusFlags} from '../enums/video-stream-status-flags';
 /*
 Information about the status of a video stream. It may be requested using MAV_CMD_REQUEST_MESSAGE.

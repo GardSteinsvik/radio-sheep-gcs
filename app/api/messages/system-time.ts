@@ -1,5 +1,4 @@
-import {MAVLinkMessage} from '@ifrunistuttgart/node-mavlink';
-import {readInt64LE, readUInt64LE} from '@ifrunistuttgart/node-mavlink';
+import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
 /*
 The system time is the time of the master clock, typically the computer clock of the main onboard computer.
 */

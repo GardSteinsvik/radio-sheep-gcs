@@ -17,8 +17,7 @@ import {selectFlightParameters} from "@slices/flightParametersSlice";
 import * as turf from "@turf/turf";
 
 const SOURCES = {
-    COMPLETED_POINTS: 'completed-points',
-    ACCEPTANCE_RADIUS: 'acceptance-radius',
+    WAYPOINTS: 'waypoints',
     DRONE: 'drone',
     ELEVATION_PROFILE: 'elevation-profile'
 }
@@ -28,6 +27,9 @@ const LAYERS = ({
     POINT: 'point',
     LINE: 'line',
     DRONE: 'drone',
+    ACCEPTANCE_RADIUS: 'acceptance-radius',
+    SEARCH_RADIUS: 'search-radius',
+    COMPLETED_POINTS: 'completed-points',
 })
 
 interface Props {
@@ -54,7 +56,7 @@ export default function Map({features = []}: Props) {
     let DrawControl: MapboxDraw
 
     function drawFeatures(features: Feature[]) {
-        [LAYERS.SEARCH_AREA, LAYERS.LINE, LAYERS.POINT].forEach(layerId => {
+        [LAYERS.LINE, LAYERS.POINT].forEach(layerId => {
             if (map?.getLayer(layerId)) {
                 map?.removeLayer(layerId)
             }
@@ -71,18 +73,6 @@ export default function Map({features = []}: Props) {
                 features: features,
             }
         })
-
-        map?.addLayer({
-            'id': LAYERS.SEARCH_AREA,
-            'type': 'line',
-            'source': 'generated-data',
-            'paint': {
-                'line-color': '#2a2a2a',
-                'line-width': 2,
-                'line-dasharray': [3, 4],
-            },
-            'filter': ['==', '$type', 'Polygon']
-        });
 
         map?.addLayer({
             'id': LAYERS.LINE,
@@ -260,7 +250,7 @@ export default function Map({features = []}: Props) {
                 closeOnClick: false
             });
 
-            map.on('mouseenter', SOURCES.COMPLETED_POINTS, function (e) {
+            map.on('mouseenter', LAYERS.COMPLETED_POINTS, function (e) {
                 // Change the cursor style as a UI indicator.
                 map.getCanvas().style.cursor = 'pointer';
 
@@ -285,7 +275,7 @@ export default function Map({features = []}: Props) {
                 popup.setLngLat(coordinates as LngLatLike).setHTML(description).addTo(map);
             });
 
-            map.on('mouseleave', SOURCES.COMPLETED_POINTS, function () {
+            map.on('mouseleave', LAYERS.COMPLETED_POINTS, function () {
                 map.getCanvas().style.cursor = '';
                 popup.remove();
             });
@@ -305,58 +295,64 @@ export default function Map({features = []}: Props) {
     }, [features])
 
     useEffect(() => {
-        if (map?.getLayer(SOURCES.COMPLETED_POINTS)) {
-            map?.removeLayer(SOURCES.COMPLETED_POINTS)
-        }
+        if (map?.getLayer(LAYERS.COMPLETED_POINTS)) map?.removeLayer(LAYERS.COMPLETED_POINTS)
+        if (map?.getLayer(LAYERS.ACCEPTANCE_RADIUS)) map?.removeLayer(LAYERS.ACCEPTANCE_RADIUS)
+        if (map?.getLayer(LAYERS.SEARCH_RADIUS)) map?.removeLayer(LAYERS.SEARCH_RADIUS)
 
-        if (map?.getSource(SOURCES.COMPLETED_POINTS)) {
-            map?.removeSource(SOURCES.COMPLETED_POINTS)
-        }
+        if (map?.getSource(SOURCES.WAYPOINTS)) map?.removeSource(SOURCES.WAYPOINTS)
 
-        map?.addSource(SOURCES.COMPLETED_POINTS, {
-            type: "geojson",
-            data: completedPoints,
-        })
+        const searchRadiusPolygons = completedPoints.features.slice(1, -1).map(point => turf.circle(point, flightParameters.searchRadius ?? 0, {units: "meters"}) as Feature<Polygon>)
+        const acceptanceRadiusPolygons = completedPoints.features.map(point => turf.circle(point, flightParameters.acceptanceRadius ?? 0, {units: "meters"}) as Feature<Polygon>)
 
-        map?.addLayer({
-            'id': SOURCES.COMPLETED_POINTS,
-            'type': 'circle',
-            'source': SOURCES.COMPLETED_POINTS,
-            'paint': {
-                'circle-radius': 4,
-                'circle-color': '#be0952'
-            },
-            'filter': ['==', '$type', 'Point']
-        })
-    }, [completedPoints])
+        searchRadiusPolygons.forEach(polygon => polygon.properties = {...polygon.properties, type: LAYERS.SEARCH_RADIUS})
+        acceptanceRadiusPolygons.forEach(polygon => polygon.properties = {...polygon.properties, type: LAYERS.ACCEPTANCE_RADIUS})
 
-    useEffect(() => {
-        if (map?.getLayer(SOURCES.ACCEPTANCE_RADIUS)) {
-            map?.removeLayer(SOURCES.ACCEPTANCE_RADIUS)
-        }
-
-        if (map?.getSource(SOURCES.ACCEPTANCE_RADIUS)) {
-            map?.removeSource(SOURCES.ACCEPTANCE_RADIUS)
-        }
-
-        map?.addSource(SOURCES.ACCEPTANCE_RADIUS, {
+        map?.addSource(SOURCES.WAYPOINTS, {
             type: "geojson",
             data: {
                 type: 'FeatureCollection',
-                features: completedPoints.features.map(point => turf.circle(point, flightParameters.acceptanceRadius ?? 0, {units: "meters"}) as Feature<Polygon>)
+                features: [
+                    ...completedPoints.features,
+                    ...searchRadiusPolygons,
+                    ...acceptanceRadiusPolygons,
+                ]
             },
         })
 
         map?.addLayer({
-            'id': SOURCES.ACCEPTANCE_RADIUS,
-            'type': 'fill',
-            'source': SOURCES.ACCEPTANCE_RADIUS,
+            'id': LAYERS.COMPLETED_POINTS,
+            'type': 'circle',
+            'source': SOURCES.WAYPOINTS,
             'paint': {
-                'fill-opacity': 0.4,
-                'fill-color': '#be0952'
+                'circle-radius': 4,
+                'circle-color': '#00cfff'
             },
+            'filter': ['==', '$type', 'Point']
         })
-    }, [completedPoints, flightParameters.acceptanceRadius])
+
+        map?.addLayer({
+            'id': LAYERS.ACCEPTANCE_RADIUS,
+            'source': SOURCES.WAYPOINTS,
+            'type': 'fill',
+            'paint': {
+                'fill-opacity': 0.3,
+                'fill-color': '#00cfff'
+            },
+            'filter': ['==', ['get', 'type'], LAYERS.ACCEPTANCE_RADIUS]
+        })
+
+        map?.addLayer({
+            'id': LAYERS.SEARCH_RADIUS,
+            'source': SOURCES.WAYPOINTS,
+            'type': 'line',
+            'paint': {
+                'line-color': '#2a2a2a',
+                'line-width': 2,
+                'line-dasharray': [1, 2],
+            },
+            'filter': ['==', ['get', 'type'], LAYERS.SEARCH_RADIUS]
+        })
+    }, [completedPoints, flightParameters.acceptanceRadius, flightParameters.searchRadius])
 
     useEffect(() => {
         if (droneStatus.latitude !== undefined && droneStatus.longitude !== undefined) {

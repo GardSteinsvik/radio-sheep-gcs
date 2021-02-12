@@ -1,5 +1,4 @@
-import {MAVLinkMessage} from '@ifrunistuttgart/node-mavlink';
-import {readInt64LE, readUInt64LE} from '@ifrunistuttgart/node-mavlink';
+import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
 import {MavCmd} from '../enums/mav-cmd';
 /*
 Send a command with up to seven parameters to the MAV. The command microservice is documented at https://mavlink.io/en/services/command.html

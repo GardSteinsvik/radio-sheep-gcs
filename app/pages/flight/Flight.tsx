@@ -67,7 +67,6 @@ export default function Flight() {
     const flightParameters: FlightParameters = useSelector(selectFlightParameters)
     const droneStatus: DroneStatus = useSelector(selectDroneStatus)
 
-    const [searchRadius, setSearchRadius] = useState<number>(150)
     const [searchRadiusOverlap, setSearchRadiusOverlap] = useState<number>(0)
 
 
@@ -100,13 +99,10 @@ export default function Flight() {
         setSearchWidth(xLength)
         setSearchHeight(yLength)
 
-        const grid = turf.pointGrid(bbox, (searchRadius * 2) - searchRadiusOverlap, {units: "meters"}).features as Feature<Point>[]
-
-        const pointRadiusPolygons: Feature<Polygon>[] = grid.map(point => turf.circle(point, searchRadius, {units: "meters"}) as Feature<Polygon>)
-        featuresToRender.push(...pointRadiusPolygons)
+        const grid = turf.pointGrid(bbox, ((flightParameters.searchRadius ?? 0) * 2) - searchRadiusOverlap, {units: "meters"}).features as Feature<Point>[]
 
         const sortedGrid: Feature<Point>[] = []
-        const colCount = Math.ceil(yLength/((searchRadius*2) - searchRadiusOverlap))
+        const colCount = Math.ceil(yLength/(((flightParameters.searchRadius ?? 0) * 2) - searchRadiusOverlap))
         let buffer: Feature<Point>[] = []
         let flip = false
         let i = 0
@@ -130,11 +126,6 @@ export default function Flight() {
         if (selectedPoint) {
             sortedGrid.unshift(selectedPoint)
             sortedGrid.push(selectedPoint)
-            featuresToRender.push(turf.circle(selectedPoint, 10, {units: "meters"}) as Feature<Polygon>)
-
-            // console.log(generatePermutations(grid.map(point => point.geometry.coordinates)));
-
-            // console.log(generateCityRoutes([0,1,2,3]));
         }
 
         setSortedPoints(sortedGrid.map((point, i) => ({...point, id: `${i}`})))
@@ -153,7 +144,7 @@ export default function Flight() {
 
         setFeatures(featuresToRender)
         dispatch(removeCompletedPoints())
-    }, [selectedArea, selectedPoint, searchRadius, searchRadiusOverlap])
+    }, [selectedArea, selectedPoint, flightParameters.searchRadius, searchRadiusOverlap])
 
     /*useEffect(() => {
         if (sortedPoints.length === 0 || completedPoints.features.length >= sortedPoints.length || !selectedPoint) return
@@ -316,13 +307,13 @@ export default function Flight() {
                         </div>
                         <div className={classes.formSection}>
                             <Typography id="search-radius-slider" gutterBottom>
-                                Search radius ({searchRadius}m)
+                                Search radius ({flightParameters.searchRadius}m)
                             </Typography>
                             <Slider
                                 aria-labelledby={'search-radius-slider'}
                                 className={classes.slider}
-                                value={searchRadius}
-                                onChange={(_, value) => setSearchRadius(+value)}
+                                value={flightParameters.searchRadius}
+                                onChange={(_, value) => dispatch(setFlightParameters({searchRadius: +value}))}
                                 step={10}
                                 min={10}
                                 max={500}

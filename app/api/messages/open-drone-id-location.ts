@@ -1,5 +1,4 @@
-import {MAVLinkMessage} from '@ifrunistuttgart/node-mavlink';
-import {readInt64LE, readUInt64LE} from '@ifrunistuttgart/node-mavlink';
+import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
 import {MavOdidStatus} from '../enums/mav-odid-status';
 import {MavOdidHeightRef} from '../enums/mav-odid-height-ref';
 import {MavOdidHorAcc} from '../enums/mav-odid-hor-acc';

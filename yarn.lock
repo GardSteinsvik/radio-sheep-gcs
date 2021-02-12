@@ -1119,6 +1119,13 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@beyond-vision/node-mavlink@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@beyond-vision/node-mavlink/-/node-mavlink-0.1.4.tgz#206804db682736e58461835343a2550971d15a66"
+  integrity sha512-5tmKw+pFYohHvKjdIC/vPATp1T1DSunvPDMTMtvHmQGX6ShmarVnVidsGKGQRG8+QvJNELvAT41GGg/UGTObFw==
+  dependencies:
+    "@types/node" "^11.11.6"
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"
@@ -1187,13 +1194,6 @@
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.19.1"
-
-"@ifrunistuttgart/node-mavlink@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@ifrunistuttgart/node-mavlink/-/node-mavlink-0.1.2.tgz#f5f4fe67769f5357cfa8d65524edf5d8afdb0ca0"
-  integrity sha512-3MBvnbPVV0CgU7bJp9H5Hwga52IYfh9vE/pedFhXNVXHlOJqyYDyIzmUj0S9tQdXfBPaLRUwohEEFGCZL5BF2Q==
-  dependencies:
-    "@types/node" "^11.11.6"
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"

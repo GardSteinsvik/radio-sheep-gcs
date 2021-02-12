@@ -1,7 +1,7 @@
 import events from 'events'
 import {Socket} from "net";
 
-import {MAVLinkMessage, MAVLinkModule} from '@ifrunistuttgart/node-mavlink';
+import {MAVLinkMessage, MAVLinkModule} from '@beyond-vision/node-mavlink';
 import {messageRegistry} from "./message-registry";
 import {RequestDataStream} from "./messages/request-data-stream";
 import {MavDataStream} from "./enums/mav-data-stream";
@@ -9,9 +9,7 @@ import {GlobalPositionInt} from "./messages/global-position-int";
 import {SysStatus} from "./messages/sys-status";
 import {Feature, FeatureCollection, Point} from "geojson";
 import {MissionCount} from "./messages/mission-count";
-import {MissionRequest} from "./messages/mission-request";
 import {MavMissionType} from "./enums/mav-mission-type";
-import {MissionItem} from "./messages/mission-item";
 import {MavFrame} from "./enums/mav-frame";
 import {MavCmd} from "./enums/mav-cmd";
 import {MissionAck} from "./messages/mission-ack";
@@ -21,25 +19,60 @@ import {FlightParameters} from "./interfaces/FlightParameters";
 import {CommandAck} from "./messages/command-ack";
 import {MavResult} from "./enums/mav-result";
 import {MissionCurrent} from "./messages/mission-current";
+import {MavComponent} from "./enums/mav-component";
+import {MissionItemInt} from "./messages/mission-item-int";
+import {MissionRequestInt} from "./messages/mission-request-int";
+import {Heartbeat} from "./messages/heartbeat";
+import {MavType} from "./enums/mav-type";
+import {MavAutopilot} from "./enums/mav-autopilot";
 
-const SYSTEM_ID = 1
-const COMPONENT_ID = 1
+const GCS_SYSTEM_ID = 255
+const GCS_COMP_ID = MavComponent.MAV_COMP_ID_MISSIONPLANNER
+const MAV_SYSTEM_ID = 1 // TODO: Hent fra første heartbeat
+const MAV_COMP_ID = MavComponent.MAV_COMP_ID_AUTOPILOT1
 
 const emitter = new events.EventEmitter()
 setTimeout(() => emitter.emit("status_text", "Connection ready."), 0)
 
 const socket = new Socket()
-const mavLink = new MAVLinkModule(messageRegistry, SYSTEM_ID, false)
+const mavLink = new MAVLinkModule(messageRegistry)
+mavLink.upgradeLink()
 
 const sentMessages: MAVLinkMessage[] = []
+const messageCounts: any = {}
+
+const HEARTBEAT_INTERVAL = 1 // Hz
+let intervalId: NodeJS.Timeout
+function sendHeartBeat() {
+    // console.log("SENDING HEARTBEAT", intervalId)
+    const heartbeat = Object.assign(new Heartbeat(GCS_SYSTEM_ID, GCS_COMP_ID), {
+        type: MavType.MAV_TYPE_GCS,
+        autopilot: MavAutopilot.MAV_AUTOPILOT_INVALID,
+        base_mode: 0, // Unknown value for GCS
+        custom_mode: 0,
+        system_status: 0, // Unknown value for GCS
+        mavlink_version: 3,
+    })
+    const buffer = mavLink.pack([heartbeat])
+    const status = socket.write(buffer)
+    if (!status) console.log("Failed to send heartbeat.")
+}
 
 function startConnection(connectionPath: string, connectionPort: number) {
     socket.connect(connectionPort, connectionPath, () => {
         emitter.emit('status_text', 'Connected via tcp:' + connectionPath + ':' + connectionPort)
         emitter.emit('status_data', {connected: true})
         emitter.emit('connecting', false)
-        // setTimeout(() => startDataStreams(0, 0, 0, 0, 0, 0, 0, 0), 1000)
-        setTimeout(() => startDataStreams(0, 2, 1, 0, 5, 1, 0, 0), 1000)
+        intervalId = setInterval(sendHeartBeat, HEARTBEAT_INTERVAL * 1000)
+        // setTimeout(() => sendMavlinkMessage(Object.assign(new RequestDataStream(253, 190), {
+        //     target_system: 1,
+        //     target_component: 1,
+        //     req_stream_id: MavDataStream.MAV_DATA_STREAM_POSITION,
+        //     req_message_rate: 2,
+        //     start_stop: 1,
+        // })), 1000)
+        setTimeout(() => startDataStreams(2, 2, 2, 0, 3, 10, 10, 10), 1000)
+        // setTimeout(() => startDataStreams(0, 2, 1, 0, 5, 1, 0, 0), 1000)
     })
 
     socket.on("error", err => emitter.emit('status_text', err.message))
@@ -47,27 +80,27 @@ function startConnection(connectionPath: string, connectionPort: number) {
         emitter.emit('status_text', 'Connection closed.')
         emitter.emit('status_data', {connected: false})
         emitter.emit('connecting', false)
+        clearInterval(intervalId)
         mavLink.removeAllListeners()
         socket.removeAllListeners()
         socket.destroy()
     })
 
     socket.on('data', data => {
-        if (data[0] != 0 && data[1] != 7) {
-            // console.log('rssi', data[2])
-        }
-
         mavLink.parse(data)
     })
 
-    mavLink.on('error', function (_: Error) {
+    mavLink.on('error', function (e: Error) {
         // event listener for node-mavlink ALL error message
-        // console.log(e);
+        console.log("MAVLINK ON ERROR", e);
     });
 
     mavLink.on('message', function (message: MAVLinkMessage) {
+        messageCounts[message._message_name] = (messageCounts[message._message_name] ?? 0) + 1
+
         const excludedMessages: string[] = [
             'HEARTBEAT',
+            'TIMESYNC',
             'GLOBAL_POSITION_INT',
             'NAV_CONTROLLER_OUTPUT',
             'SYS_STATUS',
@@ -79,11 +112,14 @@ function startConnection(connectionPath: string, connectionPort: number) {
             'STATUSTEXT',
             'LOCAL_POSITION_NED',
             'COMMAND_ACK',
+            'MEMINFO',
+            'SIMSTATE',
+            'AHRS2',
         ]
 
         // event listener for all messages
         if (!excludedMessages.includes(message._message_name)) {
-            console.log('Message from drone: ' + message._message_name, message)
+            console.log('MESSAGE FROM MAV: ' + message._message_name + ': ', [message])
         }
     })
 
@@ -163,9 +199,9 @@ function sendMavlinkMessages(messages: MAVLinkMessage[]) {
 }
 
 function createDataStreamMessage(id: number, rate: number): RequestDataStream {
-    return Object.assign(new RequestDataStream(SYSTEM_ID, COMPONENT_ID), {
-        target_system: SYSTEM_ID,
-        target_component: COMPONENT_ID,
+    return Object.assign(new RequestDataStream(GCS_SYSTEM_ID, GCS_COMP_ID), {
+        target_system: MAV_SYSTEM_ID,
+        target_component: MAV_COMP_ID,
         req_stream_id: id,
         req_message_rate: rate,
         start_stop: 1,
@@ -192,9 +228,9 @@ function armDrone(arm=1) {
     } else {
         emitter.emit('status_text', 'Disarming drone.')
     }
-    sendMavlinkMessage(Object.assign(new CommandLong(SYSTEM_ID, COMPONENT_ID), {
-        target_system: SYSTEM_ID,
-        target_component: COMPONENT_ID,
+    sendMavlinkMessage(Object.assign(new CommandLong(GCS_SYSTEM_ID, GCS_COMP_ID), {
+        target_system: MAV_SYSTEM_ID,
+        target_component: MAV_COMP_ID,
         command: MavCmd.MAV_CMD_COMPONENT_ARM_DISARM,
         confirmation: 0,
         param1: arm,
@@ -204,15 +240,18 @@ function armDrone(arm=1) {
 
 function setDroneVelocity(velocity: number) {
     emitter.emit('status_text', `Setting velocity to ${velocity} m/s.`)
-    sendMavlinkMessage(Object.assign(new CommandLong(SYSTEM_ID, COMPONENT_ID), {
-        target_system: SYSTEM_ID,
-        target_component: COMPONENT_ID,
+    sendMavlinkMessage(Object.assign(new CommandLong(GCS_SYSTEM_ID, GCS_COMP_ID), {
+        target_system: MAV_SYSTEM_ID,
+        target_component: MAV_COMP_ID,
         command: MavCmd.MAV_CMD_DO_CHANGE_SPEED,
         confirmation: 0,
         param1: 0, // Speed type (0=Airspeed, 1=Ground Speed, 2=Climb Speed, 3=Descent Speed)
         param2: velocity, // Speed (-1 indicates no change) m/s
         param3: 0, // Throttle (-1 indicates no change) %
         param4: 0, // Relative (0: absolute, 1: relative)
+        param5: 0,
+        param6: 0,
+        param7: 0,
     }))
 }
 
@@ -312,13 +351,13 @@ function uploadMission(flightParameters: FlightParameters, completedPoints: Feat
         }
     }
 
-    const missionItemList: MissionItem[] = []
+    const missionItemList: MissionItemInt[] = []
     const missionItemCount = completedPoints.features.length + 3
 
     let waypointCounter = 0
 
     for (let i = 0; i < missionItemCount; i++) {
-        const missionItem = Object.assign(new MissionItem(SYSTEM_ID, COMPONENT_ID), {
+        const missionItem = Object.assign(new MissionItemInt(GCS_SYSTEM_ID, GCS_COMP_ID), {
             seq: i,
             frame: MavFrame.MAV_FRAME_GLOBAL,
             current: 0,
@@ -363,15 +402,15 @@ function uploadMission(flightParameters: FlightParameters, completedPoints: Feat
         missionItemList.push(missionItem)
     }
 
-    const missionCount = new MissionCount(SYSTEM_ID, COMPONENT_ID);
+    const missionCount = new MissionCount(GCS_SYSTEM_ID, GCS_COMP_ID);
     Object.assign(missionCount, {
         count: missionItemList.length,
         mission_type: MavMissionType.MAV_MISSION_TYPE_MISSION,
     })
     sendMavlinkMessage(missionCount)
 
-    function missionRequestListener(missionRequest: MissionRequest) {
-        sendMavlinkMessage(missionItemList[missionRequest.seq])
+    function missionRequestListener(missionRequestInt: MissionRequestInt) {
+        sendMavlinkMessage(missionItemList[missionRequestInt.seq])
     }
 
     function missionAckListener(missionAck: MissionAck) {
@@ -380,7 +419,7 @@ function uploadMission(flightParameters: FlightParameters, completedPoints: Feat
 
             // setTimeout(() => startMission(missionItemCount), 500)
 
-            // const missionRequestList = new MissionRequestList(SYSTEM_ID, COMPONENT_ID);
+            // const missionRequestList = new MissionRequestList(GCS_SYSTEM_ID, GCS_COMP_ID);
             // Object.assign(missionRequestList, {
             //     target_system: SYSTEM_ID,
             //     target_component: COMPONENT_ID,
@@ -399,9 +438,9 @@ function uploadMission(flightParameters: FlightParameters, completedPoints: Feat
 
 function startMission() {
     emitter.emit('status_text', 'Starting mission...')
-    sendMavlinkMessage(Object.assign(new CommandLong(SYSTEM_ID, COMPONENT_ID), {
-        target_system: SYSTEM_ID,
-        target_component: COMPONENT_ID,
+    sendMavlinkMessage(Object.assign(new CommandLong(GCS_SYSTEM_ID, GCS_COMP_ID), {
+        target_system: MAV_SYSTEM_ID,
+        target_component: MAV_COMP_ID,
         command: MavCmd.MAV_CMD_MISSION_START,
         confirmation: 0,
     }))
@@ -409,6 +448,7 @@ function startMission() {
 
 const mav = {
     emitter,
+    messageCounts,
     startConnection,
     closeConnection,
     sendMavlinkMessage,

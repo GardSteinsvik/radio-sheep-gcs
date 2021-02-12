@@ -1,5 +1,4 @@
-import {MAVLinkMessage} from '@ifrunistuttgart/node-mavlink';
-import {readInt64LE, readUInt64LE} from '@ifrunistuttgart/node-mavlink';
+import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
 import {MavType} from '../enums/mav-type';
 import {MavAutopilot} from '../enums/mav-autopilot';
 import {MavModeFlag} from '../enums/mav-mode-flag';

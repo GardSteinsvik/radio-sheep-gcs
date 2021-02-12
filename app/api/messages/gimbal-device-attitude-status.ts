@@ -1,5 +1,4 @@
-import {MAVLinkMessage} from '@ifrunistuttgart/node-mavlink';
-import {readInt64LE, readUInt64LE} from '@ifrunistuttgart/node-mavlink';
+import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
 import {GimbalDeviceFlags} from '../enums/gimbal-device-flags';
 import {GimbalDeviceErrorFlags} from '../enums/gimbal-device-error-flags';
 /*

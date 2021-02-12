@@ -1,5 +1,4 @@
-import {MAVLinkMessage} from '@ifrunistuttgart/node-mavlink';
-import {readInt64LE, readUInt64LE} from '@ifrunistuttgart/node-mavlink';
+import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
 import {TuneFormat} from '../enums/tune-format';
 /*
 Tune formats supported by vehicle. This should be emitted as response to MAV_CMD_REQUEST_MESSAGE.

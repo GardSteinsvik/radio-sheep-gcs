@@ -1,4 +1,68 @@
-import {MAVLinkMessage} from '@ifrunistuttgart/node-mavlink';
+import {MAVLinkMessage} from 'node-mavlink';
+import {SensorOffsets} from './messages/sensor-offsets';
+import {SetMagOffsets} from './messages/set-mag-offsets';
+import {Meminfo} from './messages/meminfo';
+import {ApAdc} from './messages/ap-adc';
+import {DigicamConfigure} from './messages/digicam-configure';
+import {DigicamControl} from './messages/digicam-control';
+import {MountConfigure} from './messages/mount-configure';
+import {MountControl} from './messages/mount-control';
+import {MountStatus} from './messages/mount-status';
+import {FencePoint} from './messages/fence-point';
+import {FenceFetchPoint} from './messages/fence-fetch-point';
+import {Ahrs} from './messages/ahrs';
+import {Simstate} from './messages/simstate';
+import {Hwstatus} from './messages/hwstatus';
+import {Radio} from './messages/radio';
+import {LimitsStatus} from './messages/limits-status';
+import {Wind} from './messages/wind';
+import {Data16} from './messages/data16';
+import {Data32} from './messages/data32';
+import {Data64} from './messages/data64';
+import {Data96} from './messages/data96';
+import {Rangefinder} from './messages/rangefinder';
+import {AirspeedAutocal} from './messages/airspeed-autocal';
+import {RallyPoint} from './messages/rally-point';
+import {RallyFetchPoint} from './messages/rally-fetch-point';
+import {CompassmotStatus} from './messages/compassmot-status';
+import {Ahrs2} from './messages/ahrs2';
+import {CameraStatus} from './messages/camera-status';
+import {CameraFeedback} from './messages/camera-feedback';
+import {Battery2} from './messages/battery2';
+import {Ahrs3} from './messages/ahrs3';
+import {AutopilotVersionRequest} from './messages/autopilot-version-request';
+import {RemoteLogDataBlock} from './messages/remote-log-data-block';
+import {RemoteLogBlockStatus} from './messages/remote-log-block-status';
+import {LedControl} from './messages/led-control';
+import {MagCalProgress} from './messages/mag-cal-progress';
+import {EkfStatusReport} from './messages/ekf-status-report';
+import {PidTuning} from './messages/pid-tuning';
+import {Deepstall} from './messages/deepstall';
+import {GimbalReport} from './messages/gimbal-report';
+import {GimbalControl} from './messages/gimbal-control';
+import {GimbalTorqueCmdReport} from './messages/gimbal-torque-cmd-report';
+import {GoproHeartbeat} from './messages/gopro-heartbeat';
+import {GoproGetRequest} from './messages/gopro-get-request';
+import {GoproGetResponse} from './messages/gopro-get-response';
+import {GoproSetRequest} from './messages/gopro-set-request';
+import {GoproSetResponse} from './messages/gopro-set-response';
+import {Rpm} from './messages/rpm';
+import {DeviceOpRead} from './messages/device-op-read';
+import {DeviceOpReadReply} from './messages/device-op-read-reply';
+import {DeviceOpWrite} from './messages/device-op-write';
+import {DeviceOpWriteReply} from './messages/device-op-write-reply';
+import {AdapTuning} from './messages/adap-tuning';
+import {VisionPositionDelta} from './messages/vision-position-delta';
+import {AoaSsa} from './messages/aoa-ssa';
+import {EscTelemetry1To4} from './messages/esc-telemetry-1-to-4';
+import {EscTelemetry5To8} from './messages/esc-telemetry-5-to-8';
+import {EscTelemetry9To12} from './messages/esc-telemetry-9-to-12';
+import {OsdParamConfig} from './messages/osd-param-config';
+import {OsdParamConfigReply} from './messages/osd-param-config-reply';
+import {OsdParamShowConfig} from './messages/osd-param-show-config';
+import {OsdParamShowConfigReply} from './messages/osd-param-show-config-reply';
+import {SheepRttData} from './messages/sheep-rtt-data';
+import {SheepRttAck} from './messages/sheep-rtt-ack';
 import {SysStatus} from './messages/sys-status';
 import {SystemTime} from './messages/system-time';
 import {Ping} from './messages/ping';
@@ -180,9 +244,6 @@ import {ParamExtRequestList} from './messages/param-ext-request-list';
 import {ParamExtValue} from './messages/param-ext-value';
 import {ParamExtSet} from './messages/param-ext-set';
 import {ParamExtAck} from './messages/param-ext-ack';
-import {ParamExtValueTrimmed} from './messages/param-ext-value-trimmed';
-import {ParamExtSetTrimmed} from './messages/param-ext-set-trimmed';
-import {ParamExtAckTrimmed} from './messages/param-ext-ack-trimmed';
 import {ObstacleDistance} from './messages/obstacle-distance';
 import {Odometry} from './messages/odometry';
 import {TrajectoryRepresentationWaypoints} from './messages/trajectory-representation-waypoints';
@@ -212,9 +273,78 @@ import {OpenDroneIdSelfId} from './messages/open-drone-id-self-id';
 import {OpenDroneIdSystem} from './messages/open-drone-id-system';
 import {OpenDroneIdOperatorId} from './messages/open-drone-id-operator-id';
 import {OpenDroneIdMessagePack} from './messages/open-drone-id-message-pack';
+import {UavionixAdsbOutCfg} from './messages/uavionix-adsb-out-cfg';
+import {UavionixAdsbOutDynamic} from './messages/uavionix-adsb-out-dynamic';
+import {UavionixAdsbTransceiverHealthReport} from './messages/uavionix-adsb-transceiver-health-report';
+import {IcarousHeartbeat} from './messages/icarous-heartbeat';
+import {IcarousKinematicBands} from './messages/icarous-kinematic-bands';
 import {Heartbeat} from './messages/heartbeat';
 import {ProtocolVersion} from './messages/protocol-version';
 export const messageRegistry: Array<[number, new (system_id: number, component_id: number) => MAVLinkMessage]> = [
+	[150, SensorOffsets],
+	[151, SetMagOffsets],
+	[152, Meminfo],
+	[153, ApAdc],
+	[154, DigicamConfigure],
+	[155, DigicamControl],
+	[156, MountConfigure],
+	[157, MountControl],
+	[158, MountStatus],
+	[160, FencePoint],
+	[161, FenceFetchPoint],
+	[163, Ahrs],
+	[164, Simstate],
+	[165, Hwstatus],
+	[166, Radio],
+	[167, LimitsStatus],
+	[168, Wind],
+	[169, Data16],
+	[170, Data32],
+	[171, Data64],
+	[172, Data96],
+	[173, Rangefinder],
+	[174, AirspeedAutocal],
+	[175, RallyPoint],
+	[176, RallyFetchPoint],
+	[177, CompassmotStatus],
+	[178, Ahrs2],
+	[179, CameraStatus],
+	[180, CameraFeedback],
+	[181, Battery2],
+	[182, Ahrs3],
+	[183, AutopilotVersionRequest],
+	[184, RemoteLogDataBlock],
+	[185, RemoteLogBlockStatus],
+	[186, LedControl],
+	[191, MagCalProgress],
+	[193, EkfStatusReport],
+	[194, PidTuning],
+	[195, Deepstall],
+	[200, GimbalReport],
+	[201, GimbalControl],
+	[214, GimbalTorqueCmdReport],
+	[215, GoproHeartbeat],
+	[216, GoproGetRequest],
+	[217, GoproGetResponse],
+	[218, GoproSetRequest],
+	[219, GoproSetResponse],
+	[226, Rpm],
+	[11000, DeviceOpRead],
+	[11001, DeviceOpReadReply],
+	[11002, DeviceOpWrite],
+	[11003, DeviceOpWriteReply],
+	[11010, AdapTuning],
+	[11011, VisionPositionDelta],
+	[11020, AoaSsa],
+	[11030, EscTelemetry1To4],
+	[11031, EscTelemetry5To8],
+	[11032, EscTelemetry9To12],
+	[11033, OsdParamConfig],
+	[11034, OsdParamConfigReply],
+	[11035, OsdParamShowConfig],
+	[11036, OsdParamShowConfigReply],
+	[19200, SheepRttData],
+	[19201, SheepRttAck],
 	[1, SysStatus],
 	[2, SystemTime],
 	[4, Ping],
@@ -396,9 +526,6 @@ export const messageRegistry: Array<[number, new (system_id: number, component_i
 	[322, ParamExtValue],
 	[323, ParamExtSet],
 	[324, ParamExtAck],
-	[325, ParamExtValueTrimmed],
-	[326, ParamExtSetTrimmed],
-	[327, ParamExtAckTrimmed],
 	[330, ObstacleDistance],
 	[331, Odometry],
 	[332, TrajectoryRepresentationWaypoints],
@@ -428,6 +555,11 @@ export const messageRegistry: Array<[number, new (system_id: number, component_i
 	[12904, OpenDroneIdSystem],
 	[12905, OpenDroneIdOperatorId],
 	[12915, OpenDroneIdMessagePack],
+	[10001, UavionixAdsbOutCfg],
+	[10002, UavionixAdsbOutDynamic],
+	[10003, UavionixAdsbTransceiverHealthReport],
+	[42000, IcarousHeartbeat],
+	[42001, IcarousKinematicBands],
 	[0, Heartbeat],
 	[300, ProtocolVersion],
 ];

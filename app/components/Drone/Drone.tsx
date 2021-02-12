@@ -14,7 +14,7 @@ import mav from '../../api/mav-connection'
 import {useDispatch, useSelector} from "react-redux";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {selectDroneStatus, setDroneStatus} from '@slices/droneStatusSlice'
-import {selectStatusTexts, addStatusText} from '@slices/statusTextsSlice'
+import {addStatusText, selectStatusTexts} from '@slices/statusTextsSlice'
 import {selectCompletedPoints} from '@slices/completedPointsSlice'
 import {selectFlightParameters} from '@slices/flightParametersSlice'
 
@@ -40,8 +40,8 @@ export default function Drone() {
     const classes = useStyles(theme)
     const dispatch = useDispatch()
 
-    const [mavAddress, setMavAddress] = useState('127.0.0.1')
-    const [mavPort, setMavPort] = useState(5760)
+    const [mavAddress, setMavAddress] = useState('192.168.1.200')
+    const [mavPort, setMavPort] = useState(5763)
     const [connecting, setConnecting] = useState(false)
 
     const statusTexts = useSelector(selectStatusTexts)
@@ -150,6 +150,9 @@ export default function Drone() {
                         <Button onClick={() => flightParameters.velocity && mav.setDroneVelocity(flightParameters.velocity)}>Set velocity</Button>
                         <Button onClick={() => mav.uploadMission(flightParameters, completedPoints)}>Upload mission</Button>
                         <Button onClick={() => mav.startMission()}>Start mission</Button>
+                        <div style={{display: 'flex', justifyContent: 'flex-start', textAlign: 'left'}}>
+                            <pre>Message count: {JSON.stringify(mav.messageCounts, null, 1)}</pre>
+                        </div>
                     </div>
                 </div>
             </Drawer>

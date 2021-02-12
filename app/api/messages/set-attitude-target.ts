@@ -1,12 +1,12 @@
-import {MAVLinkMessage} from '@ifrunistuttgart/node-mavlink';
-import {readInt64LE, readUInt64LE} from '@ifrunistuttgart/node-mavlink';
+import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {AttitudeTargetTypemask} from '../enums/attitude-target-typemask';
 /*
 Sets a desired vehicle attitude. Used by an external controller to command the vehicle (manual controller or other system).
 */
 // time_boot_ms Timestamp (time since system boot). uint32_t
 // target_system System ID uint8_t
 // target_component Component ID uint8_t
-// type_mask Mappings: If any of these bits are set, the corresponding input should be ignored: bit 1: body roll rate, bit 2: body pitch rate, bit 3: body yaw rate. bit 4-bit 6: reserved, bit 7: throttle, bit 8: attitude uint8_t
+// type_mask Bitmap to indicate which dimensions should be ignored by the vehicle. uint8_t
 // q Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0) float
 // body_roll_rate Body roll rate float
 // body_pitch_rate Body pitch rate float
@@ -16,7 +16,7 @@ export class SetAttitudeTarget extends MAVLinkMessage {
 	public time_boot_ms!: number;
 	public target_system!: number;
 	public target_component!: number;
-	public type_mask!: number;
+	public type_mask!: AttitudeTargetTypemask;
 	public q!: number;
 	public body_roll_rate!: number;
 	public body_pitch_rate!: number;

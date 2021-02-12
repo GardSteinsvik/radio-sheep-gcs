@@ -17,6 +17,7 @@ export enum MavCmd {
 	MAV_CMD_NAV_ROI = 80, // Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicle's control system to control the vehicle attitude and the attitude of various sensors such as cameras.
 	MAV_CMD_NAV_PATHPLANNING = 81, // Control autonomous path planning on the MAV.
 	MAV_CMD_NAV_SPLINE_WAYPOINT = 82, // Navigate to waypoint using a spline path.
+	MAV_CMD_NAV_ALTITUDE_WAIT = 83, // Mission command to wait for an altitude or downwards vertical speed. This is meant for high altitude balloon launches, allowing the aircraft to be idle until either an altitude is reached or a negative vertical speed is reached (indicating early balloon burst). The wiggle time is how often to wiggle the control surfaces to prevent them seizing up.
 	MAV_CMD_NAV_VTOL_TAKEOFF = 84, // Takeoff from ground using VTOL mode, and transition to forward flight with specified heading. The command should be ignored by vehicles that dont support both VTOL and fixed-wing flight (multicopters, boats,etc.).
 	MAV_CMD_NAV_VTOL_LAND = 85, // Land using VTOL mode
 	MAV_CMD_NAV_GUIDED_ENABLE = 92, // hand control over to an external controller
@@ -65,6 +66,7 @@ export enum MavCmd {
 	MAV_CMD_DO_AUTOTUNE_ENABLE = 212, // Enable/disable autotune.
 	MAV_CMD_NAV_SET_YAW_SPEED = 213, // Sets a desired vehicle turn angle and speed change.
 	MAV_CMD_DO_SET_CAM_TRIGG_INTERVAL = 214, // Mission command to set camera trigger interval for this flight. If triggering is enabled, the camera is triggered each time this interval expires. This command can also be used to set the shutter integration time for the camera.
+	MAV_CMD_DO_SET_RESUME_REPEAT_DIST = 215, // Set the distance to be repeated on mission resume
 	MAV_CMD_DO_MOUNT_CONTROL_QUAT = 220, // Mission command to control a camera or antenna mount, using a quaternion as reference.
 	MAV_CMD_DO_GUIDED_MASTER = 221, // set id of master controller
 	MAV_CMD_DO_GUIDED_LIMITS = 222, // Set limits for external control
@@ -78,6 +80,7 @@ export enum MavCmd {
 	MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN = 246, // Request the reboot or shutdown of system components.
 	MAV_CMD_DO_UPGRADE = 247, // Request a target system to start an upgrade of one (or all) of its components. For example, the command might be sent to a companion computer to cause it to upgrade a connected flight controller. The system doing the upgrade will report progress using the normal command protocol sequence for a long running operation. Command protocol information: https://mavlink.io/en/services/command.html.
 	MAV_CMD_OVERRIDE_GOTO = 252, // Override current mission with command to pause mission, pause mission and move to position, continue/resume mission. When param 1 indicates that the mission is paused (MAV_GOTO_DO_HOLD), param 2 defines whether it holds in place or moves to another position.
+	MAV_CMD_OBLIQUE_SURVEY = 260, // Mission command to set a Camera Auto Mount Pivoting Oblique Survey (Replaces CAM_TRIGG_DIST for this purpose). The camera is triggered each time this distance is exceeded, then the mount moves to the next position. Params 4~6 set-up the angle limits and number of positions for oblique survey, where mount-enabled vehicles automatically roll the camera between shots to emulate an oblique camera setup (providing an increased HFOV). This command can also be used to set the shutter integration time for the camera.
 	MAV_CMD_MISSION_START = 300, // start running a mission
 	MAV_CMD_COMPONENT_ARM_DISARM = 400, // Arms / Disarms a component
 	MAV_CMD_ILLUMINATOR_ON_OFF = 405, // Turns illuminators ON/OFF. An illuminator is a light source that is used for lighting up dark areas external to the sytstem: e.g. a torch or searchlight (as opposed to a light source for illuminating the system itself, e.g. an indicator light).
@@ -119,29 +122,29 @@ export enum MavCmd {
 	MAV_CMD_REQUEST_VIDEO_STREAM_STATUS = 2505, // Request video stream status (VIDEO_STREAM_STATUS)
 	MAV_CMD_LOGGING_START = 2510, // Request to start streaming logging data over MAVLink (see also LOGGING_DATA message)
 	MAV_CMD_LOGGING_STOP = 2511, // Request to stop streaming log data over MAVLink
-	MAV_CMD_AIRFRAME_CONFIGURATION = 2520, // 
+	MAV_CMD_AIRFRAME_CONFIGURATION = 2520, //
 	MAV_CMD_CONTROL_HIGH_LATENCY = 2600, // Request to start/stop transmitting over the high latency telemetry
 	MAV_CMD_PANORAMA_CREATE = 2800, // Create a panorama at the current position
 	MAV_CMD_DO_VTOL_TRANSITION = 3000, // Request VTOL transition
 	MAV_CMD_ARM_AUTHORIZATION_REQUEST = 3001, // Request authorization to arm the vehicle to a external entity, the arm authorizer is responsible to request all data that is needs from the vehicle before authorize or deny the request. If approved the progress of command_ack message should be set with period of time that this authorization is valid in seconds or in case it was denied it should be set with one of the reasons in ARM_AUTH_DENIED_REASON.
-        
+
 	MAV_CMD_SET_GUIDED_SUBMODE_STANDARD = 4000, // This command sets the submode to standard guided when vehicle is in guided mode. The vehicle holds position and altitude and the user can input the desired velocities along all three axes.
-                  
+
 	MAV_CMD_SET_GUIDED_SUBMODE_CIRCLE = 4001, // This command sets submode circle when vehicle is in guided mode. Vehicle flies along a circle facing the center of the circle. The user can input the velocity along the circle and change the radius. If no input is given the vehicle will hold position.
-                  
+
 	MAV_CMD_CONDITION_GATE = 4501, // Delay mission state machine until gate has been reached.
 	MAV_CMD_NAV_FENCE_RETURN_POINT = 5000, // Fence return point. There can only be one fence return point.
-        
+
 	MAV_CMD_NAV_FENCE_POLYGON_VERTEX_INCLUSION = 5001, // Fence vertex for an inclusion polygon (the polygon must not be self-intersecting). The vehicle must stay within this area. Minimum of 3 vertices required.
-        
+
 	MAV_CMD_NAV_FENCE_POLYGON_VERTEX_EXCLUSION = 5002, // Fence vertex for an exclusion polygon (the polygon must not be self-intersecting). The vehicle must stay outside this area. Minimum of 3 vertices required.
-        
+
 	MAV_CMD_NAV_FENCE_CIRCLE_INCLUSION = 5003, // Circular fence area. The vehicle must stay inside this area.
-        
+
 	MAV_CMD_NAV_FENCE_CIRCLE_EXCLUSION = 5004, // Circular fence area. The vehicle must stay outside this area.
-        
+
 	MAV_CMD_NAV_RALLY_POINT = 5100, // Rally point. You can have multiple rally points defined.
-        
+
 	MAV_CMD_UAVCAN_GET_NODE_INFO = 5200, // Commands the vehicle to respond with a sequence of messages UAVCAN_NODE_INFO, one message per every UAVCAN node that is online. Note that some of the response messages can be lost, which the receiver can detect easily by checking whether every received UAVCAN_NODE_STATUS has a matching message UAVCAN_NODE_INFO received earlier; if not, this command should be sent again in order to request re-transmission of the node information messages.
 	MAV_CMD_PAYLOAD_PREPARE_DEPLOY = 30001, // Deploy payload on a Lat / Lon / Alt position. This includes the navigation to reach the required release position and velocity.
 	MAV_CMD_PAYLOAD_CONTROL_DEPLOY = 30002, // Control the payload deployment.
@@ -160,7 +163,30 @@ export enum MavCmd {
 	MAV_CMD_USER_3 = 31012, // User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item.
 	MAV_CMD_USER_4 = 31013, // User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item.
 	MAV_CMD_USER_5 = 31014, // User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item.
+	MAV_CMD_POWER_OFF_INITIATED = 42000, // A system wide power-off event has been initiated.
+	MAV_CMD_SOLO_BTN_FLY_CLICK = 42001, // FLY button has been clicked.
+	MAV_CMD_SOLO_BTN_FLY_HOLD = 42002, // FLY button has been held for 1.5 seconds.
+	MAV_CMD_SOLO_BTN_PAUSE_CLICK = 42003, // PAUSE button has been clicked.
+	MAV_CMD_FIXED_MAG_CAL = 42004, // Magnetometer calibration based on fixed position in earth field given by inclination, declination and intensity.
+	MAV_CMD_FIXED_MAG_CAL_FIELD = 42005, // Magnetometer calibration based on fixed expected field values.
 	MAV_CMD_FIXED_MAG_CAL_YAW = 42006, // Magnetometer calibration based on provided known yaw. This allows for fast calibration using WMM field tables in the vehicle, given only the known yaw of the vehicle. If Latitude and longitude are both zero then use the current vehicle location.
+	MAV_CMD_DO_START_MAG_CAL = 42424, // Initiate a magnetometer calibration.
+	MAV_CMD_DO_ACCEPT_MAG_CAL = 42425, // Accept a magnetometer calibration.
+	MAV_CMD_DO_CANCEL_MAG_CAL = 42426, // Cancel a running magnetometer calibration.
+	MAV_CMD_SET_FACTORY_TEST_MODE = 42427, // Command autopilot to get into factory test/diagnostic mode.
+	MAV_CMD_DO_SEND_BANNER = 42428, // Reply with the version banner.
+	MAV_CMD_ACCELCAL_VEHICLE_POS = 42429, // Used when doing accelerometer calibration. When sent to the GCS tells it what position to put the vehicle in. When sent to the vehicle says what position the vehicle is in.
+	MAV_CMD_GIMBAL_RESET = 42501, // Causes the gimbal to reset and boot as if it was just powered on.
+	MAV_CMD_GIMBAL_AXIS_CALIBRATION_STATUS = 42502, // Reports progress and success or failure of gimbal axis calibration procedure.
+	MAV_CMD_GIMBAL_REQUEST_AXIS_CALIBRATION = 42503, // Starts commutation calibration on the gimbal.
+	MAV_CMD_GIMBAL_FULL_RESET = 42505, // Erases gimbal application and parameters.
 	MAV_CMD_DO_WINCH = 42600, // Command to operate winch.
-	MAV_CMD_ENUM_END = 42601, // 
+	MAV_CMD_FLASH_BOOTLOADER = 42650, // Update the bootloader
+	MAV_CMD_BATTERY_RESET = 42651, // Reset battery capacity for batteries that accumulate consumed battery via integration.
+	MAV_CMD_DEBUG_TRAP = 42700, // Issue a trap signal to the autopilot process, presumably to enter the debugger.
+	MAV_CMD_SCRIPTING = 42701, // Control onboard scripting.
+	MAV_CMD_GUIDED_CHANGE_SPEED = 43000, // Change flight speed at a given rate. This slews the vehicle at a controllable rate between it's previous speed and the new one. (affects GUIDED only. Outside GUIDED, aircraft ignores these commands. Designed for onboard companion-computer command-and-control, not normally operator/GCS control.)
+	MAV_CMD_GUIDED_CHANGE_ALTITUDE = 43001, // Change target altitude at a given rate. This slews the vehicle at a controllable rate between it's previous altitude and the new one. (affects GUIDED only. Outside GUIDED, aircraft ignores these commands. Designed for onboard companion-computer command-and-control, not normally operator/GCS control.)
+	MAV_CMD_GUIDED_CHANGE_HEADING = 43002, // Change to target heading at a given rate, overriding previous heading/s. This slews the vehicle at a controllable rate between it's previous heading and the new one. (affects GUIDED only. Exiting GUIDED returns aircraft to normal behaviour defined elsewhere. Designed for onboard companion-computer command-and-control, not normally operator/GCS control.)
+	MAV_CMD_ENUM_END = 43003, //
 }
