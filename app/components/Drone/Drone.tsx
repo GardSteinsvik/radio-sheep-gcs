@@ -40,8 +40,8 @@ export default function Drone() {
     const classes = useStyles(theme)
     const dispatch = useDispatch()
 
-    const [mavAddress, setMavAddress] = useState('192.168.1.200')
-    const [mavPort, setMavPort] = useState(5763)
+    const [mavAddress, setMavAddress] = useState('192.168.38.2')
+    const [mavPort, setMavPort] = useState(5760)
     const [connecting, setConnecting] = useState(false)
 
     const statusTexts = useSelector(selectStatusTexts)
@@ -107,6 +107,19 @@ export default function Drone() {
                 >
                     Connect
                 </Button>
+                <Button
+                    variant={"contained"}
+                    color={"primary"}
+                    onClick={() => {
+                        setConnecting(true)
+                        dispatch(addStatusText(`Trying to connect to 192.168.1.51:${14550}...`))
+                        mav.startConnection('192.168.1.51', 14550)
+                    }}
+                    disabled={connecting}
+                    style={{color: 'white'}}
+                >
+                    192.168.1.51:14550
+                </Button>
             </div>
         </div>
     )
@@ -150,6 +163,8 @@ export default function Drone() {
                         <Button onClick={() => flightParameters.velocity && mav.setDroneVelocity(flightParameters.velocity)}>Set velocity</Button>
                         <Button onClick={() => mav.uploadMission(flightParameters, completedPoints)}>Upload mission</Button>
                         <Button onClick={() => mav.startMission()}>Start mission</Button>
+                        <Button onClick={() => mav.clearMission()}>Clear mission</Button>
+                        <Button onClick={() => mav.downloadMission()}>Download mission</Button>
                         <div style={{display: 'flex', justifyContent: 'flex-start', textAlign: 'left'}}>
                             <pre>Message count: {JSON.stringify(mav.messageCounts, null, 1)}</pre>
                         </div>
