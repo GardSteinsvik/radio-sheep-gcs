@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 3 axis gimbal measurements.
 */

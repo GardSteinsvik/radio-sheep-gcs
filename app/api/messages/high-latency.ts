@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavModeFlag} from '../enums/mav-mode-flag';
 import {MavLandedState} from '../enums/mav-landed-state';
 import {GpsFixType} from '../enums/gps-fix-type';

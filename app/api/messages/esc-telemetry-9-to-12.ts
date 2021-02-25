@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 ESC Telemetry Data for ESCs 9 to 12, matching data sent by BLHeli ESCs.
 */

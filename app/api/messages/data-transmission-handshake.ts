@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavlinkDataStreamType} from '../enums/mavlink-data-stream-type';
 /*
 Handshake message to initiate, control and stop image streaming when using the Image Transmission Protocol: https://mavlink.io/en/services/image_transmission.html.

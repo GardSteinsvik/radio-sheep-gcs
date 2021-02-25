@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavMissionType} from '../enums/mav-mission-type';
 /*
 Request the overall list of mission items from the system/component.

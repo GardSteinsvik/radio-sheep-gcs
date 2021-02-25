@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavMissionResult} from '../enums/mav-mission-result';
 import {MavMissionType} from '../enums/mav-mission-type';
 /*

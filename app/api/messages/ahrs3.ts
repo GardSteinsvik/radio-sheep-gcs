@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 Status of third AHRS filter if available. This is for ANU research group (Ali and Sean).
 */

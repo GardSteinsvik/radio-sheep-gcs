@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 Message containing a sheepRTT sample. Position of the drone and the distance to the tag with a specific id.
 */

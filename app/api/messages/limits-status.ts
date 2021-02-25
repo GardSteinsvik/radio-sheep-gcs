@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {LimitsState} from '../enums/limits-state';
 import {LimitModule} from '../enums/limit-module';
 /*

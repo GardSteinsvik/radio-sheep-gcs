@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 The pressure readings for the typical setup of one absolute and differential pressure sensor. The units are as specified in each field.
 */

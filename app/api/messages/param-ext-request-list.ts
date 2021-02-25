@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 Request all parameters of this component. All parameters should be emitted in response as PARAM_EXT_VALUE.
 */

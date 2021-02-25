@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).
 */

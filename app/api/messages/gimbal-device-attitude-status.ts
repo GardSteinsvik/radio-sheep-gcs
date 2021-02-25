@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {GimbalDeviceFlags} from '../enums/gimbal-device-flags';
 import {GimbalDeviceErrorFlags} from '../enums/gimbal-device-error-flags';
 /*

@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavRemoteLogDataBlockStatuses} from '../enums/mav-remote-log-data-block-statuses';
 /*
 Send Status of each log block that autopilot board might have sent.

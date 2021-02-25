@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {AttitudeTargetTypemask} from '../enums/attitude-target-typemask';
 /*
 Sets a desired vehicle attitude. Used by an external controller to command the vehicle (manual controller or other system).

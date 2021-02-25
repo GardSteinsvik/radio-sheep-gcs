@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {GimbalManagerFlags} from '../enums/gimbal-manager-flags';
 /*
 Current status about a high level gimbal manager. This message should be broadcast at a low regular rate (e.g. 5Hz).

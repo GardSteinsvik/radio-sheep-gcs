@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {FenceBreach} from '../enums/fence-breach';
 import {FenceMitigate} from '../enums/fence-mitigate';
 /*

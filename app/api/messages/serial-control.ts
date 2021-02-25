@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {SerialControlDev} from '../enums/serial-control-dev';
 import {SerialControlFlag} from '../enums/serial-control-flag';
 /*

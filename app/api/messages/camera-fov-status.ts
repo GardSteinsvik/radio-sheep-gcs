@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 Information about the field of view of a camera. Can be requested with a MAV_CMD_REQUEST_MESSAGE command.
 */

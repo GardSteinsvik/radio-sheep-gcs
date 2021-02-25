@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {EkfStatusFlags} from '../enums/ekf-status-flags';
 /*
 EKF Status message including flags and variances.

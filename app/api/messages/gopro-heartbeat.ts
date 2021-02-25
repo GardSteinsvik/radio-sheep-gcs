@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {GoproHeartbeatStatus} from '../enums/gopro-heartbeat-status';
 import {GoproCaptureMode} from '../enums/gopro-capture-mode';
 import {GoproHeartbeatFlags} from '../enums/gopro-heartbeat-flags';

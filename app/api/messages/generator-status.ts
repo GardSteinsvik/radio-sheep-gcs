@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavGeneratorStatusFlag} from '../enums/mav-generator-status-flag';
 /*
 Telemetry of power generation system. Alternator or mechanical generator.

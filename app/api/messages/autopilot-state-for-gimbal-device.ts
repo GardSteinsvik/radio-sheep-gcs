@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {EstimatorStatusFlags} from '../enums/estimator-status-flags';
 import {MavLandedState} from '../enums/mav-landed-state';
 /*

@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavBatteryFunction} from '../enums/mav-battery-function';
 import {MavBatteryType} from '../enums/mav-battery-type';
 /*

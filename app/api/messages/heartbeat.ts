@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavType} from '../enums/mav-type';
 import {MavAutopilot} from '../enums/mav-autopilot';
 import {MavModeFlag} from '../enums/mav-mode-flag';

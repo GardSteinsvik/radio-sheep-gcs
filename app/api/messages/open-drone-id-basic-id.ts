@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavOdidIdType} from '../enums/mav-odid-id-type';
 import {MavOdidUaType} from '../enums/mav-odid-ua-type';
 /*

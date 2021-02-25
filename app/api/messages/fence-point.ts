@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 A fence point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS.
 */

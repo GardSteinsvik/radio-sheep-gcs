@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {StorageStatus} from '../enums/storage-status';
 import {StorageType} from '../enums/storage-type';
 /*

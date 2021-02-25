@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavCollisionSrc} from '../enums/mav-collision-src';
 import {MavCollisionAction} from '../enums/mav-collision-action';
 import {MavCollisionThreatLevel} from '../enums/mav-collision-threat-level';

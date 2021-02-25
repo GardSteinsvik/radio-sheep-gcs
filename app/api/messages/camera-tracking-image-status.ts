@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {CameraTrackingStatusFlags} from '../enums/camera-tracking-status-flags';
 import {CameraTrackingMode} from '../enums/camera-tracking-mode';
 import {CameraTrackingTargetData} from '../enums/camera-tracking-target-data';

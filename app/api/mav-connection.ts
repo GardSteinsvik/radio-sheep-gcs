@@ -1,7 +1,7 @@
 import events from 'events'
 import {Socket} from "net";
 
-import {MAVLinkMessage, MAVLinkModule} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage, MAVLinkModule} from '@gardsteinsvik/node-mavlink';
 import {messageRegistry} from "./message-registry";
 import {RequestDataStream} from "./messages/request-data-stream";
 import {MavDataStream} from "./enums/mav-data-stream";
@@ -84,13 +84,13 @@ function startConnection(connectionPath: string, connectionPort: number) {
         socket.destroy()
     })
 
-    socket.on('data', data => {
-        mavLink.parse(data)
+    socket.on('data', async data => {
+        await mavLink.parse(data)
     })
 
     mavLink.on('error', function (e: Error) {
         // event listener for node-mavlink ALL error message
-        console.log("MAVLINK ON ERROR", e);
+        // console.error("MAVLINK ON ERROR", e);
     });
 
     mavLink.on('message', function (message: MAVLinkMessage) {
@@ -114,7 +114,7 @@ function startConnection(connectionPath: string, connectionPort: number) {
             'VIBRATION',
             'WSTATUS',
             'SYSTEM_TIME',
-            // 'PARAM_VALUE',
+            'PARAM_VALUE',
             'EKF_STATUS_REPORT',
             'AHRS',
             'SIMSTATE',
@@ -132,6 +132,9 @@ function startConnection(connectionPath: string, connectionPort: number) {
             'HOME_POSITION',
             'POWER_STATUS',
             'TERRAIN_REQUEST',
+            'SENSOR_OFFSETS',
+            'DATA32',
+            'SHEEP_RTT_DATA',
         ]
 
         // event listener for all messages
@@ -145,10 +148,6 @@ function startConnection(connectionPath: string, connectionPort: number) {
         if (statusText.text) {
             emitter.emit('status_text', `[MAV] ${statusText.text}`)
         }
-    })
-
-    mavLink.on('DATA32', (data32: Data32) => {
-        console.log('WE GOT DATA32 BOYS', data32)
     })
 
     mavLink.on("GLOBAL_POSITION_INT", (globalPositionInt: GlobalPositionInt) => {

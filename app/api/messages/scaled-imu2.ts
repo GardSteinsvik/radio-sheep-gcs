@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 The RAW IMU readings for secondary 9DOF sensor setup. This message should contain the scaled values to the described units
 */

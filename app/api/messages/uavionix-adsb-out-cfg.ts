@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {AdsbEmitterType} from '../enums/adsb-emitter-type';
 import {UavionixAdsbOutCfgAircraftSize} from '../enums/uavionix-adsb-out-cfg-aircraft-size';
 import {UavionixAdsbOutCfgGpsOffsetLat} from '../enums/uavionix-adsb-out-cfg-gps-offset-lat';

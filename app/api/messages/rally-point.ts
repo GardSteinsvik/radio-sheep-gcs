@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {RallyFlags} from '../enums/rally-flags';
 /*
 A rally point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS.

@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 Request for terrain data and terrain status. See terrain protocol docs: https://mavlink.io/en/services/terrain.html
 */

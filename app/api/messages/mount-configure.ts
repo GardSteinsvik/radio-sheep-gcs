@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavMountMode} from '../enums/mav-mount-mode';
 /*
 Message to configure a camera mount, directional antenna, etc.

@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {IcarousTrackBandTypes} from '../enums/icarous-track-band-types';
 /*
 Kinematic multi bands (track) output from Daidalus

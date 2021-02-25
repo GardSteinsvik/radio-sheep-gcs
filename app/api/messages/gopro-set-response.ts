@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {GoproCommand} from '../enums/gopro-command';
 import {GoproRequestStatus} from '../enums/gopro-request-status';
 /*

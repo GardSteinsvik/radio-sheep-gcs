@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {UavcanNodeHealth} from '../enums/uavcan-node-health';
 import {UavcanNodeMode} from '../enums/uavcan-node-mode';
 /*

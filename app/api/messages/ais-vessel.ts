@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {AisNavStatus} from '../enums/ais-nav-status';
 import {AisType} from '../enums/ais-type';
 import {AisFlags} from '../enums/ais-flags';

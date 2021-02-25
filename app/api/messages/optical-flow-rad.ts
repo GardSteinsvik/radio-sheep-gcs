@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 Optical flow from an angular rate flow sensor (e.g. PX4FLOW or mouse sensor)
 */

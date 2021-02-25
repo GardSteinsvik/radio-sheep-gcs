@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {DeviceOpBustype} from '../enums/device-op-bustype';
 /*
 Read registers for a device.

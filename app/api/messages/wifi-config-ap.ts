@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {WifiConfigApMode} from '../enums/wifi-config-ap-mode';
 import {WifiConfigApResponse} from '../enums/wifi-config-ap-response';
 /*

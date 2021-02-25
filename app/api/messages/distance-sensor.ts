@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavDistanceSensor} from '../enums/mav-distance-sensor';
 import {MavSensorOrientation} from '../enums/mav-sensor-orientation';
 /*

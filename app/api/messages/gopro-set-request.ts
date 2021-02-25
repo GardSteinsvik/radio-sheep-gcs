@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {GoproCommand} from '../enums/gopro-command';
 /*
 Request to set a GOPRO_COMMAND with a desired.

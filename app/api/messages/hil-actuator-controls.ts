@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavModeFlag} from '../enums/mav-mode-flag';
 /*
 Sent from autopilot to simulation. Hardware in the loop control outputs (replacement for HIL_CONTROLS)

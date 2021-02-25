@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 Sent from simulation to autopilot. This packet is useful for high throughput applications such as hardware in the loop simulations.
 */

@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {UavionixAdsbRfHealth} from '../enums/uavionix-adsb-rf-health';
 /*
 Transceiver heartbeat with health report (updated every 10s)

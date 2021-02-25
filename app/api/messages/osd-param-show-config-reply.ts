@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {OsdParamConfigError} from '../enums/osd-param-config-error';
 import {OsdParamConfigType} from '../enums/osd-param-config-type';
 /*

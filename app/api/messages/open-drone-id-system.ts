@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavOdidOperatorLocationType} from '../enums/mav-odid-operator-location-type';
 import {MavOdidClassificationType} from '../enums/mav-odid-classification-type';
 import {MavOdidCategoryEu} from '../enums/mav-odid-category-eu';

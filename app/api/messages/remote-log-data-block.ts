@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavRemoteLogDataBlockCommands} from '../enums/mav-remote-log-data-block-commands';
 /*
 Send a block of log data to remote location.

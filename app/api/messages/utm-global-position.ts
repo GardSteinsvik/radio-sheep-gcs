@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {UtmFlightState} from '../enums/utm-flight-state';
 import {UtmDataAvailFlags} from '../enums/utm-data-avail-flags';
 /*

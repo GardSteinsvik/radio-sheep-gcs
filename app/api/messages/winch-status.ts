@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavWinchStatusFlag} from '../enums/mav-winch-status-flag';
 /*
 Winch status.

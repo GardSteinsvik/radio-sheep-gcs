@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavParamType} from '../enums/mav-param-type';
 /*
 Set a parameter value (write new value to permanent storage).

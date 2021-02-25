@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {GpsFixType} from '../enums/gps-fix-type';
 /*
 The global position, as returned by the Global Positioning System (GPS). This is

@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavFrame} from '../enums/mav-frame';
 /*
 Vehicle status report that is sent out while orbit execution is in progress (see MAV_CMD_DO_ORBIT).

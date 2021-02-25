@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MagCalStatus} from '../enums/mag-cal-status';
 import {MavSensorOrientation} from '../enums/mav-sensor-orientation';
 /*

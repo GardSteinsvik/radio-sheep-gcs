@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {OsdParamConfigType} from '../enums/osd-param-config-type';
 /*
 Configure an OSD parameter slot.

@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {VideoStreamType} from '../enums/video-stream-type';
 import {VideoStreamStatusFlags} from '../enums/video-stream-status-flags';
 /*

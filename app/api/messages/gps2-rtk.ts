@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {RtkBaselineCoordinateSystem} from '../enums/rtk-baseline-coordinate-system';
 /*
 RTK GPS data. Gives information on the relative baseline calculation the GPS is reporting

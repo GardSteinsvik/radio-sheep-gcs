@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 /*
 Simulated optical flow from a flow sensor (e.g. PX4FLOW or optical mouse sensor)
 */

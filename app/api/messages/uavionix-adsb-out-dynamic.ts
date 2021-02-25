@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {UavionixAdsbOutDynamicGpsFix} from '../enums/uavionix-adsb-out-dynamic-gps-fix';
 import {UavionixAdsbEmergencyStatus} from '../enums/uavionix-adsb-emergency-status';
 import {UavionixAdsbOutDynamicState} from '../enums/uavionix-adsb-out-dynamic-state';

@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {AdsbAltitudeType} from '../enums/adsb-altitude-type';
 import {AdsbEmitterType} from '../enums/adsb-emitter-type';
 import {AdsbFlags} from '../enums/adsb-flags';

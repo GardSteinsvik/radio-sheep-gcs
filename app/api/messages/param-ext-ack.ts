@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {MavParamExtType} from '../enums/mav-param-ext-type';
 import {ParamAck} from '../enums/param-ack';
 /*

@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {CellularStatusFlag} from '../enums/cellular-status-flag';
 import {CellularNetworkFailedReason} from '../enums/cellular-network-failed-reason';
 import {CellularNetworkRadioType} from '../enums/cellular-network-radio-type';

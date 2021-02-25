@@ -1,4 +1,4 @@
-import {MAVLinkMessage} from '@beyond-vision/node-mavlink';
+import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
 import {TuneFormat} from '../enums/tune-format';
 /*
 Play vehicle tone/tune (buzzer). Supersedes message PLAY_TUNE.
