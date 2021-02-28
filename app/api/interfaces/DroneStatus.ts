@@ -1,6 +1,9 @@
+import {MavState} from "../enums/mav-state";
+
 export interface DroneStatus {
     connected?: boolean,
     armed?: boolean,
+    systemStatus?: MavState,
     targetVelocity?: number,
     latitude?: number;
     longitude?: number;

@@ -9,6 +9,7 @@ import droneStatusReducer from './slices/droneStatusSlice'
 import flightParametersReducer from "./slices/flightParametersSlice";
 import elevationProfileSlice from "@slices/elevationProfileSlice";
 import mapParametersSlice from "@slices/mapParametersSlice";
+import sheepRttPointsSlice from "@slices/sheepRttPointsSlice";
 
 export default function createRootReducer(history: History) {
     return combineReducers({
@@ -21,5 +22,6 @@ export default function createRootReducer(history: History) {
         flightParameters: flightParametersReducer,
         elevationProfile: elevationProfileSlice,
         mapParameters: mapParametersSlice,
+        sheepRttPoints: sheepRttPointsSlice,
     });
 }

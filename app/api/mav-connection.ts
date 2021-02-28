@@ -6,7 +6,6 @@ import {messageRegistry} from "./message-registry";
 import {RequestDataStream} from "./messages/request-data-stream";
 import {MavDataStream} from "./enums/mav-data-stream";
 import {GlobalPositionInt} from "./messages/global-position-int";
-import {SysStatus} from "./messages/sys-status";
 import {Feature, FeatureCollection, Point} from "geojson";
 import {MissionCount} from "./messages/mission-count";
 import {MavMissionType} from "./enums/mav-mission-type";
@@ -24,17 +23,21 @@ import {MissionRequestInt} from "./messages/mission-request-int";
 import {Heartbeat} from "./messages/heartbeat";
 import {MavType} from "./enums/mav-type";
 import {MavAutopilot} from "./enums/mav-autopilot";
-import {Data32} from "./messages/data32";
 import {createLandCommand, createTakeOffCommand, createWaypointCommand} from "./missionItemFactory";
 import {MissionRequest} from "./messages/mission-request";
 import {MissionRequestList} from "./messages/mission-request-list";
 import {MissionClearAll} from "./messages/mission-clear-all";
 import {SetHomePosition} from "./messages/set-home-position";
+import {BatteryStatus} from "./messages/battery-status";
+import {SheepRttAck} from "./messages/sheep-rtt-ack";
+import {SheepRttData} from "./messages/sheep-rtt-data";
+import {Data16} from "./messages/data16";
+import {Data32} from "./messages/data32";
 import {Statustext} from "./messages/statustext";
 
 const GCS_SYSTEM_ID = 255
 const GCS_COMP_ID = MavComponent.MAV_COMP_ID_MISSIONPLANNER
-const MAV_SYSTEM_ID = 1 // TODO: Hent fra første heartbeat
+let MAV_SYSTEM_ID = 1
 const MAV_COMP_ID = MavComponent.MAV_COMP_ID_AUTOPILOT1
 
 const emitter = new events.EventEmitter()
@@ -91,9 +94,18 @@ function startConnection(connectionPath: string, connectionPort: number) {
     mavLink.on('error', function (e: Error) {
         // event listener for node-mavlink ALL error message
         // console.error("MAVLINK ON ERROR", e);
-    });
+    })
 
-    mavLink.on('message', function (message: MAVLinkMessage) {
+    mavLink.once('HEARTBEAT', (heartbeat: Heartbeat) => {
+        emitter.emit('status_text', `First heartbeat received. Setting target system id to ${heartbeat._system_id}.`)
+        MAV_SYSTEM_ID = heartbeat._system_id
+    })
+
+    mavLink.once('HEARTBEAT', (heartbeat: Heartbeat) => {
+        emitter.emit('status_data', {systemStatus: heartbeat.system_status})
+    })
+
+    mavLink.on('message', (message: MAVLinkMessage) => {
         messageCounts[message._message_name] = (messageCounts[message._message_name] ?? 0) + 1
 
         const excludedMessages: string[] = [
@@ -107,9 +119,9 @@ function startConnection(connectionPath: string, connectionPort: number) {
             'GPS_RAW_INT',
             'SERVO_OUTPUT_RAW',
             'MISSION_CURRENT',
-            // 'STATUSTEXT',
+            'STATUSTEXT',
             'LOCAL_POSITION_NED',
-            'COMMAND_ACK',
+            // 'COMMAND_ACK',
             'MEMINFO',
             'VIBRATION',
             'WSTATUS',
@@ -133,21 +145,19 @@ function startConnection(connectionPath: string, connectionPort: number) {
             'POWER_STATUS',
             'TERRAIN_REQUEST',
             'SENSOR_OFFSETS',
+            'POSITION_TARGET_GLOBAL_INT',
             'DATA32',
-            'SHEEP_RTT_DATA',
+            // 'SHEEP_RTT_DATA',
         ]
 
         // event listener for all messages
         if (!excludedMessages.includes(message._message_name)) {
-            console.log('MESSAGE FROM MAV: ' + message._message_name + ': ', [message])
+            console.log('%c[MAV] %c' + message._message_name + ': ', 'color: orange', '', [message])
         }
     })
 
-    mavLink.on('STATUSTEXT', (statusText: Statustext) => {
-        console.log('STATUSTEXT: ' + statusText.text)
-        if (statusText.text) {
-            emitter.emit('status_text', `[MAV] ${statusText.text}`)
-        }
+    mavLink.on('STATUSTEXT', (statustext: Statustext) => {
+        emitter.emit('status_text', `[MAV] ${statustext.text}`)
     })
 
     mavLink.on("GLOBAL_POSITION_INT", (globalPositionInt: GlobalPositionInt) => {
@@ -162,8 +172,8 @@ function startConnection(connectionPath: string, connectionPort: number) {
         })
     })
 
-    mavLink.on("SYS_STATUS", (sysStatus: SysStatus) => {
-        emitter.emit("status_data", {battery: sysStatus.battery_remaining})
+    mavLink.on("BATTERY_STATUS", (batteryStatus: BatteryStatus) => {
+        emitter.emit("status_data", {battery: batteryStatus.battery_remaining})
     })
 
     mavLink.on('MISSION_CURRENT', (missionCurrent: MissionCurrent) => {
@@ -206,6 +216,23 @@ function startConnection(connectionPath: string, connectionPort: number) {
         }
     })
 
+    mavLink.on('SHEEP_RTT_DATA', (sheepRttData: SheepRttData) => {
+        emitter.emit('sheep_data', sheepRttData)
+
+        const sheepRttAckBuffer: Buffer = mavLink.pack([Object.assign(new SheepRttAck(GCS_SYSTEM_ID, GCS_COMP_ID), {seq: sheepRttData.seq})])
+
+        sendMavlinkMessage(Object.assign(new Data16(GCS_SYSTEM_ID, GCS_COMP_ID), {
+            type: 130,
+            len: sheepRttAckBuffer.length,
+            data: sheepRttAckBuffer,
+        }))
+    })
+
+    mavLink.on('DATA32', async (data32: Data32) => {
+        if (data32.type !== 129) {
+            return
+        }
+    })
 }
 
 function closeConnection() {
@@ -219,24 +246,15 @@ function sendMavlinkMessage(message: MAVLinkMessage) {
 function sendMavlinkMessages(messages: MAVLinkMessage[]) {
     const buffer = mavLink.pack(messages)
     const status = socket.write(buffer)
-    console.log('Sending messages. Status: ' + status, messages)
+    console.log('%c[GCS] %c' + messages.map(message => message._message_name).join(', ') + ': ', 'color: teal', '', messages)
     if (status) {
         sentMessages.unshift(...messages)
     }
 }
 
-function createDataStreamMessage(id: number, rate: number): RequestDataStream {
-    return Object.assign(new RequestDataStream(GCS_SYSTEM_ID, GCS_COMP_ID), {
-        target_system: MAV_SYSTEM_ID,
-        target_component: MAV_COMP_ID,
-        req_stream_id: id,
-        req_message_rate: rate,
-        start_stop: 1,
-    })
-}
-
 function startDataStreams(rawSensorsRate: number, extendedStatusRate: number, rcChannelsRate: number, rawControllerRate: number, positionRate: number, extra1Rate: number, extra2Rate: number, extra3Rate: number) {
     emitter.emit('status_text', 'Starting data streams.')
+    const createDataStreamMessage = (id: number, rate: number) => Object.assign(new RequestDataStream(GCS_SYSTEM_ID, GCS_COMP_ID), {target_system: MAV_SYSTEM_ID, target_component: MAV_COMP_ID, req_stream_id: id, req_message_rate: rate, start_stop: 1})
     sendMavlinkMessages([
         createDataStreamMessage(MavDataStream.MAV_DATA_STREAM_RAW_SENSORS, rawSensorsRate),
         createDataStreamMessage(MavDataStream.MAV_DATA_STREAM_EXTENDED_STATUS, extendedStatusRate),
@@ -384,63 +402,30 @@ function uploadMission(flightParameters: FlightParameters, completedPoints: Feat
     }
 
     const startPoint: Feature<Point> = completedPoints.features[0]
+    const stopPoint: Feature<Point> = completedPoints.features[completedPoints.features.length-1]
 
-    sendMavlinkMessage(Object.assign(new SetHomePosition(GCS_SYSTEM_ID, GCS_COMP_ID), {
-        target_system: MAV_SYSTEM_ID,
-        latitude: startPoint.geometry.coordinates[0] * 1e7,
-        longitude: startPoint.geometry.coordinates[1] * 1e7,
-        altitude: 10,
-        x: 0,
-        y: 0,
-        z: 0,
-        q: 0,
-        approach_x: 0,
-        approach_y: 0,
-        approach_z: 0,
-        time_usec: Date.now(),
-    }))
 
-    const missionItemList: MissionItemInt[] = []
-    const missionItemCount = completedPoints.features.length + 3
-    console.log('COUNT', missionItemCount)
-
-    let waypointCounter = 0
-
-    for (let i = 0; i < missionItemCount; i++) {
-        let missionItem: MissionItemInt
-
-        if (i === 0) {
-            missionItem = createTakeOffCommand(i, startPoint.geometry.coordinates[1], startPoint.geometry.coordinates[0], flightParameters.elevation ?? 0)
-        } else if (i === 1) {
-            missionItem = createTakeOffCommand(i, startPoint.geometry.coordinates[1], startPoint.geometry.coordinates[0], flightParameters.elevation ?? 0)
-        //     missionItem = createDoChangeSpeedCommand(i, flightParameters.velocity ?? 0)
-        } else if (i === missionItemCount - 1) {
-            const lastPoint: Feature<Point> = completedPoints.features[waypointCounter-1]
-            missionItem = createLandCommand(i, lastPoint.geometry.coordinates[1], lastPoint.geometry.coordinates[0])
-        } else {
-            const currentPoint: Feature<Point> = completedPoints.features[waypointCounter++]
-            missionItem = createWaypointCommand(i, flightParameters.acceptanceRadius ?? 10, currentPoint.geometry.coordinates[1], currentPoint.geometry.coordinates[0], flightParameters.elevation + (currentPoint.properties?.relativeElevation ?? 0))
-        }
-        missionItemList.push(missionItem)
-    }
-
-    console.log("MI LIST",missionItemList)
+    const missionItemIntList: MissionItemInt[] = [
+        createWaypointCommand(0, 0, startPoint.geometry.coordinates[1], startPoint.geometry.coordinates[0], 0), // Dummy waypoint that is ignored by ArduPilot
+        createTakeOffCommand(0, startPoint.geometry.coordinates[1], startPoint.geometry.coordinates[0], flightParameters.elevation ?? 0),
+        ...completedPoints.features.map(point => createWaypointCommand(0, flightParameters.acceptanceRadius ?? 10, point.geometry.coordinates[1], point.geometry.coordinates[0], flightParameters.elevation + (point.properties?.relativeElevation ?? 0))),
+        createLandCommand(0, stopPoint.geometry.coordinates[1], stopPoint.geometry.coordinates[0]),
+    ].map((missionItemInt: MissionItemInt, index: number) => Object.assign(missionItemInt, {seq: index}))
 
     const missionCount = Object.assign(new MissionCount(GCS_SYSTEM_ID, GCS_COMP_ID), {
         target_system: MAV_SYSTEM_ID,
         target_component: MAV_COMP_ID,
-        count: missionItemList.length,
+        count: missionItemIntList.length,
         mission_type: MavMissionType.MAV_MISSION_TYPE_MISSION,
     })
     sendMavlinkMessage(missionCount)
 
     function missionRequestListener(missionRequest: MissionRequest) {
-        console.log(`REQUESTED SEQ ${missionRequest.seq} ::: SENDING`, missionItemList[missionRequest.seq])
-        sendMavlinkMessage(missionItemList[missionRequest.seq])
+        sendMavlinkMessage(missionItemIntList[missionRequest.seq])
     }
 
     function missionRequestIntListener(missionRequestInt: MissionRequestInt) {
-        sendMavlinkMessage(missionItemList[missionRequestInt.seq])
+        sendMavlinkMessage(missionItemIntList[missionRequestInt.seq])
     }
 
     function missionAckListener(missionAck: MissionAck) {
@@ -450,9 +435,13 @@ function uploadMission(flightParameters: FlightParameters, completedPoints: Feat
             emitter.emit('status_text', `Mission not accepted. MavMissionResult: ${missionAck.type}`)
         }
 
-        setTimeout(() => mavLink.removeListener('MISSION_REQUEST', missionRequestListener), 100)
-        setTimeout(() => mavLink.removeListener('MISSION_REQUEST_INT', missionRequestIntListener), 100)
-        setTimeout(() => mavLink.removeListener('MISSION_ACK', missionAckListener), 200)
+        setTimeout(() => stopListeners(), 100)
+    }
+
+    function stopListeners() {
+        mavLink.removeListener('MISSION_REQUEST', missionRequestListener)
+        mavLink.removeListener('MISSION_REQUEST_INT', missionRequestIntListener)
+        mavLink.removeListener('MISSION_ACK', missionAckListener)
     }
 
     mavLink.on('MISSION_REQUEST', missionRequestListener)
@@ -500,15 +489,16 @@ function downloadMission() {
                 type: 0,
                 mission_type: MavMissionType.MAV_MISSION_TYPE_MISSION,
             }))
-            stopListeners()
+            setTimeout(() => stopListeners(), 100)
         }
     }
 
     function stopListeners() {
-        setTimeout(() => mavLink.removeListener('MISSION_ITEM_INT', missionItemIntListener), 100)
+        mavLink.removeListener('MISSION_ITEM_INT', missionItemIntListener)
+        mavLink.removeListener('MISSION_COUNT', missionCountListener)
     }
 
-    mavLink.once('MISSION_COUNT', missionCountListener)
+    mavLink.on('MISSION_COUNT', missionCountListener)
     mavLink.on('MISSION_ITEM_INT', missionItemIntListener)
 
     setTimeout(() => stopListeners(), 5000)

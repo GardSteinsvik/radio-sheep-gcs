@@ -15,11 +15,14 @@ import {selectMapParameters} from "@slices/mapParametersSlice";
 import {FlightParameters} from "@interfaces/FlightParameters";
 import {selectFlightParameters} from "@slices/flightParametersSlice";
 import * as turf from "@turf/turf";
+import {selectSheepRttPoints} from "@slices/sheepRttPointsSlice";
+import {DroneStatusControl} from "@/components/DroneStatusControl/DroneStatusControl";
 
 const SOURCES = {
     WAYPOINTS: 'waypoints',
     DRONE: 'drone',
-    ELEVATION_PROFILE: 'elevation-profile'
+    ELEVATION_PROFILE: 'elevation-profile',
+    SHEEP_RTT_POINTS: 'sheep-rtt-points',
 }
 
 const LAYERS = ({
@@ -30,6 +33,7 @@ const LAYERS = ({
     ACCEPTANCE_RADIUS: 'acceptance-radius',
     SEARCH_RADIUS: 'search-radius',
     COMPLETED_POINTS: 'completed-points',
+    SHEEP_RTT_POINTS: 'sheep-rtt-points',
 })
 
 interface Props {
@@ -45,6 +49,7 @@ export default function Map({features = []}: Props) {
     const droneStatus: DroneStatus = useSelector(selectDroneStatus)
     const flightParameters: FlightParameters = useSelector(selectFlightParameters)
     const elevationProfile: ElevationProfile | undefined = useSelector(selectElevationProfile)
+    const sheepRttPoints: FeatureCollection<Point> = useSelector(selectSheepRttPoints)
 
     const mapParameters: MapParameters = useSelector(selectMapParameters)
 
@@ -52,6 +57,8 @@ export default function Map({features = []}: Props) {
     const element = document.createElement('div')
     element.className = "drone" // CSS located in app.global.css
     const [droneMarker] = useState<mapboxgl.Marker>(new mapboxgl.Marker(element))
+
+    const [droneStatusControl, setDroneStatusControl] = useState<DroneStatusControl>()
 
     let DrawControl: MapboxDraw
 
@@ -221,6 +228,8 @@ export default function Map({features = []}: Props) {
                 },
             })
 
+            setDroneStatusControl(new DroneStatusControl())
+
             map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
             map.addControl(new mapboxgl.GeolocateControl({
                 positionOptions: {
@@ -239,8 +248,6 @@ export default function Map({features = []}: Props) {
                 setMap(map);
                 map.resize();
                 // const minZoomThreshold = 13;
-
-
                 map.addControl(DrawControl);
             });
 
@@ -293,6 +300,14 @@ export default function Map({features = []}: Props) {
     useEffect(() => {
         drawFeatures(features)
     }, [features])
+
+    useEffect(() => {
+        if (droneStatusControl) {
+            map?.removeControl(droneStatusControl)
+            droneStatusControl.setDroneStatus(droneStatus)
+            map?.addControl(droneStatusControl, 'bottom-left')
+        }
+    }, [droneStatusControl, droneStatus])
 
     useEffect(() => {
         if (map?.getLayer(LAYERS.COMPLETED_POINTS)) map?.removeLayer(LAYERS.COMPLETED_POINTS)
@@ -403,6 +418,37 @@ export default function Map({features = []}: Props) {
             })
         }
     }, [elevationProfile])
+
+    useEffect(() => {
+        if (map?.getLayer(SOURCES.SHEEP_RTT_POINTS)) {
+            map?.removeLayer(SOURCES.SHEEP_RTT_POINTS)
+        }
+
+        if (map?.getSource(SOURCES.SHEEP_RTT_POINTS)) {
+            map?.removeSource(SOURCES.SHEEP_RTT_POINTS)
+        }
+
+        const sheepRttPolygons = sheepRttPoints.features.map(point => turf.circle(point, point.properties?.dis ?? 0, {units: "meters"}) as Feature<Polygon>)
+
+        map?.addSource(SOURCES.SHEEP_RTT_POINTS, {
+            type: 'geojson',
+            data: {
+                type: "FeatureCollection",
+                features: sheepRttPolygons,
+            },
+        })
+
+        map?.addLayer({
+            'id': LAYERS.SHEEP_RTT_POINTS,
+            'type': 'line',
+            'source': SOURCES.SHEEP_RTT_POINTS,
+            'paint': {
+                'line-color': '#559942',
+                'line-width': 2,
+            },
+            'filter': ['==', '$type', 'Point']
+        })
+    }, [sheepRttPoints])
 
     return <div style={{position: 'absolute', top: 0, bottom: 0, width: '100%', borderRadius: 8}} ref={mapContainerRef} />
 }

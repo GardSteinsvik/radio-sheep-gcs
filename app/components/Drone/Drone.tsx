@@ -17,6 +17,9 @@ import {selectDroneStatus, setDroneStatus} from '@slices/droneStatusSlice'
 import {addStatusText, selectStatusTexts} from '@slices/statusTextsSlice'
 import {selectCompletedPoints} from '@slices/completedPointsSlice'
 import {selectFlightParameters} from '@slices/flightParametersSlice'
+import {SheepRttData} from "@/api/messages/sheep-rtt-data";
+import {selectSheepRttPoints, setSheepRttPoints} from "@slices/sheepRttPointsSlice";
+import {FeatureCollection, Point, Feature} from "geojson";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -48,6 +51,7 @@ export default function Drone() {
     const droneStatus = useSelector(selectDroneStatus)
     const completedPoints = useSelector(selectCompletedPoints)
     const flightParameters = useSelector(selectFlightParameters)
+    const sheepRttPoints: FeatureCollection<Point> = useSelector(selectSheepRttPoints)
 
     const [drawerOpen, setDrawerOpen] = useState(false)
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -65,6 +69,38 @@ export default function Drone() {
             }
         })
         mav.emitter.on('connecting', setConnecting)
+
+        mav.emitter.on('sheep_data', (sheepRttData: SheepRttData) => {
+            const sheepRttFeature: Feature<Point> = {
+                type: "Feature",
+                id: sheepRttData.seq,
+                properties: {
+                    alt: sheepRttData.alt,
+                    tid: sheepRttData.tid,
+                    dis: sheepRttData.dis,
+                },
+                geometry: {
+                    type: "Point",
+                    coordinates: [sheepRttData.lon / 1e7, sheepRttData.lat/ 1e7]
+                }
+            }
+
+            const index = sheepRttPoints.features.findIndex(({id}) => id === sheepRttData.seq)
+            const features = sheepRttPoints.features.slice()
+
+            if (index === -1) {
+                features.push(sheepRttFeature)
+            } else {
+                features[index] = sheepRttFeature
+            }
+
+            const sheepRttFeatureCollection: FeatureCollection<Point> = {
+                type: "FeatureCollection",
+                features: features.sort((f1, f2) => +(f1?.id ?? 0) - +(f2?.id ?? 0))
+            }
+
+            dispatch(setSheepRttPoints(sheepRttFeatureCollection))
+        })
 
         return () => {
             mav.emitter.removeAllListeners()
