@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The state of the fixed wing navigation and position controller.
 */
@@ -22,14 +23,14 @@ export class NavControllerOutput extends MAVLinkMessage {
 	public _message_id: number = 62;
 	public _message_name: string = 'NAV_CONTROLLER_OUTPUT';
 	public _crc_extra: number = 183;
-	public _message_fields: [string, string, boolean][] = [
-		['nav_roll', 'float', false],
-		['nav_pitch', 'float', false],
-		['alt_error', 'float', false],
-		['aspd_error', 'float', false],
-		['xtrack_error', 'float', false],
-		['nav_bearing', 'int16_t', false],
-		['target_bearing', 'int16_t', false],
-		['wp_dist', 'uint16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['nav_roll', 'float', false, 0],
+		['nav_pitch', 'float', false, 0],
+		['alt_error', 'float', false, 0],
+		['aspd_error', 'float', false, 0],
+		['xtrack_error', 'float', false, 0],
+		['nav_bearing', 'int16_t', false, 0],
+		['target_bearing', 'int16_t', false, 0],
+		['wp_dist', 'uint16_t', false, 0],
 	];
 }

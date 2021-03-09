@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Information about the field of view of a camera. Can be requested with a MAV_CMD_REQUEST_MESSAGE command.
 */
@@ -20,22 +21,22 @@ export class CameraFovStatus extends MAVLinkMessage {
 	public lat_image!: number;
 	public lon_image!: number;
 	public alt_image!: number;
-	public q!: number;
+	public q!: number[];
 	public hfov!: number;
 	public vfov!: number;
 	public _message_id: number = 271;
 	public _message_name: string = 'CAMERA_FOV_STATUS';
 	public _crc_extra: number = 22;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['lat_camera', 'int32_t', false],
-		['lon_camera', 'int32_t', false],
-		['alt_camera', 'int32_t', false],
-		['lat_image', 'int32_t', false],
-		['lon_image', 'int32_t', false],
-		['alt_image', 'int32_t', false],
-		['q', 'float', false],
-		['hfov', 'float', false],
-		['vfov', 'float', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['lat_camera', 'int32_t', false, 0],
+		['lon_camera', 'int32_t', false, 0],
+		['alt_camera', 'int32_t', false, 0],
+		['lat_image', 'int32_t', false, 0],
+		['lon_image', 'int32_t', false, 0],
+		['alt_image', 'int32_t', false, 0],
+		['q', 'float', false, 4],
+		['hfov', 'float', false, 0],
+		['vfov', 'float', false, 0],
 	];
 }

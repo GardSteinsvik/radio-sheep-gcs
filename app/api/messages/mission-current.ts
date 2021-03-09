@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Message that announces the sequence number of the current active mission item. The MAV will fly towards this mission item.
 */
@@ -8,7 +9,7 @@ export class MissionCurrent extends MAVLinkMessage {
 	public _message_id: number = 42;
 	public _message_name: string = 'MISSION_CURRENT';
 	public _crc_extra: number = 28;
-	public _message_fields: [string, string, boolean][] = [
-		['seq', 'uint16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['seq', 'uint16_t', false, 0],
 	];
 }

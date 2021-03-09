@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavEstimatorType} from '../enums/mav-estimator-type';
 /*
 The filtered local position (e.g. fused computer vision and accelerometers). Coordinate frame is right-handed, Z-axis down (aeronautical frame, NED / north-east-down convention)
@@ -27,22 +28,22 @@ export class LocalPositionNedCov extends MAVLinkMessage {
 	public ax!: number;
 	public ay!: number;
 	public az!: number;
-	public covariance!: number;
+	public covariance!: number[];
 	public _message_id: number = 64;
 	public _message_name: string = 'LOCAL_POSITION_NED_COV';
 	public _crc_extra: number = 191;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['x', 'float', false],
-		['y', 'float', false],
-		['z', 'float', false],
-		['vx', 'float', false],
-		['vy', 'float', false],
-		['vz', 'float', false],
-		['ax', 'float', false],
-		['ay', 'float', false],
-		['az', 'float', false],
-		['covariance', 'float', false],
-		['estimator_type', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['x', 'float', false, 0],
+		['y', 'float', false, 0],
+		['z', 'float', false, 0],
+		['vx', 'float', false, 0],
+		['vy', 'float', false, 0],
+		['vz', 'float', false, 0],
+		['ax', 'float', false, 0],
+		['ay', 'float', false, 0],
+		['az', 'float', false, 0],
+		['covariance', 'float', false, 45],
+		['estimator_type', 'uint8_t', false, 0],
 	];
 }

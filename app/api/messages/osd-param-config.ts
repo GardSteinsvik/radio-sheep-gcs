@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {OsdParamConfigType} from '../enums/osd-param-config-type';
 /*
 Configure an OSD parameter slot.
@@ -27,16 +28,16 @@ export class OsdParamConfig extends MAVLinkMessage {
 	public _message_id: number = 11033;
 	public _message_name: string = 'OSD_PARAM_CONFIG';
 	public _crc_extra: number = 195;
-	public _message_fields: [string, string, boolean][] = [
-		['request_id', 'uint32_t', false],
-		['min_value', 'float', false],
-		['max_value', 'float', false],
-		['increment', 'float', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['osd_screen', 'uint8_t', false],
-		['osd_index', 'uint8_t', false],
-		['param_id', 'char', false],
-		['config_type', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['request_id', 'uint32_t', false, 0],
+		['min_value', 'float', false, 0],
+		['max_value', 'float', false, 0],
+		['increment', 'float', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['osd_screen', 'uint8_t', false, 0],
+		['osd_index', 'uint8_t', false, 0],
+		['param_id', 'char', false, 16],
+		['config_type', 'uint8_t', false, 0],
 	];
 }

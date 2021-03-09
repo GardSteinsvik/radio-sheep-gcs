@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Status of key hardware.
 */
@@ -10,8 +11,8 @@ export class Hwstatus extends MAVLinkMessage {
 	public _message_id: number = 165;
 	public _message_name: string = 'HWSTATUS';
 	public _crc_extra: number = 21;
-	public _message_fields: [string, string, boolean][] = [
-		['Vcc', 'uint16_t', false],
-		['I2Cerr', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['Vcc', 'uint16_t', false, 0],
+		['I2Cerr', 'uint8_t', false, 0],
 	];
 }

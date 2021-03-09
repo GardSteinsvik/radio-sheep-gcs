@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Cumulative distance traveled for each reported wheel.
 */
@@ -8,13 +9,13 @@ Cumulative distance traveled for each reported wheel.
 export class WheelDistance extends MAVLinkMessage {
 	public time_usec!: number;
 	public count!: number;
-	public distance!: number;
+	public distance!: number[];
 	public _message_id: number = 9000;
 	public _message_name: string = 'WHEEL_DISTANCE';
 	public _crc_extra: number = 113;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['distance', 'double', false],
-		['count', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['distance', 'double', false, 16],
+		['count', 'uint8_t', false, 0],
 	];
 }

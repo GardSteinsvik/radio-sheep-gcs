@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Write registers reply.
 */
@@ -10,8 +11,8 @@ export class DeviceOpWriteReply extends MAVLinkMessage {
 	public _message_id: number = 11003;
 	public _message_name: string = 'DEVICE_OP_WRITE_REPLY';
 	public _crc_extra: number = 64;
-	public _message_fields: [string, string, boolean][] = [
-		['request_id', 'uint32_t', false],
-		['result', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['request_id', 'uint32_t', false, 0],
+		['result', 'uint8_t', false, 0],
 	];
 }

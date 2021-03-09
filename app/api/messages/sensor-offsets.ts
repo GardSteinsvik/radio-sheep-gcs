@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Offsets and calibrations values for hardware sensors. This makes it easier to debug the calibration process.
 */
@@ -30,18 +31,18 @@ export class SensorOffsets extends MAVLinkMessage {
 	public _message_id: number = 150;
 	public _message_name: string = 'SENSOR_OFFSETS';
 	public _crc_extra: number = 134;
-	public _message_fields: [string, string, boolean][] = [
-		['mag_declination', 'float', false],
-		['raw_press', 'int32_t', false],
-		['raw_temp', 'int32_t', false],
-		['gyro_cal_x', 'float', false],
-		['gyro_cal_y', 'float', false],
-		['gyro_cal_z', 'float', false],
-		['accel_cal_x', 'float', false],
-		['accel_cal_y', 'float', false],
-		['accel_cal_z', 'float', false],
-		['mag_ofs_x', 'int16_t', false],
-		['mag_ofs_y', 'int16_t', false],
-		['mag_ofs_z', 'int16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['mag_declination', 'float', false, 0],
+		['raw_press', 'int32_t', false, 0],
+		['raw_temp', 'int32_t', false, 0],
+		['gyro_cal_x', 'float', false, 0],
+		['gyro_cal_y', 'float', false, 0],
+		['gyro_cal_z', 'float', false, 0],
+		['accel_cal_x', 'float', false, 0],
+		['accel_cal_y', 'float', false, 0],
+		['accel_cal_z', 'float', false, 0],
+		['mag_ofs_x', 'int16_t', false, 0],
+		['mag_ofs_y', 'int16_t', false, 0],
+		['mag_ofs_z', 'int16_t', false, 0],
 	];
 }

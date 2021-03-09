@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Accept / deny control of this MAV
 */
@@ -12,9 +13,9 @@ export class ChangeOperatorControlAck extends MAVLinkMessage {
 	public _message_id: number = 6;
 	public _message_name: string = 'CHANGE_OPERATOR_CONTROL_ACK';
 	public _crc_extra: number = 104;
-	public _message_fields: [string, string, boolean][] = [
-		['gcs_system_id', 'uint8_t', false],
-		['control_request', 'uint8_t', false],
-		['ack', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['gcs_system_id', 'uint8_t', false, 0],
+		['control_request', 'uint8_t', false, 0],
+		['ack', 'uint8_t', false, 0],
 	];
 }

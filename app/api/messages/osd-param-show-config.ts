@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Read a configured an OSD parameter slot.
 */
@@ -16,11 +17,11 @@ export class OsdParamShowConfig extends MAVLinkMessage {
 	public _message_id: number = 11035;
 	public _message_name: string = 'OSD_PARAM_SHOW_CONFIG';
 	public _crc_extra: number = 128;
-	public _message_fields: [string, string, boolean][] = [
-		['request_id', 'uint32_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['osd_screen', 'uint8_t', false],
-		['osd_index', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['request_id', 'uint32_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['osd_screen', 'uint8_t', false, 0],
+		['osd_index', 'uint8_t', false, 0],
 	];
 }

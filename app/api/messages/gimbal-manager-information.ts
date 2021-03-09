@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {GimbalManagerCapFlags} from '../enums/gimbal-manager-cap-flags';
 /*
 Information about a high level gimbal manager. This message should be requested by a ground station using MAV_CMD_REQUEST_MESSAGE.
@@ -25,15 +26,15 @@ export class GimbalManagerInformation extends MAVLinkMessage {
 	public _message_id: number = 280;
 	public _message_name: string = 'GIMBAL_MANAGER_INFORMATION';
 	public _crc_extra: number = 70;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['cap_flags', 'uint32_t', false],
-		['roll_min', 'float', false],
-		['roll_max', 'float', false],
-		['pitch_min', 'float', false],
-		['pitch_max', 'float', false],
-		['yaw_min', 'float', false],
-		['yaw_max', 'float', false],
-		['gimbal_device_id', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['cap_flags', 'uint32_t', false, 0],
+		['roll_min', 'float', false, 0],
+		['roll_max', 'float', false, 0],
+		['pitch_min', 'float', false, 0],
+		['pitch_max', 'float', false, 0],
+		['yaw_min', 'float', false, 0],
+		['yaw_max', 'float', false, 0],
+		['gimbal_device_id', 'uint8_t', false, 0],
 	];
 }

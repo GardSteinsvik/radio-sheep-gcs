@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 An ack for a LOGGING_DATA_ACKED message
 */
@@ -12,9 +13,9 @@ export class LoggingAck extends MAVLinkMessage {
 	public _message_id: number = 268;
 	public _message_name: string = 'LOGGING_ACK';
 	public _crc_extra: number = 14;
-	public _message_fields: [string, string, boolean][] = [
-		['sequence', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['sequence', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
 	];
 }

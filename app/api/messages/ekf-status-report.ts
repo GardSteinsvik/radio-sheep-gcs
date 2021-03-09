@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {EkfStatusFlags} from '../enums/ekf-status-flags';
 /*
 EKF Status message including flags and variances.
@@ -21,13 +22,13 @@ export class EkfStatusReport extends MAVLinkMessage {
 	public _message_id: number = 193;
 	public _message_name: string = 'EKF_STATUS_REPORT';
 	public _crc_extra: number = 71;
-	public _message_fields: [string, string, boolean][] = [
-		['velocity_variance', 'float', false],
-		['pos_horiz_variance', 'float', false],
-		['pos_vert_variance', 'float', false],
-		['compass_variance', 'float', false],
-		['terrain_alt_variance', 'float', false],
-		['flags', 'uint16_t', false],
-		['airspeed_variance', 'float', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['velocity_variance', 'float', false, 0],
+		['pos_horiz_variance', 'float', false, 0],
+		['pos_vert_variance', 'float', false, 0],
+		['compass_variance', 'float', false, 0],
+		['terrain_alt_variance', 'float', false, 0],
+		['flags', 'uint16_t', false, 0],
+		['airspeed_variance', 'float', true, 0],
 	];
 }

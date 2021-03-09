@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {EscConnectionType} from '../enums/esc-connection-type';
 import {EscFailureFlags} from '../enums/esc-failure-flags';
 /*
@@ -21,20 +22,20 @@ export class EscInfo extends MAVLinkMessage {
 	public connection_type!: EscConnectionType;
 	public info!: number;
 	public failure_flags!: EscFailureFlags;
-	public error_count!: number;
-	public temperature!: number;
+	public error_count!: number[];
+	public temperature!: number[];
 	public _message_id: number = 290;
 	public _message_name: string = 'ESC_INFO';
 	public _crc_extra: number = 221;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['error_count', 'uint32_t', false],
-		['counter', 'uint16_t', false],
-		['failure_flags', 'uint16_t', false],
-		['index', 'uint8_t', false],
-		['count', 'uint8_t', false],
-		['connection_type', 'uint8_t', false],
-		['info', 'uint8_t', false],
-		['temperature', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['error_count', 'uint32_t', false, 4],
+		['counter', 'uint16_t', false, 0],
+		['failure_flags', 'uint16_t', false, 4],
+		['index', 'uint8_t', false, 0],
+		['count', 'uint8_t', false, 0],
+		['connection_type', 'uint8_t', false, 0],
+		['info', 'uint8_t', false, 0],
+		['temperature', 'uint8_t', false, 4],
 	];
 }

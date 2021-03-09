@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavRemoteLogDataBlockStatuses} from '../enums/mav-remote-log-data-block-statuses';
 /*
 Send Status of each log block that autopilot board might have sent.
@@ -15,10 +16,10 @@ export class RemoteLogBlockStatus extends MAVLinkMessage {
 	public _message_id: number = 185;
 	public _message_name: string = 'REMOTE_LOG_BLOCK_STATUS';
 	public _crc_extra: number = 186;
-	public _message_fields: [string, string, boolean][] = [
-		['seqno', 'uint32_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['status', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['seqno', 'uint32_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['status', 'uint8_t', false, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavParamExtType} from '../enums/mav-param-ext-type';
 /*
 Set a parameter value. In order to deal with message loss (and retransmission of PARAM_EXT_SET), when setting a parameter value and the new value is the same as the current value, you will immediately get a PARAM_ACK_ACCEPTED response. If the current state is PARAM_ACK_IN_PROGRESS, you will accordingly receive a PARAM_ACK_IN_PROGRESS in response.
@@ -17,11 +18,11 @@ export class ParamExtSet extends MAVLinkMessage {
 	public _message_id: number = 323;
 	public _message_name: string = 'PARAM_EXT_SET';
 	public _crc_extra: number = 78;
-	public _message_fields: [string, string, boolean][] = [
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['param_id', 'char', false],
-		['param_value', 'char', false],
-		['param_type', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['param_id', 'char', false, 16],
+		['param_value', 'char', false, 128],
+		['param_type', 'uint8_t', false, 0],
 	];
 }

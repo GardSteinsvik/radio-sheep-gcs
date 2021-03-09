@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {CameraCapFlags} from '../enums/camera-cap-flags';
 /*
 Information about a camera. Can be requested with a MAV_CMD_REQUEST_MESSAGE command.
@@ -18,8 +19,8 @@ Information about a camera. Can be requested with a MAV_CMD_REQUEST_MESSAGE comm
 // cam_definition_uri Camera definition URI (if any, otherwise only basic functions will be available). HTTP- (http://) and MAVLink FTP- (mavlinkftp://) formatted URIs are allowed (and both must be supported by any GCS that implements the Camera Protocol). char
 export class CameraInformation extends MAVLinkMessage {
 	public time_boot_ms!: number;
-	public vendor_name!: number;
-	public model_name!: number;
+	public vendor_name!: number[];
+	public model_name!: number[];
 	public firmware_version!: number;
 	public focal_length!: number;
 	public sensor_size_h!: number;
@@ -33,19 +34,19 @@ export class CameraInformation extends MAVLinkMessage {
 	public _message_id: number = 259;
 	public _message_name: string = 'CAMERA_INFORMATION';
 	public _crc_extra: number = 92;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['firmware_version', 'uint32_t', false],
-		['focal_length', 'float', false],
-		['sensor_size_h', 'float', false],
-		['sensor_size_v', 'float', false],
-		['flags', 'uint32_t', false],
-		['resolution_h', 'uint16_t', false],
-		['resolution_v', 'uint16_t', false],
-		['cam_definition_version', 'uint16_t', false],
-		['vendor_name', 'uint8_t', false],
-		['model_name', 'uint8_t', false],
-		['lens_id', 'uint8_t', false],
-		['cam_definition_uri', 'char', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['firmware_version', 'uint32_t', false, 0],
+		['focal_length', 'float', false, 0],
+		['sensor_size_h', 'float', false, 0],
+		['sensor_size_v', 'float', false, 0],
+		['flags', 'uint32_t', false, 0],
+		['resolution_h', 'uint16_t', false, 0],
+		['resolution_v', 'uint16_t', false, 0],
+		['cam_definition_version', 'uint16_t', false, 0],
+		['vendor_name', 'uint8_t', false, 32],
+		['model_name', 'uint8_t', false, 32],
+		['lens_id', 'uint8_t', false, 0],
+		['cam_definition_uri', 'char', false, 140],
 	];
 }

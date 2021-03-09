@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Vibration levels and accelerometer clipping
 */
@@ -20,13 +21,13 @@ export class Vibration extends MAVLinkMessage {
 	public _message_id: number = 241;
 	public _message_name: string = 'VIBRATION';
 	public _crc_extra: number = 90;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['vibration_x', 'float', false],
-		['vibration_y', 'float', false],
-		['vibration_z', 'float', false],
-		['clipping_0', 'uint32_t', false],
-		['clipping_1', 'uint32_t', false],
-		['clipping_2', 'uint32_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['vibration_x', 'float', false, 0],
+		['vibration_y', 'float', false, 0],
+		['vibration_z', 'float', false, 0],
+		['clipping_0', 'uint32_t', false, 0],
+		['clipping_1', 'uint32_t', false, 0],
+		['clipping_2', 'uint32_t', false, 0],
 	];
 }

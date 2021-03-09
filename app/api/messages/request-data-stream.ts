@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Request a data stream.
 */
@@ -16,11 +17,11 @@ export class RequestDataStream extends MAVLinkMessage {
 	public _message_id: number = 66;
 	public _message_name: string = 'REQUEST_DATA_STREAM';
 	public _crc_extra: number = 148;
-	public _message_fields: [string, string, boolean][] = [
-		['req_message_rate', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['req_stream_id', 'uint8_t', false],
-		['start_stop', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['req_message_rate', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['req_stream_id', 'uint8_t', false, 0],
+		['start_stop', 'uint8_t', false, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {FenceBreach} from '../enums/fence-breach';
 import {FenceMitigate} from '../enums/fence-mitigate';
 /*
@@ -18,11 +19,11 @@ export class FenceStatus extends MAVLinkMessage {
 	public _message_id: number = 162;
 	public _message_name: string = 'FENCE_STATUS';
 	public _crc_extra: number = 189;
-	public _message_fields: [string, string, boolean][] = [
-		['breach_time', 'uint32_t', false],
-		['breach_count', 'uint16_t', false],
-		['breach_status', 'uint8_t', false],
-		['breach_type', 'uint8_t', false],
-		['breach_mitigation', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['breach_time', 'uint32_t', false, 0],
+		['breach_count', 'uint16_t', false, 0],
+		['breach_status', 'uint8_t', false, 0],
+		['breach_type', 'uint8_t', false, 0],
+		['breach_mitigation', 'uint8_t', true, 0],
 	];
 }

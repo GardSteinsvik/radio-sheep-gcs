@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavOdidAuthType} from '../enums/mav-odid-auth-type';
 /*
 Data for filling the OpenDroneID Authentication message. The Authentication Message defines a field that can provide a means of authenticity for the identity of the UAS (Unmanned Aircraft System). The Authentication message can have two different formats. Five data pages are supported. For data page 0, the fields PageCount, Length and TimeStamp are present and AuthData is only 17 bytes. For data page 1 through 4, PageCount, Length and TimeStamp are not present and the size of AuthData is 23 bytes.
@@ -15,25 +16,25 @@ Data for filling the OpenDroneID Authentication message. The Authentication Mess
 export class OpenDroneIdAuthentication extends MAVLinkMessage {
 	public target_system!: number;
 	public target_component!: number;
-	public id_or_mac!: number;
+	public id_or_mac!: number[];
 	public authentication_type!: MavOdidAuthType;
 	public data_page!: number;
 	public page_count!: number;
 	public length!: number;
 	public timestamp!: number;
-	public authentication_data!: number;
+	public authentication_data!: number[];
 	public _message_id: number = 12902;
 	public _message_name: string = 'OPEN_DRONE_ID_AUTHENTICATION';
 	public _crc_extra: number = 49;
-	public _message_fields: [string, string, boolean][] = [
-		['timestamp', 'uint32_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['id_or_mac', 'uint8_t', false],
-		['authentication_type', 'uint8_t', false],
-		['data_page', 'uint8_t', false],
-		['page_count', 'uint8_t', false],
-		['length', 'uint8_t', false],
-		['authentication_data', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['timestamp', 'uint32_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['id_or_mac', 'uint8_t', false, 20],
+		['authentication_type', 'uint8_t', false, 0],
+		['data_page', 'uint8_t', false, 0],
+		['page_count', 'uint8_t', false, 0],
+		['length', 'uint8_t', false, 0],
+		['authentication_data', 'uint8_t', false, 23],
 	];
 }

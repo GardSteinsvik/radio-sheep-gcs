@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 RTCM message for injecting into the onboard GPS (used for DGPS)
 */
@@ -8,13 +9,13 @@ RTCM message for injecting into the onboard GPS (used for DGPS)
 export class GpsRtcmData extends MAVLinkMessage {
 	public flags!: number;
 	public len!: number;
-	public data!: number;
+	public data!: number[];
 	public _message_id: number = 233;
 	public _message_name: string = 'GPS_RTCM_DATA';
 	public _crc_extra: number = 35;
-	public _message_fields: [string, string, boolean][] = [
-		['flags', 'uint8_t', false],
-		['len', 'uint8_t', false],
-		['data', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['flags', 'uint8_t', false, 0],
+		['len', 'uint8_t', false, 0],
+		['data', 'uint8_t', false, 180],
 	];
 }

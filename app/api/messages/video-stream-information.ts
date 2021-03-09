@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {VideoStreamType} from '../enums/video-stream-type';
 import {VideoStreamStatusFlags} from '../enums/video-stream-status-flags';
 /*
@@ -32,18 +33,18 @@ export class VideoStreamInformation extends MAVLinkMessage {
 	public _message_id: number = 269;
 	public _message_name: string = 'VIDEO_STREAM_INFORMATION';
 	public _crc_extra: number = 109;
-	public _message_fields: [string, string, boolean][] = [
-		['framerate', 'float', false],
-		['bitrate', 'uint32_t', false],
-		['flags', 'uint16_t', false],
-		['resolution_h', 'uint16_t', false],
-		['resolution_v', 'uint16_t', false],
-		['rotation', 'uint16_t', false],
-		['hfov', 'uint16_t', false],
-		['stream_id', 'uint8_t', false],
-		['count', 'uint8_t', false],
-		['type', 'uint8_t', false],
-		['name', 'char', false],
-		['uri', 'char', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['framerate', 'float', false, 0],
+		['bitrate', 'uint32_t', false, 0],
+		['flags', 'uint16_t', false, 0],
+		['resolution_h', 'uint16_t', false, 0],
+		['resolution_v', 'uint16_t', false, 0],
+		['rotation', 'uint16_t', false, 0],
+		['hfov', 'uint16_t', false, 0],
+		['stream_id', 'uint8_t', false, 0],
+		['count', 'uint8_t', false, 0],
+		['type', 'uint8_t', false, 0],
+		['name', 'char', false, 32],
+		['uri', 'char', false, 160],
 	];
 }

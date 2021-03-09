@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Status of simulation environment, if used.
 */
@@ -28,17 +29,17 @@ export class Simstate extends MAVLinkMessage {
 	public _message_id: number = 164;
 	public _message_name: string = 'SIMSTATE';
 	public _crc_extra: number = 154;
-	public _message_fields: [string, string, boolean][] = [
-		['roll', 'float', false],
-		['pitch', 'float', false],
-		['yaw', 'float', false],
-		['xacc', 'float', false],
-		['yacc', 'float', false],
-		['zacc', 'float', false],
-		['xgyro', 'float', false],
-		['ygyro', 'float', false],
-		['zgyro', 'float', false],
-		['lat', 'int32_t', false],
-		['lng', 'int32_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['roll', 'float', false, 0],
+		['pitch', 'float', false, 0],
+		['yaw', 'float', false, 0],
+		['xacc', 'float', false, 0],
+		['yacc', 'float', false, 0],
+		['zacc', 'float', false, 0],
+		['xgyro', 'float', false, 0],
+		['ygyro', 'float', false, 0],
+		['zgyro', 'float', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lng', 'int32_t', false, 0],
 	];
 }

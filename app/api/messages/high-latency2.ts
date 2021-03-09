@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavType} from '../enums/mav-type';
 import {MavAutopilot} from '../enums/mav-autopilot';
 import {HlFailureFlag} from '../enums/hl-failure-flag';
@@ -63,33 +64,33 @@ export class HighLatency2 extends MAVLinkMessage {
 	public _message_id: number = 235;
 	public _message_name: string = 'HIGH_LATENCY2';
 	public _crc_extra: number = 179;
-	public _message_fields: [string, string, boolean][] = [
-		['timestamp', 'uint32_t', false],
-		['latitude', 'int32_t', false],
-		['longitude', 'int32_t', false],
-		['custom_mode', 'uint16_t', false],
-		['altitude', 'int16_t', false],
-		['target_altitude', 'int16_t', false],
-		['target_distance', 'uint16_t', false],
-		['wp_num', 'uint16_t', false],
-		['failure_flags', 'uint16_t', false],
-		['type', 'uint8_t', false],
-		['autopilot', 'uint8_t', false],
-		['heading', 'uint8_t', false],
-		['target_heading', 'uint8_t', false],
-		['throttle', 'uint8_t', false],
-		['airspeed', 'uint8_t', false],
-		['airspeed_sp', 'uint8_t', false],
-		['groundspeed', 'uint8_t', false],
-		['windspeed', 'uint8_t', false],
-		['wind_heading', 'uint8_t', false],
-		['eph', 'uint8_t', false],
-		['epv', 'uint8_t', false],
-		['temperature_air', 'int8_t', false],
-		['climb_rate', 'int8_t', false],
-		['battery', 'int8_t', false],
-		['custom0', 'int8_t', false],
-		['custom1', 'int8_t', false],
-		['custom2', 'int8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['timestamp', 'uint32_t', false, 0],
+		['latitude', 'int32_t', false, 0],
+		['longitude', 'int32_t', false, 0],
+		['custom_mode', 'uint16_t', false, 0],
+		['altitude', 'int16_t', false, 0],
+		['target_altitude', 'int16_t', false, 0],
+		['target_distance', 'uint16_t', false, 0],
+		['wp_num', 'uint16_t', false, 0],
+		['failure_flags', 'uint16_t', false, 0],
+		['type', 'uint8_t', false, 0],
+		['autopilot', 'uint8_t', false, 0],
+		['heading', 'uint8_t', false, 0],
+		['target_heading', 'uint8_t', false, 0],
+		['throttle', 'uint8_t', false, 0],
+		['airspeed', 'uint8_t', false, 0],
+		['airspeed_sp', 'uint8_t', false, 0],
+		['groundspeed', 'uint8_t', false, 0],
+		['windspeed', 'uint8_t', false, 0],
+		['wind_heading', 'uint8_t', false, 0],
+		['eph', 'uint8_t', false, 0],
+		['epv', 'uint8_t', false, 0],
+		['temperature_air', 'int8_t', false, 0],
+		['climb_rate', 'int8_t', false, 0],
+		['battery', 'int8_t', false, 0],
+		['custom0', 'int8_t', false, 0],
+		['custom1', 'int8_t', false, 0],
+		['custom2', 'int8_t', false, 0],
 	];
 }

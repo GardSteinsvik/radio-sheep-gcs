@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavSysStatusSensor} from '../enums/mav-sys-status-sensor';
 /*
 The general system state. If the system is following the MAVLink standard, the system state is mainly defined by three orthogonal states/modes: The system mode, which is either LOCKED (motors shut down and locked), MANUAL (system under RC control), GUIDED (system with autonomous position control, position setpoint controlled manually) or AUTO (system guided by path/waypoint planner). The NAV_MODE defined the current flight state: LIFTOFF (often an open-loop maneuver), LANDING, WAYPOINTS or VECTOR. This represents the internal navigation state machine. The system status shows whether the system is currently active or not and if an emergency occurred. During the CRITICAL and EMERGENCY states the MAV is still considered to be active, but should start emergency procedures autonomously. After a failure occurred it should first move from active to critical to allow manual intervention and then move to emergency after a certain timeout.
@@ -33,19 +34,19 @@ export class SysStatus extends MAVLinkMessage {
 	public _message_id: number = 1;
 	public _message_name: string = 'SYS_STATUS';
 	public _crc_extra: number = 124;
-	public _message_fields: [string, string, boolean][] = [
-		['onboard_control_sensors_present', 'uint32_t', false],
-		['onboard_control_sensors_enabled', 'uint32_t', false],
-		['onboard_control_sensors_health', 'uint32_t', false],
-		['load', 'uint16_t', false],
-		['voltage_battery', 'uint16_t', false],
-		['current_battery', 'int16_t', false],
-		['drop_rate_comm', 'uint16_t', false],
-		['errors_comm', 'uint16_t', false],
-		['errors_count1', 'uint16_t', false],
-		['errors_count2', 'uint16_t', false],
-		['errors_count3', 'uint16_t', false],
-		['errors_count4', 'uint16_t', false],
-		['battery_remaining', 'int8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['onboard_control_sensors_present', 'uint32_t', false, 0],
+		['onboard_control_sensors_enabled', 'uint32_t', false, 0],
+		['onboard_control_sensors_health', 'uint32_t', false, 0],
+		['load', 'uint16_t', false, 0],
+		['voltage_battery', 'uint16_t', false, 0],
+		['current_battery', 'int16_t', false, 0],
+		['drop_rate_comm', 'uint16_t', false, 0],
+		['errors_comm', 'uint16_t', false, 0],
+		['errors_count1', 'uint16_t', false, 0],
+		['errors_count2', 'uint16_t', false, 0],
+		['errors_count3', 'uint16_t', false, 0],
+		['errors_count4', 'uint16_t', false, 0],
+		['battery_remaining', 'int8_t', false, 0],
 	];
 }

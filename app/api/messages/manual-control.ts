@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 This message provides an API for manually controlling the vehicle using standard joystick axes nomenclature, along with a joystick-like input device. Unused axes can be disabled an buttons are also transmit as boolean values of their
 */
@@ -18,12 +19,12 @@ export class ManualControl extends MAVLinkMessage {
 	public _message_id: number = 69;
 	public _message_name: string = 'MANUAL_CONTROL';
 	public _crc_extra: number = 243;
-	public _message_fields: [string, string, boolean][] = [
-		['x', 'int16_t', false],
-		['y', 'int16_t', false],
-		['z', 'int16_t', false],
-		['r', 'int16_t', false],
-		['buttons', 'uint16_t', false],
-		['target', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['x', 'int16_t', false, 0],
+		['y', 'int16_t', false, 0],
+		['z', 'int16_t', false, 0],
+		['r', 'int16_t', false, 0],
+		['buttons', 'uint16_t', false, 0],
+		['target', 'uint8_t', false, 0],
 	];
 }

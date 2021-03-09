@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {CellularConfigResponse} from '../enums/cellular-config-response';
 /*
 Configure cellular modems. This message is re-emitted as an acknowledgement by the modem. The message may also be explicitly requested using MAV_CMD_REQUEST_MESSAGE.
@@ -23,14 +24,14 @@ export class CellularConfig extends MAVLinkMessage {
 	public _message_id: number = 336;
 	public _message_name: string = 'CELLULAR_CONFIG';
 	public _crc_extra: number = 245;
-	public _message_fields: [string, string, boolean][] = [
-		['enable_lte', 'uint8_t', false],
-		['enable_pin', 'uint8_t', false],
-		['pin', 'char', false],
-		['new_pin', 'char', false],
-		['apn', 'char', false],
-		['puk', 'char', false],
-		['roaming', 'uint8_t', false],
-		['response', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['enable_lte', 'uint8_t', false, 0],
+		['enable_pin', 'uint8_t', false, 0],
+		['pin', 'char', false, 16],
+		['new_pin', 'char', false, 16],
+		['apn', 'char', false, 32],
+		['puk', 'char', false, 16],
+		['roaming', 'uint8_t', false, 0],
+		['response', 'uint8_t', false, 0],
 	];
 }

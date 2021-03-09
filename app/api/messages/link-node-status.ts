@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Status generated in each node in the communication chain and injected into MAVLink stream.
 */
@@ -28,17 +29,17 @@ export class LinkNodeStatus extends MAVLinkMessage {
 	public _message_id: number = 8;
 	public _message_name: string = 'LINK_NODE_STATUS';
 	public _crc_extra: number = 117;
-	public _message_fields: [string, string, boolean][] = [
-		['timestamp', 'uint64_t', false],
-		['tx_rate', 'uint32_t', false],
-		['rx_rate', 'uint32_t', false],
-		['messages_sent', 'uint32_t', false],
-		['messages_received', 'uint32_t', false],
-		['messages_lost', 'uint32_t', false],
-		['rx_parse_err', 'uint16_t', false],
-		['tx_overflows', 'uint16_t', false],
-		['rx_overflows', 'uint16_t', false],
-		['tx_buf', 'uint8_t', false],
-		['rx_buf', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['timestamp', 'uint64_t', false, 0],
+		['tx_rate', 'uint32_t', false, 0],
+		['rx_rate', 'uint32_t', false, 0],
+		['messages_sent', 'uint32_t', false, 0],
+		['messages_received', 'uint32_t', false, 0],
+		['messages_lost', 'uint32_t', false, 0],
+		['rx_parse_err', 'uint16_t', false, 0],
+		['tx_overflows', 'uint16_t', false, 0],
+		['rx_overflows', 'uint16_t', false, 0],
+		['tx_buf', 'uint8_t', false, 0],
+		['rx_buf', 'uint8_t', false, 0],
 	];
 }

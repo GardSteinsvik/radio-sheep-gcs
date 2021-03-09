@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Publishes the GPS co-ordinates of the vehicle local origin (0,0,0) position. Emitted whenever a new GPS-Local position mapping is requested or set - e.g. following SET_GPS_GLOBAL_ORIGIN message.
 */
@@ -14,10 +15,10 @@ export class GpsGlobalOrigin extends MAVLinkMessage {
 	public _message_id: number = 49;
 	public _message_name: string = 'GPS_GLOBAL_ORIGIN';
 	public _crc_extra: number = 39;
-	public _message_fields: [string, string, boolean][] = [
-		['latitude', 'int32_t', false],
-		['longitude', 'int32_t', false],
-		['altitude', 'int32_t', false],
-		['time_usec', 'uint64_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['latitude', 'int32_t', false, 0],
+		['longitude', 'int32_t', false, 0],
+		['altitude', 'int32_t', false, 0],
+		['time_usec', 'uint64_t', true, 0],
 	];
 }

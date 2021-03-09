@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 100 Hz gimbal torque command telemetry.
 */
@@ -16,11 +17,11 @@ export class GimbalTorqueCmdReport extends MAVLinkMessage {
 	public _message_id: number = 214;
 	public _message_name: string = 'GIMBAL_TORQUE_CMD_REPORT';
 	public _crc_extra: number = 69;
-	public _message_fields: [string, string, boolean][] = [
-		['rl_torque_cmd', 'int16_t', false],
-		['el_torque_cmd', 'int16_t', false],
-		['az_torque_cmd', 'int16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['rl_torque_cmd', 'int16_t', false, 0],
+		['el_torque_cmd', 'int16_t', false, 0],
+		['az_torque_cmd', 'int16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
 	];
 }

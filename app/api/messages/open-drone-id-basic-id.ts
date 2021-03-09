@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavOdidIdType} from '../enums/mav-odid-id-type';
 import {MavOdidUaType} from '../enums/mav-odid-ua-type';
 /*
@@ -13,19 +14,19 @@ Data for filling the OpenDroneID Basic ID message. This and the below messages a
 export class OpenDroneIdBasicId extends MAVLinkMessage {
 	public target_system!: number;
 	public target_component!: number;
-	public id_or_mac!: number;
+	public id_or_mac!: number[];
 	public id_type!: MavOdidIdType;
 	public ua_type!: MavOdidUaType;
-	public uas_id!: number;
+	public uas_id!: number[];
 	public _message_id: number = 12900;
 	public _message_name: string = 'OPEN_DRONE_ID_BASIC_ID';
 	public _crc_extra: number = 114;
-	public _message_fields: [string, string, boolean][] = [
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['id_or_mac', 'uint8_t', false],
-		['id_type', 'uint8_t', false],
-		['ua_type', 'uint8_t', false],
-		['uas_id', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['id_or_mac', 'uint8_t', false, 20],
+		['id_type', 'uint8_t', false, 0],
+		['ua_type', 'uint8_t', false, 0],
+		['uas_id', 'uint8_t', false, 20],
 	];
 }

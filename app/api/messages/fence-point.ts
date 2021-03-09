@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 A fence point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS.
 */
@@ -18,12 +19,12 @@ export class FencePoint extends MAVLinkMessage {
 	public _message_id: number = 160;
 	public _message_name: string = 'FENCE_POINT';
 	public _crc_extra: number = 78;
-	public _message_fields: [string, string, boolean][] = [
-		['lat', 'float', false],
-		['lng', 'float', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['idx', 'uint8_t', false],
-		['count', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['lat', 'float', false, 0],
+		['lng', 'float', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['idx', 'uint8_t', false, 0],
+		['count', 'uint8_t', false, 0],
 	];
 }

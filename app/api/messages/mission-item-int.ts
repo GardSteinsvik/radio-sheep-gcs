@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavFrame} from '../enums/mav-frame';
 import {MavCmd} from '../enums/mav-cmd';
 import {MavMissionType} from '../enums/mav-mission-type';
@@ -40,21 +41,21 @@ export class MissionItemInt extends MAVLinkMessage {
 	public _message_id: number = 73;
 	public _message_name: string = 'MISSION_ITEM_INT';
 	public _crc_extra: number = 38;
-	public _message_fields: [string, string, boolean][] = [
-		['param1', 'float', false],
-		['param2', 'float', false],
-		['param3', 'float', false],
-		['param4', 'float', false],
-		['x', 'int32_t', false],
-		['y', 'int32_t', false],
-		['z', 'float', false],
-		['seq', 'uint16_t', false],
-		['command', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['frame', 'uint8_t', false],
-		['current', 'uint8_t', false],
-		['autocontinue', 'uint8_t', false],
-		['mission_type', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['param1', 'float', false, 0],
+		['param2', 'float', false, 0],
+		['param3', 'float', false, 0],
+		['param4', 'float', false, 0],
+		['x', 'int32_t', false, 0],
+		['y', 'int32_t', false, 0],
+		['z', 'float', false, 0],
+		['seq', 'uint16_t', false, 0],
+		['command', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['frame', 'uint8_t', false, 0],
+		['current', 'uint8_t', false, 0],
+		['autocontinue', 'uint8_t', false, 0],
+		['mission_type', 'uint8_t', true, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavProtocolCapability} from '../enums/mav-protocol-capability';
 /*
 Version and capability of autopilot software. This should be emitted in response to a request with MAV_CMD_REQUEST_MESSAGE.
@@ -21,28 +22,28 @@ export class AutopilotVersion extends MAVLinkMessage {
 	public middleware_sw_version!: number;
 	public os_sw_version!: number;
 	public board_version!: number;
-	public flight_custom_version!: number;
-	public middleware_custom_version!: number;
-	public os_custom_version!: number;
+	public flight_custom_version!: number[];
+	public middleware_custom_version!: number[];
+	public os_custom_version!: number[];
 	public vendor_id!: number;
 	public product_id!: number;
 	public uid!: number;
-	public uid2!: number;
+	public uid2!: number[];
 	public _message_id: number = 148;
 	public _message_name: string = 'AUTOPILOT_VERSION';
 	public _crc_extra: number = 178;
-	public _message_fields: [string, string, boolean][] = [
-		['capabilities', 'uint64_t', false],
-		['uid', 'uint64_t', false],
-		['flight_sw_version', 'uint32_t', false],
-		['middleware_sw_version', 'uint32_t', false],
-		['os_sw_version', 'uint32_t', false],
-		['board_version', 'uint32_t', false],
-		['vendor_id', 'uint16_t', false],
-		['product_id', 'uint16_t', false],
-		['flight_custom_version', 'uint8_t', false],
-		['middleware_custom_version', 'uint8_t', false],
-		['os_custom_version', 'uint8_t', false],
-		['uid2', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['capabilities', 'uint64_t', false, 0],
+		['uid', 'uint64_t', false, 0],
+		['flight_sw_version', 'uint32_t', false, 0],
+		['middleware_sw_version', 'uint32_t', false, 0],
+		['os_sw_version', 'uint32_t', false, 0],
+		['board_version', 'uint32_t', false, 0],
+		['vendor_id', 'uint16_t', false, 0],
+		['product_id', 'uint16_t', false, 0],
+		['flight_custom_version', 'uint8_t', false, 8],
+		['middleware_custom_version', 'uint8_t', false, 8],
+		['os_custom_version', 'uint8_t', false, 8],
+		['uid2', 'uint8_t', true, 18],
 	];
 }

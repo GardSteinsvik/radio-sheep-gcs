@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Metrics typically displayed on a HUD for fixed wing aircraft.
 */
@@ -18,12 +19,12 @@ export class VfrHud extends MAVLinkMessage {
 	public _message_id: number = 74;
 	public _message_name: string = 'VFR_HUD';
 	public _crc_extra: number = 20;
-	public _message_fields: [string, string, boolean][] = [
-		['airspeed', 'float', false],
-		['groundspeed', 'float', false],
-		['alt', 'float', false],
-		['climb', 'float', false],
-		['heading', 'int16_t', false],
-		['throttle', 'uint16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['airspeed', 'float', false, 0],
+		['groundspeed', 'float', false, 0],
+		['alt', 'float', false, 0],
+		['climb', 'float', false, 0],
+		['heading', 'int16_t', false, 0],
+		['throttle', 'uint16_t', false, 0],
 	];
 }

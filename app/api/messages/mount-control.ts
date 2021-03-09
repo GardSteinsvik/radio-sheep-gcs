@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Message to control a camera mount, directional antenna, etc.
 */
@@ -18,12 +19,12 @@ export class MountControl extends MAVLinkMessage {
 	public _message_id: number = 157;
 	public _message_name: string = 'MOUNT_CONTROL';
 	public _crc_extra: number = 21;
-	public _message_fields: [string, string, boolean][] = [
-		['input_a', 'int32_t', false],
-		['input_b', 'int32_t', false],
-		['input_c', 'int32_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['save_position', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['input_a', 'int32_t', false, 0],
+		['input_b', 'int32_t', false, 0],
+		['input_c', 'int32_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['save_position', 'uint8_t', false, 0],
 	];
 }

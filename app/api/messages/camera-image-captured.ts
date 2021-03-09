@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Information about a captured image. This is emitted every time a message is captured. It may be re-requested using MAV_CMD_REQUEST_MESSAGE, using param2 to indicate the sequence number for the missing image.
 */
@@ -21,24 +22,24 @@ export class CameraImageCaptured extends MAVLinkMessage {
 	public lon!: number;
 	public alt!: number;
 	public relative_alt!: number;
-	public q!: number;
+	public q!: number[];
 	public image_index!: number;
 	public capture_result!: number;
 	public file_url!: string;
 	public _message_id: number = 263;
 	public _message_name: string = 'CAMERA_IMAGE_CAPTURED';
 	public _crc_extra: number = 133;
-	public _message_fields: [string, string, boolean][] = [
-		['time_utc', 'uint64_t', false],
-		['time_boot_ms', 'uint32_t', false],
-		['lat', 'int32_t', false],
-		['lon', 'int32_t', false],
-		['alt', 'int32_t', false],
-		['relative_alt', 'int32_t', false],
-		['q', 'float', false],
-		['image_index', 'int32_t', false],
-		['camera_id', 'uint8_t', false],
-		['capture_result', 'int8_t', false],
-		['file_url', 'char', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_utc', 'uint64_t', false, 0],
+		['time_boot_ms', 'uint32_t', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lon', 'int32_t', false, 0],
+		['alt', 'int32_t', false, 0],
+		['relative_alt', 'int32_t', false, 0],
+		['q', 'float', false, 4],
+		['image_index', 'int32_t', false, 0],
+		['camera_id', 'uint8_t', false, 0],
+		['capture_result', 'int8_t', false, 0],
+		['file_url', 'char', false, 205],
 	];
 }

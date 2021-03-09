@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Status of simulation environment, if used
 */
@@ -48,27 +49,27 @@ export class SimState extends MAVLinkMessage {
 	public _message_id: number = 108;
 	public _message_name: string = 'SIM_STATE';
 	public _crc_extra: number = 32;
-	public _message_fields: [string, string, boolean][] = [
-		['q1', 'float', false],
-		['q2', 'float', false],
-		['q3', 'float', false],
-		['q4', 'float', false],
-		['roll', 'float', false],
-		['pitch', 'float', false],
-		['yaw', 'float', false],
-		['xacc', 'float', false],
-		['yacc', 'float', false],
-		['zacc', 'float', false],
-		['xgyro', 'float', false],
-		['ygyro', 'float', false],
-		['zgyro', 'float', false],
-		['lat', 'float', false],
-		['lon', 'float', false],
-		['alt', 'float', false],
-		['std_dev_horz', 'float', false],
-		['std_dev_vert', 'float', false],
-		['vn', 'float', false],
-		['ve', 'float', false],
-		['vd', 'float', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['q1', 'float', false, 0],
+		['q2', 'float', false, 0],
+		['q3', 'float', false, 0],
+		['q4', 'float', false, 0],
+		['roll', 'float', false, 0],
+		['pitch', 'float', false, 0],
+		['yaw', 'float', false, 0],
+		['xacc', 'float', false, 0],
+		['yacc', 'float', false, 0],
+		['zacc', 'float', false, 0],
+		['xgyro', 'float', false, 0],
+		['ygyro', 'float', false, 0],
+		['zgyro', 'float', false, 0],
+		['lat', 'float', false, 0],
+		['lon', 'float', false, 0],
+		['alt', 'float', false, 0],
+		['std_dev_horz', 'float', false, 0],
+		['std_dev_vert', 'float', false, 0],
+		['vn', 'float', false, 0],
+		['ve', 'float', false, 0],
+		['vd', 'float', false, 0],
 	];
 }

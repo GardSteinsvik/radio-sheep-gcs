@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Time/duration estimates for various events and actions given the current vehicle state and position.
 */
@@ -16,11 +17,11 @@ export class TimeEstimateToTarget extends MAVLinkMessage {
 	public _message_id: number = 380;
 	public _message_name: string = 'TIME_ESTIMATE_TO_TARGET';
 	public _crc_extra: number = 232;
-	public _message_fields: [string, string, boolean][] = [
-		['safe_return', 'int32_t', false],
-		['land', 'int32_t', false],
-		['mission_next_item', 'int32_t', false],
-		['mission_end', 'int32_t', false],
-		['commanded_action', 'int32_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['safe_return', 'int32_t', false, 0],
+		['land', 'int32_t', false, 0],
+		['mission_next_item', 'int32_t', false, 0],
+		['mission_end', 'int32_t', false, 0],
+		['commanded_action', 'int32_t', false, 0],
 	];
 }

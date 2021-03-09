@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The scaled values of the RC channels received: (-100%) -10000, (0%) 0, (100%) 10000. Channels that are inactive should be set to UINT16_MAX.
 */
@@ -28,17 +29,17 @@ export class RcChannelsScaled extends MAVLinkMessage {
 	public _message_id: number = 34;
 	public _message_name: string = 'RC_CHANNELS_SCALED';
 	public _crc_extra: number = 237;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['chan1_scaled', 'int16_t', false],
-		['chan2_scaled', 'int16_t', false],
-		['chan3_scaled', 'int16_t', false],
-		['chan4_scaled', 'int16_t', false],
-		['chan5_scaled', 'int16_t', false],
-		['chan6_scaled', 'int16_t', false],
-		['chan7_scaled', 'int16_t', false],
-		['chan8_scaled', 'int16_t', false],
-		['port', 'uint8_t', false],
-		['rssi', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['chan1_scaled', 'int16_t', false, 0],
+		['chan2_scaled', 'int16_t', false, 0],
+		['chan3_scaled', 'int16_t', false, 0],
+		['chan4_scaled', 'int16_t', false, 0],
+		['chan5_scaled', 'int16_t', false, 0],
+		['chan6_scaled', 'int16_t', false, 0],
+		['chan7_scaled', 'int16_t', false, 0],
+		['chan8_scaled', 'int16_t', false, 0],
+		['port', 'uint8_t', false, 0],
+		['rssi', 'uint8_t', false, 0],
 	];
 }

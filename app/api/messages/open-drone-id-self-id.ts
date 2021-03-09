@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavOdidDescType} from '../enums/mav-odid-desc-type';
 /*
 Data for filling the OpenDroneID Self ID message. The Self ID Message is an opportunity for the operator to (optionally) declare their identity and purpose of the flight. This message can provide additional information that could reduce the threat profile of a UA (Unmanned Aircraft) flying in a particular area or manner.
@@ -11,17 +12,17 @@ Data for filling the OpenDroneID Self ID message. The Self ID Message is an oppo
 export class OpenDroneIdSelfId extends MAVLinkMessage {
 	public target_system!: number;
 	public target_component!: number;
-	public id_or_mac!: number;
+	public id_or_mac!: number[];
 	public description_type!: MavOdidDescType;
 	public description!: string;
 	public _message_id: number = 12903;
 	public _message_name: string = 'OPEN_DRONE_ID_SELF_ID';
 	public _crc_extra: number = 249;
-	public _message_fields: [string, string, boolean][] = [
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['id_or_mac', 'uint8_t', false],
-		['description_type', 'uint8_t', false],
-		['description', 'char', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['id_or_mac', 'uint8_t', false, 20],
+		['description_type', 'uint8_t', false, 0],
+		['description', 'char', false, 23],
 	];
 }

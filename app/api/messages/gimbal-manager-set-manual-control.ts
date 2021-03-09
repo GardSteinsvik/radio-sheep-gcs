@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {GimbalManagerFlags} from '../enums/gimbal-manager-flags';
 /*
 High level message to control a gimbal manually. The angles or angular rates are unitless; the actual rates will depend on internal gimbal manager settings/configuration (e.g. set by parameters). This message is to be sent to the gimbal manager (e.g. from a ground station). Angles and rates can be set to NaN according to use case.
@@ -23,14 +24,14 @@ export class GimbalManagerSetManualControl extends MAVLinkMessage {
 	public _message_id: number = 288;
 	public _message_name: string = 'GIMBAL_MANAGER_SET_MANUAL_CONTROL';
 	public _crc_extra: number = 20;
-	public _message_fields: [string, string, boolean][] = [
-		['flags', 'uint32_t', false],
-		['pitch', 'float', false],
-		['yaw', 'float', false],
-		['pitch_rate', 'float', false],
-		['yaw_rate', 'float', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['gimbal_device_id', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['flags', 'uint32_t', false, 0],
+		['pitch', 'float', false, 0],
+		['yaw', 'float', false, 0],
+		['pitch_rate', 'float', false, 0],
+		['yaw_rate', 'float', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['gimbal_device_id', 'uint8_t', false, 0],
 	];
 }

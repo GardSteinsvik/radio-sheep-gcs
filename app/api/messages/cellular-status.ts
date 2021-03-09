@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {CellularStatusFlag} from '../enums/cellular-status-flag';
 import {CellularNetworkFailedReason} from '../enums/cellular-network-failed-reason';
 import {CellularNetworkRadioType} from '../enums/cellular-network-radio-type';
@@ -23,13 +24,13 @@ export class CellularStatus extends MAVLinkMessage {
 	public _message_id: number = 334;
 	public _message_name: string = 'CELLULAR_STATUS';
 	public _crc_extra: number = 72;
-	public _message_fields: [string, string, boolean][] = [
-		['mcc', 'uint16_t', false],
-		['mnc', 'uint16_t', false],
-		['lac', 'uint16_t', false],
-		['status', 'uint8_t', false],
-		['failure_reason', 'uint8_t', false],
-		['type', 'uint8_t', false],
-		['quality', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['mcc', 'uint16_t', false, 0],
+		['mnc', 'uint16_t', false, 0],
+		['lac', 'uint16_t', false, 0],
+		['status', 'uint8_t', false, 0],
+		['failure_reason', 'uint8_t', false, 0],
+		['type', 'uint8_t', false, 0],
+		['quality', 'uint8_t', false, 0],
 	];
 }

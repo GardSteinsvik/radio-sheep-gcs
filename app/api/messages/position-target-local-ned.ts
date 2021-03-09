@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavFrame} from '../enums/mav-frame';
 import {PositionTargetTypemask} from '../enums/position-target-typemask';
 /*
@@ -36,20 +37,20 @@ export class PositionTargetLocalNed extends MAVLinkMessage {
 	public _message_id: number = 85;
 	public _message_name: string = 'POSITION_TARGET_LOCAL_NED';
 	public _crc_extra: number = 140;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['x', 'float', false],
-		['y', 'float', false],
-		['z', 'float', false],
-		['vx', 'float', false],
-		['vy', 'float', false],
-		['vz', 'float', false],
-		['afx', 'float', false],
-		['afy', 'float', false],
-		['afz', 'float', false],
-		['yaw', 'float', false],
-		['yaw_rate', 'float', false],
-		['type_mask', 'uint16_t', false],
-		['coordinate_frame', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['x', 'float', false, 0],
+		['y', 'float', false, 0],
+		['z', 'float', false, 0],
+		['vx', 'float', false, 0],
+		['vy', 'float', false, 0],
+		['vz', 'float', false, 0],
+		['afx', 'float', false, 0],
+		['afy', 'float', false, 0],
+		['afz', 'float', false, 0],
+		['yaw', 'float', false, 0],
+		['yaw_rate', 'float', false, 0],
+		['type_mask', 'uint16_t', false, 0],
+		['coordinate_frame', 'uint8_t', false, 0],
 	];
 }

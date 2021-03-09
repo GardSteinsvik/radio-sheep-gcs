@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Orientation of a mount
 */
@@ -16,11 +17,11 @@ export class MountOrientation extends MAVLinkMessage {
 	public _message_id: number = 265;
 	public _message_name: string = 'MOUNT_ORIENTATION';
 	public _crc_extra: number = 26;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['roll', 'float', false],
-		['pitch', 'float', false],
-		['yaw', 'float', false],
-		['yaw_absolute', 'float', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['roll', 'float', false, 0],
+		['pitch', 'float', false, 0],
+		['yaw', 'float', false, 0],
+		['yaw_absolute', 'float', true, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right), expressed as quaternion. Quaternion order is w, x, y, z and a zero rotation would be expressed as (1 0 0 0).
 */
@@ -10,20 +11,20 @@ The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right),
 // covariance Row-major representation of a 3x3 attitude covariance matrix (states: roll, pitch, yaw; first three entries are the first ROW, next three entries are the second row, etc.). If unknown, assign NaN value to first element in the array. float
 export class AttitudeQuaternionCov extends MAVLinkMessage {
 	public time_usec!: number;
-	public q!: number;
+	public q!: number[];
 	public rollspeed!: number;
 	public pitchspeed!: number;
 	public yawspeed!: number;
-	public covariance!: number;
+	public covariance!: number[];
 	public _message_id: number = 61;
 	public _message_name: string = 'ATTITUDE_QUATERNION_COV';
 	public _crc_extra: number = 167;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['q', 'float', false],
-		['rollspeed', 'float', false],
-		['pitchspeed', 'float', false],
-		['yawspeed', 'float', false],
-		['covariance', 'float', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['q', 'float', false, 4],
+		['rollspeed', 'float', false, 0],
+		['pitchspeed', 'float', false, 0],
+		['yawspeed', 'float', false, 0],
+		['covariance', 'float', false, 9],
 	];
 }

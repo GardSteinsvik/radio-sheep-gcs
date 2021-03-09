@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {DeepstallStage} from '../enums/deepstall-stage';
 /*
 Deepstall path planning.
@@ -27,16 +28,16 @@ export class Deepstall extends MAVLinkMessage {
 	public _message_id: number = 195;
 	public _message_name: string = 'DEEPSTALL';
 	public _crc_extra: number = 120;
-	public _message_fields: [string, string, boolean][] = [
-		['landing_lat', 'int32_t', false],
-		['landing_lon', 'int32_t', false],
-		['path_lat', 'int32_t', false],
-		['path_lon', 'int32_t', false],
-		['arc_entry_lat', 'int32_t', false],
-		['arc_entry_lon', 'int32_t', false],
-		['altitude', 'float', false],
-		['expected_travel_distance', 'float', false],
-		['cross_track_error', 'float', false],
-		['stage', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['landing_lat', 'int32_t', false, 0],
+		['landing_lon', 'int32_t', false, 0],
+		['path_lat', 'int32_t', false, 0],
+		['path_lon', 'int32_t', false, 0],
+		['arc_entry_lat', 'int32_t', false, 0],
+		['arc_entry_lon', 'int32_t', false, 0],
+		['altitude', 'float', false, 0],
+		['expected_travel_distance', 'float', false, 0],
+		['cross_track_error', 'float', false, 0],
+		['stage', 'uint8_t', false, 0],
 	];
 }

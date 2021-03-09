@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 EFI status output
 */
@@ -40,23 +41,23 @@ export class EfiStatus extends MAVLinkMessage {
 	public _message_id: number = 225;
 	public _message_name: string = 'EFI_STATUS';
 	public _crc_extra: number = 208;
-	public _message_fields: [string, string, boolean][] = [
-		['ecu_index', 'float', false],
-		['rpm', 'float', false],
-		['fuel_consumed', 'float', false],
-		['fuel_flow', 'float', false],
-		['engine_load', 'float', false],
-		['throttle_position', 'float', false],
-		['spark_dwell_time', 'float', false],
-		['barometric_pressure', 'float', false],
-		['intake_manifold_pressure', 'float', false],
-		['intake_manifold_temperature', 'float', false],
-		['cylinder_head_temperature', 'float', false],
-		['ignition_timing', 'float', false],
-		['injection_time', 'float', false],
-		['exhaust_gas_temperature', 'float', false],
-		['throttle_out', 'float', false],
-		['pt_compensation', 'float', false],
-		['health', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['ecu_index', 'float', false, 0],
+		['rpm', 'float', false, 0],
+		['fuel_consumed', 'float', false, 0],
+		['fuel_flow', 'float', false, 0],
+		['engine_load', 'float', false, 0],
+		['throttle_position', 'float', false, 0],
+		['spark_dwell_time', 'float', false, 0],
+		['barometric_pressure', 'float', false, 0],
+		['intake_manifold_pressure', 'float', false, 0],
+		['intake_manifold_temperature', 'float', false, 0],
+		['cylinder_head_temperature', 'float', false, 0],
+		['ignition_timing', 'float', false, 0],
+		['injection_time', 'float', false, 0],
+		['exhaust_gas_temperature', 'float', false, 0],
+		['throttle_out', 'float', false, 0],
+		['pt_compensation', 'float', false, 0],
+		['health', 'uint8_t', false, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavMountMode} from '../enums/mav-mount-mode';
 /*
 Message to configure a camera mount, directional antenna, etc.
@@ -19,12 +20,12 @@ export class MountConfigure extends MAVLinkMessage {
 	public _message_id: number = 156;
 	public _message_name: string = 'MOUNT_CONFIGURE';
 	public _crc_extra: number = 19;
-	public _message_fields: [string, string, boolean][] = [
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['mount_mode', 'uint8_t', false],
-		['stab_roll', 'uint8_t', false],
-		['stab_pitch', 'uint8_t', false],
-		['stab_yaw', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['mount_mode', 'uint8_t', false, 0],
+		['stab_roll', 'uint8_t', false, 0],
+		['stab_pitch', 'uint8_t', false, 0],
+		['stab_yaw', 'uint8_t', false, 0],
 	];
 }

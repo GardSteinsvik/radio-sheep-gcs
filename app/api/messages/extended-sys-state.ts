@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavVtolState} from '../enums/mav-vtol-state';
 import {MavLandedState} from '../enums/mav-landed-state';
 /*
@@ -12,8 +13,8 @@ export class ExtendedSysState extends MAVLinkMessage {
 	public _message_id: number = 245;
 	public _message_name: string = 'EXTENDED_SYS_STATE';
 	public _crc_extra: number = 130;
-	public _message_fields: [string, string, boolean][] = [
-		['vtol_state', 'uint8_t', false],
-		['landed_state', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['vtol_state', 'uint8_t', false, 0],
+		['landed_state', 'uint8_t', false, 0],
 	];
 }

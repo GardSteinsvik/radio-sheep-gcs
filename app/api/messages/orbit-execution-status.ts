@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavFrame} from '../enums/mav-frame';
 /*
 Vehicle status report that is sent out while orbit execution is in progress (see MAV_CMD_DO_ORBIT).
@@ -19,12 +20,12 @@ export class OrbitExecutionStatus extends MAVLinkMessage {
 	public _message_id: number = 360;
 	public _message_name: string = 'ORBIT_EXECUTION_STATUS';
 	public _crc_extra: number = 11;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['radius', 'float', false],
-		['x', 'int32_t', false],
-		['y', 'int32_t', false],
-		['z', 'float', false],
-		['frame', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['radius', 'float', false, 0],
+		['x', 'int32_t', false, 0],
+		['y', 'int32_t', false, 0],
+		['z', 'float', false, 0],
+		['frame', 'uint8_t', false, 0],
 	];
 }

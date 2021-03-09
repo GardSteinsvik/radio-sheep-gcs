@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavParamType} from '../enums/mav-param-type';
 import {ParamAck} from '../enums/param-ack';
 /*
@@ -20,12 +21,12 @@ export class ParamAckTransaction extends MAVLinkMessage {
 	public _message_id: number = 19;
 	public _message_name: string = 'PARAM_ACK_TRANSACTION';
 	public _crc_extra: number = 137;
-	public _message_fields: [string, string, boolean][] = [
-		['param_value', 'float', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['param_id', 'char', false],
-		['param_type', 'uint8_t', false],
-		['param_result', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['param_value', 'float', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['param_id', 'char', false, 16],
+		['param_type', 'uint8_t', false, 0],
+		['param_result', 'uint8_t', false, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 ESC information for higher rate streaming. Recommended streaming rate is ~10 Hz. Information that changes more slowly is sent in ESC_INFO. It should typically only be streamed on high-bandwidth links (i.e. to a companion computer).
 */
@@ -10,17 +11,17 @@ ESC information for higher rate streaming. Recommended streaming rate is ~10 Hz.
 export class EscStatus extends MAVLinkMessage {
 	public index!: number;
 	public time_usec!: number;
-	public rpm!: number;
-	public voltage!: number;
-	public current!: number;
+	public rpm!: number[];
+	public voltage!: number[];
+	public current!: number[];
 	public _message_id: number = 291;
 	public _message_name: string = 'ESC_STATUS';
 	public _crc_extra: number = 10;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['rpm', 'int32_t', false],
-		['voltage', 'float', false],
-		['current', 'float', false],
-		['index', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['rpm', 'int32_t', false, 4],
+		['voltage', 'float', false, 4],
+		['current', 'float', false, 4],
+		['index', 'uint8_t', false, 0],
 	];
 }

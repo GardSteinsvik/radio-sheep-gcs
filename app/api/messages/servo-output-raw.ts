@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Superseded by ACTUATOR_OUTPUT_STATUS. The RAW values of the servo outputs (for RC input from the remote, use the RC_CHANNELS messages). The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%.
 */
@@ -42,24 +43,24 @@ export class ServoOutputRaw extends MAVLinkMessage {
 	public _message_id: number = 36;
 	public _message_name: string = 'SERVO_OUTPUT_RAW';
 	public _crc_extra: number = 222;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint32_t', false],
-		['servo1_raw', 'uint16_t', false],
-		['servo2_raw', 'uint16_t', false],
-		['servo3_raw', 'uint16_t', false],
-		['servo4_raw', 'uint16_t', false],
-		['servo5_raw', 'uint16_t', false],
-		['servo6_raw', 'uint16_t', false],
-		['servo7_raw', 'uint16_t', false],
-		['servo8_raw', 'uint16_t', false],
-		['port', 'uint8_t', false],
-		['servo9_raw', 'uint16_t', true],
-		['servo10_raw', 'uint16_t', true],
-		['servo11_raw', 'uint16_t', true],
-		['servo12_raw', 'uint16_t', true],
-		['servo13_raw', 'uint16_t', true],
-		['servo14_raw', 'uint16_t', true],
-		['servo15_raw', 'uint16_t', true],
-		['servo16_raw', 'uint16_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint32_t', false, 0],
+		['servo1_raw', 'uint16_t', false, 0],
+		['servo2_raw', 'uint16_t', false, 0],
+		['servo3_raw', 'uint16_t', false, 0],
+		['servo4_raw', 'uint16_t', false, 0],
+		['servo5_raw', 'uint16_t', false, 0],
+		['servo6_raw', 'uint16_t', false, 0],
+		['servo7_raw', 'uint16_t', false, 0],
+		['servo8_raw', 'uint16_t', false, 0],
+		['port', 'uint8_t', false, 0],
+		['servo9_raw', 'uint16_t', true, 0],
+		['servo10_raw', 'uint16_t', true, 0],
+		['servo11_raw', 'uint16_t', true, 0],
+		['servo12_raw', 'uint16_t', true, 0],
+		['servo13_raw', 'uint16_t', true, 0],
+		['servo14_raw', 'uint16_t', true, 0],
+		['servo15_raw', 'uint16_t', true, 0],
+		['servo16_raw', 'uint16_t', true, 0],
 	];
 }

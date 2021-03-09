@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The RAW pressure readings for the typical setup of one absolute pressure and one differential pressure sensor. The sensor values should be the raw, UNSCALED ADC values.
 */
@@ -16,11 +17,11 @@ export class RawPressure extends MAVLinkMessage {
 	public _message_id: number = 28;
 	public _message_name: string = 'RAW_PRESSURE';
 	public _crc_extra: number = 67;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['press_abs', 'int16_t', false],
-		['press_diff1', 'int16_t', false],
-		['press_diff2', 'int16_t', false],
-		['temperature', 'int16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['press_abs', 'int16_t', false, 0],
+		['press_diff1', 'int16_t', false, 0],
+		['press_diff2', 'int16_t', false, 0],
+		['temperature', 'int16_t', false, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavCmd} from '../enums/mav-cmd';
 /*
 Describe a trajectory using an array of up-to 5 waypoints in the local frame (MAV_FRAME_LOCAL_NED).
@@ -20,35 +21,35 @@ Describe a trajectory using an array of up-to 5 waypoints in the local frame (MA
 export class TrajectoryRepresentationWaypoints extends MAVLinkMessage {
 	public time_usec!: number;
 	public valid_points!: number;
-	public pos_x!: number;
-	public pos_y!: number;
-	public pos_z!: number;
-	public vel_x!: number;
-	public vel_y!: number;
-	public vel_z!: number;
-	public acc_x!: number;
-	public acc_y!: number;
-	public acc_z!: number;
-	public pos_yaw!: number;
-	public vel_yaw!: number;
+	public pos_x!: number[];
+	public pos_y!: number[];
+	public pos_z!: number[];
+	public vel_x!: number[];
+	public vel_y!: number[];
+	public vel_z!: number[];
+	public acc_x!: number[];
+	public acc_y!: number[];
+	public acc_z!: number[];
+	public pos_yaw!: number[];
+	public vel_yaw!: number[];
 	public command!: MavCmd;
 	public _message_id: number = 332;
 	public _message_name: string = 'TRAJECTORY_REPRESENTATION_WAYPOINTS';
 	public _crc_extra: number = 236;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['pos_x', 'float', false],
-		['pos_y', 'float', false],
-		['pos_z', 'float', false],
-		['vel_x', 'float', false],
-		['vel_y', 'float', false],
-		['vel_z', 'float', false],
-		['acc_x', 'float', false],
-		['acc_y', 'float', false],
-		['acc_z', 'float', false],
-		['pos_yaw', 'float', false],
-		['vel_yaw', 'float', false],
-		['command', 'uint16_t', false],
-		['valid_points', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['pos_x', 'float', false, 5],
+		['pos_y', 'float', false, 5],
+		['pos_z', 'float', false, 5],
+		['vel_x', 'float', false, 5],
+		['vel_y', 'float', false, 5],
+		['vel_z', 'float', false, 5],
+		['acc_x', 'float', false, 5],
+		['acc_y', 'float', false, 5],
+		['acc_z', 'float', false, 5],
+		['pos_yaw', 'float', false, 5],
+		['vel_yaw', 'float', false, 5],
+		['command', 'uint16_t', false, 5],
+		['valid_points', 'uint8_t', false, 0],
 	];
 }

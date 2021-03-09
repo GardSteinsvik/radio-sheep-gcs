@@ -17,12 +17,16 @@ import {selectFlightParameters} from "@slices/flightParametersSlice";
 import * as turf from "@turf/turf";
 import {selectSheepRttPoints} from "@slices/sheepRttPointsSlice";
 import {DroneStatusControl} from "@/components/DroneStatusControl/DroneStatusControl";
+import {selectSelectedSheepRttPoint} from "@slices/selectedSheepRttPointSlice";
+import {topo4, topo4graatone} from "@/pages/flight/mapStyles";
+import {selectEstimatedSheepPoints} from "@slices/estimatedSheepPointsSlice";
 
 const SOURCES = {
     WAYPOINTS: 'waypoints',
     DRONE: 'drone',
     ELEVATION_PROFILE: 'elevation-profile',
     SHEEP_RTT_POINTS: 'sheep-rtt-points',
+    ESTIMATED_SHEEP_POINTS: 'estimated-sheep-points',
 }
 
 const LAYERS = ({
@@ -34,6 +38,7 @@ const LAYERS = ({
     SEARCH_RADIUS: 'search-radius',
     COMPLETED_POINTS: 'completed-points',
     SHEEP_RTT_POINTS: 'sheep-rtt-points',
+    ESTIMATED_SHEEP_POINTS: 'estimated-sheep-points',
 })
 
 interface Props {
@@ -50,6 +55,8 @@ export default function Map({features = []}: Props) {
     const flightParameters: FlightParameters = useSelector(selectFlightParameters)
     const elevationProfile: ElevationProfile | undefined = useSelector(selectElevationProfile)
     const sheepRttPoints: FeatureCollection<Point> = useSelector(selectSheepRttPoints)
+    const selectedSheepRttPoint: number = useSelector(selectSelectedSheepRttPoint)
+    const estimatedSheepPoints: FeatureCollection<Point> = useSelector(selectEstimatedSheepPoints)
 
     const mapParameters: MapParameters = useSelector(selectMapParameters)
 
@@ -143,76 +150,7 @@ export default function Map({features = []}: Props) {
             const map = new mapboxgl.Map({
                 container: mapContainer.current,
                 // style: 'mapbox://styles/mapbox/outdoors-v11', // Requires API key
-                style: {
-                    'version': 8,
-                    'sources': {
-                        'kartverket': {
-                            'type': 'raster',
-                            // 'minzoom': minZoomThreshold,
-                            'maxzoom': 20,
-                            'tiles': [
-                                'https://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?'
-                                + 'Service=WMTS&'
-                                + 'Version=1.0.0&'
-                                + 'Request=GetTile&'
-                                + 'Format=image/png&'
-                                + 'Style=default&'
-                                + 'Layer=topo4&'
-                                + 'TileMatrixSet=EPSG:3857&'
-                                + 'TileMatrix=EPSG:3857:{z}&'
-                                + 'TileCol={x}&'
-                                + 'TileRow={y}'
-                            ],
-                            'tileSize': 256
-                        },
-                        'countries': {
-                            'type': 'vector',
-                            'maxzoom': 6,
-                            'tiles': [location.origin+__dirname+"/api/countries/{z}/{x}/{y}.pbf"]
-                        },
-                    },
-                    'layers': [
-                        {
-                            "id": "background",
-                            "type": "background",
-                            "paint": {
-                                "background-color": "#95b7d9"
-                            }
-                        },
-                        {
-                            "id": "country-lines",
-                            "type": "line",
-                            "source": "countries",
-                            "source-layer": "country",
-                            "paint": {
-                                "line-color": "#fff",
-                                "line-width": {
-                                    "base":1.5,
-                                    "stops": [[0,0],[1,0.8],[2,1]]
-                                }
-                            }
-                        },
-                        {
-                            'id': 'top4',
-                            'type': 'raster',
-                            'source': 'kartverket',
-                            'paint': {},
-                        },
-                        {
-                            "id": "geo-lines",
-                            "type": "line",
-                            "source": "countries",
-                            "source-layer": "geo-lines",
-                            "paint": {
-                                "line-color": "#226688",
-                                "line-width": {
-                                    "stops": [[0,0.2],[4,1]]
-                                },
-                                "line-dasharray":[6,2]
-                            }
-                        },
-                    ],
-                },
+                style: topo4,
                 center: [10.3951, 63.4305],
                 zoom: 12.5,
             })
@@ -230,7 +168,9 @@ export default function Map({features = []}: Props) {
 
             setDroneStatusControl(new DroneStatusControl())
 
+            map.addControl(new mapboxgl.FullscreenControl(), 'top-left')
             map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+            map.addControl(new mapboxgl.AttributionControl({customAttribution: ['©Kartverket (CC BY 4.0)']}), 'bottom-left')
             map.addControl(new mapboxgl.GeolocateControl({
                 positionOptions: {
                     enableHighAccuracy: true
@@ -249,6 +189,14 @@ export default function Map({features = []}: Props) {
                 map.resize();
                 // const minZoomThreshold = 13;
                 map.addControl(DrawControl);
+                /*
+                dispatch(setSheepRttPoints({
+                    'type': "FeatureCollection",
+                    features: (sample1 as FeatureCollection<Point>).features.filter(f => f.properties?.tid % 2 === 0)
+                }))
+
+                 */
+
             });
 
             // Create a popup, but don't add it to the map yet.
@@ -295,7 +243,11 @@ export default function Map({features = []}: Props) {
 
     useEffect(() => {
         map?.setPaintProperty(SOURCES.ELEVATION_PROFILE, 'raster-opacity', mapParameters.elevationProfileVisibility/100)
-    }, [mapParameters])
+    }, [mapParameters.elevationProfileVisibility])
+
+    useEffect(() => {
+        map?.setStyle(mapParameters.grayTone ? topo4graatone : topo4)
+    }, [mapParameters.grayTone])
 
     useEffect(() => {
         drawFeatures(features)
@@ -428,7 +380,7 @@ export default function Map({features = []}: Props) {
             map?.removeSource(SOURCES.SHEEP_RTT_POINTS)
         }
 
-        const sheepRttPolygons = sheepRttPoints.features.map(point => turf.circle(point, point.properties?.dis ?? 0, {units: "meters"}) as Feature<Polygon>)
+        const sheepRttPolygons = sheepRttPoints.features.map(point => turf.circle(point, point.properties?.dis * 5 ?? 0, {units: "meters"}) as Feature<Polygon>)
 
         map?.addSource(SOURCES.SHEEP_RTT_POINTS, {
             type: 'geojson',
@@ -443,12 +395,39 @@ export default function Map({features = []}: Props) {
             'type': 'line',
             'source': SOURCES.SHEEP_RTT_POINTS,
             'paint': {
-                'line-color': '#559942',
-                'line-width': 2,
+                'line-color': [
+                    'case',
+                    ['boolean', ['==', ['get', 'tid'], selectedSheepRttPoint], false],
+                    'rgba(255,0,0,0.4)',
+                    'rgba(33,93,99,0.2)'
+                ],
+                'line-width': 1,
             },
-            'filter': ['==', '$type', 'Point']
         })
-    }, [sheepRttPoints])
+    }, [sheepRttPoints, selectedSheepRttPoint])
+
+    useEffect(() => {
+        if (map?.getLayer(SOURCES.ESTIMATED_SHEEP_POINTS)) map?.removeLayer(SOURCES.ESTIMATED_SHEEP_POINTS)
+
+        if (map?.getSource(SOURCES.ESTIMATED_SHEEP_POINTS)) map?.removeSource(SOURCES.ESTIMATED_SHEEP_POINTS)
+
+        map?.addSource(SOURCES.ESTIMATED_SHEEP_POINTS, {
+            type: 'geojson',
+            data: estimatedSheepPoints,
+        })
+
+        map?.addLayer({
+            'id': LAYERS.ESTIMATED_SHEEP_POINTS,
+            'type': 'circle',
+            'source': SOURCES.ESTIMATED_SHEEP_POINTS,
+            'paint': {
+                'circle-radius': 4,
+                'circle-color': '#0fac00',
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#333',
+            },
+        })
+    }, [estimatedSheepPoints])
 
     return <div style={{position: 'absolute', top: 0, bottom: 0, width: '100%', borderRadius: 8}} ref={mapContainerRef} />
 }

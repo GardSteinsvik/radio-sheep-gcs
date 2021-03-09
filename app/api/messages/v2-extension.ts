@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Message implementing parts of the V2 payload specs in V1 frames for transitional support.
 */
@@ -12,15 +13,15 @@ export class V2Extension extends MAVLinkMessage {
 	public target_system!: number;
 	public target_component!: number;
 	public message_type!: number;
-	public payload!: number;
+	public payload!: number[];
 	public _message_id: number = 248;
 	public _message_name: string = 'V2_EXTENSION';
 	public _crc_extra: number = 8;
-	public _message_fields: [string, string, boolean][] = [
-		['message_type', 'uint16_t', false],
-		['target_network', 'uint8_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['payload', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['message_type', 'uint16_t', false, 0],
+		['target_network', 'uint8_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['payload', 'uint8_t', false, 249],
 	];
 }

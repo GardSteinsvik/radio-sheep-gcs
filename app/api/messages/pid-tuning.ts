@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {PidTuningAxis} from '../enums/pid-tuning-axis';
 /*
 PID tuning information.
@@ -21,13 +22,13 @@ export class PidTuning extends MAVLinkMessage {
 	public _message_id: number = 194;
 	public _message_name: string = 'PID_TUNING';
 	public _crc_extra: number = 98;
-	public _message_fields: [string, string, boolean][] = [
-		['desired', 'float', false],
-		['achieved', 'float', false],
-		['FF', 'float', false],
-		['P', 'float', false],
-		['I', 'float', false],
-		['D', 'float', false],
-		['axis', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['desired', 'float', false, 0],
+		['achieved', 'float', false, 0],
+		['FF', 'float', false, 0],
+		['P', 'float', false, 0],
+		['I', 'float', false, 0],
+		['D', 'float', false, 0],
+		['axis', 'uint8_t', false, 0],
 	];
 }

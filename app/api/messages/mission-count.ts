@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavMissionType} from '../enums/mav-mission-type';
 /*
 This message is emitted as response to MISSION_REQUEST_LIST by the MAV and to initiate a write transaction. The GCS can then request the individual mission item based on the knowledge of the total number of waypoints.
@@ -15,10 +16,10 @@ export class MissionCount extends MAVLinkMessage {
 	public _message_id: number = 44;
 	public _message_name: string = 'MISSION_COUNT';
 	public _crc_extra: number = 221;
-	public _message_fields: [string, string, boolean][] = [
-		['count', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['mission_type', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['count', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['mission_type', 'uint8_t', true, 0],
 	];
 }

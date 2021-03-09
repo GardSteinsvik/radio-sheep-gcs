@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavDistanceSensor} from '../enums/mav-distance-sensor';
 import {MavSensorOrientation} from '../enums/mav-sensor-orientation';
 /*
@@ -27,23 +28,23 @@ export class DistanceSensor extends MAVLinkMessage {
 	public covariance!: number;
 	public horizontal_fov!: number;
 	public vertical_fov!: number;
-	public quaternion!: number;
+	public quaternion!: number[];
 	public signal_quality!: number;
 	public _message_id: number = 132;
 	public _message_name: string = 'DISTANCE_SENSOR';
 	public _crc_extra: number = 85;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['min_distance', 'uint16_t', false],
-		['max_distance', 'uint16_t', false],
-		['current_distance', 'uint16_t', false],
-		['type', 'uint8_t', false],
-		['id', 'uint8_t', false],
-		['orientation', 'uint8_t', false],
-		['covariance', 'uint8_t', false],
-		['horizontal_fov', 'float', true],
-		['vertical_fov', 'float', true],
-		['quaternion', 'float', true],
-		['signal_quality', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['min_distance', 'uint16_t', false, 0],
+		['max_distance', 'uint16_t', false, 0],
+		['current_distance', 'uint16_t', false, 0],
+		['type', 'uint8_t', false, 0],
+		['id', 'uint8_t', false, 0],
+		['orientation', 'uint8_t', false, 0],
+		['covariance', 'uint8_t', false, 0],
+		['horizontal_fov', 'float', true, 0],
+		['vertical_fov', 'float', true, 0],
+		['quaternion', 'float', true, 4],
+		['signal_quality', 'uint8_t', true, 0],
 	];
 }

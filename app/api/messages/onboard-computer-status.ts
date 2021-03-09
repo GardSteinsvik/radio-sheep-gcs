@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Hardware status sent by an onboard computer.
 */
@@ -26,46 +27,46 @@ export class OnboardComputerStatus extends MAVLinkMessage {
 	public time_usec!: number;
 	public uptime!: number;
 	public type!: number;
-	public cpu_cores!: number;
-	public cpu_combined!: number;
-	public gpu_cores!: number;
-	public gpu_combined!: number;
+	public cpu_cores!: number[];
+	public cpu_combined!: number[];
+	public gpu_cores!: number[];
+	public gpu_combined!: number[];
 	public temperature_board!: number;
-	public temperature_core!: number;
-	public fan_speed!: number;
+	public temperature_core!: number[];
+	public fan_speed!: number[];
 	public ram_usage!: number;
 	public ram_total!: number;
-	public storage_type!: number;
-	public storage_usage!: number;
-	public storage_total!: number;
-	public link_type!: number;
-	public link_tx_rate!: number;
-	public link_rx_rate!: number;
-	public link_tx_max!: number;
-	public link_rx_max!: number;
+	public storage_type!: number[];
+	public storage_usage!: number[];
+	public storage_total!: number[];
+	public link_type!: number[];
+	public link_tx_rate!: number[];
+	public link_rx_rate!: number[];
+	public link_tx_max!: number[];
+	public link_rx_max!: number[];
 	public _message_id: number = 390;
 	public _message_name: string = 'ONBOARD_COMPUTER_STATUS';
 	public _crc_extra: number = 156;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['uptime', 'uint32_t', false],
-		['ram_usage', 'uint32_t', false],
-		['ram_total', 'uint32_t', false],
-		['storage_type', 'uint32_t', false],
-		['storage_usage', 'uint32_t', false],
-		['storage_total', 'uint32_t', false],
-		['link_type', 'uint32_t', false],
-		['link_tx_rate', 'uint32_t', false],
-		['link_rx_rate', 'uint32_t', false],
-		['link_tx_max', 'uint32_t', false],
-		['link_rx_max', 'uint32_t', false],
-		['fan_speed', 'int16_t', false],
-		['type', 'uint8_t', false],
-		['cpu_cores', 'uint8_t', false],
-		['cpu_combined', 'uint8_t', false],
-		['gpu_cores', 'uint8_t', false],
-		['gpu_combined', 'uint8_t', false],
-		['temperature_board', 'int8_t', false],
-		['temperature_core', 'int8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['uptime', 'uint32_t', false, 0],
+		['ram_usage', 'uint32_t', false, 0],
+		['ram_total', 'uint32_t', false, 0],
+		['storage_type', 'uint32_t', false, 4],
+		['storage_usage', 'uint32_t', false, 4],
+		['storage_total', 'uint32_t', false, 4],
+		['link_type', 'uint32_t', false, 6],
+		['link_tx_rate', 'uint32_t', false, 6],
+		['link_rx_rate', 'uint32_t', false, 6],
+		['link_tx_max', 'uint32_t', false, 6],
+		['link_rx_max', 'uint32_t', false, 6],
+		['fan_speed', 'int16_t', false, 4],
+		['type', 'uint8_t', false, 0],
+		['cpu_cores', 'uint8_t', false, 8],
+		['cpu_combined', 'uint8_t', false, 10],
+		['gpu_cores', 'uint8_t', false, 4],
+		['gpu_combined', 'uint8_t', false, 10],
+		['temperature_board', 'int8_t', false, 0],
+		['temperature_core', 'int8_t', false, 8],
 	];
 }

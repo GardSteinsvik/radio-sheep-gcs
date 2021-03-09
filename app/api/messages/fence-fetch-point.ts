@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Request a current fence point from MAV.
 */
@@ -12,9 +13,9 @@ export class FenceFetchPoint extends MAVLinkMessage {
 	public _message_id: number = 161;
 	public _message_name: string = 'FENCE_FETCH_POINT';
 	public _crc_extra: number = 68;
-	public _message_fields: [string, string, boolean][] = [
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['idx', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['idx', 'uint8_t', false, 0],
 	];
 }

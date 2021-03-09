@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Global position estimate from a Vicon motion system source.
 */
@@ -18,18 +19,18 @@ export class ViconPositionEstimate extends MAVLinkMessage {
 	public roll!: number;
 	public pitch!: number;
 	public yaw!: number;
-	public covariance!: number;
+	public covariance!: number[];
 	public _message_id: number = 104;
 	public _message_name: string = 'VICON_POSITION_ESTIMATE';
 	public _crc_extra: number = 56;
-	public _message_fields: [string, string, boolean][] = [
-		['usec', 'uint64_t', false],
-		['x', 'float', false],
-		['y', 'float', false],
-		['z', 'float', false],
-		['roll', 'float', false],
-		['pitch', 'float', false],
-		['yaw', 'float', false],
-		['covariance', 'float', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['usec', 'uint64_t', false, 0],
+		['x', 'float', false, 0],
+		['y', 'float', false, 0],
+		['z', 'float', false, 0],
+		['roll', 'float', false, 0],
+		['pitch', 'float', false, 0],
+		['yaw', 'float', false, 0],
+		['covariance', 'float', true, 21],
 	];
 }

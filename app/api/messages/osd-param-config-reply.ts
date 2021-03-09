@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {OsdParamConfigError} from '../enums/osd-param-config-error';
 /*
 Configure OSD parameter reply.
@@ -11,8 +12,8 @@ export class OsdParamConfigReply extends MAVLinkMessage {
 	public _message_id: number = 11034;
 	public _message_name: string = 'OSD_PARAM_CONFIG_REPLY';
 	public _crc_extra: number = 79;
-	public _message_fields: [string, string, boolean][] = [
-		['request_id', 'uint32_t', false],
-		['result', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['request_id', 'uint32_t', false, 0],
+		['result', 'uint8_t', false, 0],
 	];
 }

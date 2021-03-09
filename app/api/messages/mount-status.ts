@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Message with some status from APM to GCS about camera or antenna mount.
 */
@@ -16,11 +17,11 @@ export class MountStatus extends MAVLinkMessage {
 	public _message_id: number = 158;
 	public _message_name: string = 'MOUNT_STATUS';
 	public _crc_extra: number = 134;
-	public _message_fields: [string, string, boolean][] = [
-		['pointing_a', 'int32_t', false],
-		['pointing_b', 'int32_t', false],
-		['pointing_c', 'int32_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['pointing_a', 'int32_t', false, 0],
+		['pointing_b', 'int32_t', false, 0],
+		['pointing_c', 'int32_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
 	];
 }

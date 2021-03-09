@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 To debug something using a named 3D vector.
 */
@@ -16,11 +17,11 @@ export class DebugVect extends MAVLinkMessage {
 	public _message_id: number = 250;
 	public _message_name: string = 'DEBUG_VECT';
 	public _crc_extra: number = 49;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['x', 'float', false],
-		['y', 'float', false],
-		['z', 'float', false],
-		['name', 'char', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['x', 'float', false, 0],
+		['y', 'float', false, 0],
+		['z', 'float', false, 0],
+		['name', 'char', false, 10],
 	];
 }

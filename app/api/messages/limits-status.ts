@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {LimitsState} from '../enums/limits-state';
 import {LimitModule} from '../enums/limit-module';
 /*
@@ -26,15 +27,15 @@ export class LimitsStatus extends MAVLinkMessage {
 	public _message_id: number = 167;
 	public _message_name: string = 'LIMITS_STATUS';
 	public _crc_extra: number = 144;
-	public _message_fields: [string, string, boolean][] = [
-		['last_trigger', 'uint32_t', false],
-		['last_action', 'uint32_t', false],
-		['last_recovery', 'uint32_t', false],
-		['last_clear', 'uint32_t', false],
-		['breach_count', 'uint16_t', false],
-		['limits_state', 'uint8_t', false],
-		['mods_enabled', 'uint8_t', false],
-		['mods_required', 'uint8_t', false],
-		['mods_triggered', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['last_trigger', 'uint32_t', false, 0],
+		['last_action', 'uint32_t', false, 0],
+		['last_recovery', 'uint32_t', false, 0],
+		['last_clear', 'uint32_t', false, 0],
+		['breach_count', 'uint16_t', false, 0],
+		['limits_state', 'uint8_t', false, 0],
+		['mods_enabled', 'uint8_t', false, 0],
+		['mods_required', 'uint8_t', false, 0],
+		['mods_triggered', 'uint8_t', false, 0],
 	];
 }

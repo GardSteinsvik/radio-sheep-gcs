@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Send a debug value. The index is used to discriminate between values. These values show up in the plot of QGroundControl as DEBUG N.
 */
@@ -12,9 +13,9 @@ export class Debug extends MAVLinkMessage {
 	public _message_id: number = 254;
 	public _message_name: string = 'DEBUG';
 	public _crc_extra: number = 46;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['value', 'float', false],
-		['ind', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['value', 'float', false, 0],
+		['ind', 'uint8_t', false, 0],
 	];
 }

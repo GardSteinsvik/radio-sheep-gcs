@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavFrame} from '../enums/mav-frame';
 /*
 Read out the safety zone the MAV currently assumes.
@@ -21,13 +22,13 @@ export class SafetyAllowedArea extends MAVLinkMessage {
 	public _message_id: number = 55;
 	public _message_name: string = 'SAFETY_ALLOWED_AREA';
 	public _crc_extra: number = 3;
-	public _message_fields: [string, string, boolean][] = [
-		['p1x', 'float', false],
-		['p1y', 'float', false],
-		['p1z', 'float', false],
-		['p2x', 'float', false],
-		['p2y', 'float', false],
-		['p2z', 'float', false],
-		['frame', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['p1x', 'float', false, 0],
+		['p1y', 'float', false, 0],
+		['p1z', 'float', false, 0],
+		['p2x', 'float', false, 0],
+		['p2y', 'float', false, 0],
+		['p2z', 'float', false, 0],
+		['frame', 'uint8_t', false, 0],
 	];
 }

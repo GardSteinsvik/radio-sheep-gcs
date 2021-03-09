@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {GimbalDeviceFlags} from '../enums/gimbal-device-flags';
 import {GimbalDeviceErrorFlags} from '../enums/gimbal-device-error-flags';
 /*
@@ -18,7 +19,7 @@ export class GimbalDeviceAttitudeStatus extends MAVLinkMessage {
 	public target_component!: number;
 	public time_boot_ms!: number;
 	public flags!: GimbalDeviceFlags;
-	public q!: number;
+	public q!: number[];
 	public angular_velocity_x!: number;
 	public angular_velocity_y!: number;
 	public angular_velocity_z!: number;
@@ -26,15 +27,15 @@ export class GimbalDeviceAttitudeStatus extends MAVLinkMessage {
 	public _message_id: number = 285;
 	public _message_name: string = 'GIMBAL_DEVICE_ATTITUDE_STATUS';
 	public _crc_extra: number = 137;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['q', 'float', false],
-		['angular_velocity_x', 'float', false],
-		['angular_velocity_y', 'float', false],
-		['angular_velocity_z', 'float', false],
-		['failure_flags', 'uint32_t', false],
-		['flags', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['q', 'float', false, 4],
+		['angular_velocity_x', 'float', false, 0],
+		['angular_velocity_y', 'float', false, 0],
+		['angular_velocity_z', 'float', false, 0],
+		['failure_flags', 'uint32_t', false, 0],
+		['flags', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {SerialControlDev} from '../enums/serial-control-dev';
 import {SerialControlFlag} from '../enums/serial-control-flag';
 /*
@@ -16,16 +17,16 @@ export class SerialControl extends MAVLinkMessage {
 	public timeout!: number;
 	public baudrate!: number;
 	public count!: number;
-	public data!: number;
+	public data!: number[];
 	public _message_id: number = 126;
 	public _message_name: string = 'SERIAL_CONTROL';
 	public _crc_extra: number = 220;
-	public _message_fields: [string, string, boolean][] = [
-		['baudrate', 'uint32_t', false],
-		['timeout', 'uint16_t', false],
-		['device', 'uint8_t', false],
-		['flags', 'uint8_t', false],
-		['count', 'uint8_t', false],
-		['data', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['baudrate', 'uint32_t', false, 0],
+		['timeout', 'uint16_t', false, 0],
+		['device', 'uint8_t', false, 0],
+		['flags', 'uint8_t', false, 0],
+		['count', 'uint8_t', false, 0],
+		['data', 'uint8_t', false, 70],
 	];
 }

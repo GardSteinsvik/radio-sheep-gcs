@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Status of the Iridium SBD link.
 */
@@ -22,14 +23,14 @@ export class IsbdLinkStatus extends MAVLinkMessage {
 	public _message_id: number = 335;
 	public _message_name: string = 'ISBD_LINK_STATUS';
 	public _crc_extra: number = 225;
-	public _message_fields: [string, string, boolean][] = [
-		['timestamp', 'uint64_t', false],
-		['last_heartbeat', 'uint64_t', false],
-		['failed_sessions', 'uint16_t', false],
-		['successful_sessions', 'uint16_t', false],
-		['signal_quality', 'uint8_t', false],
-		['ring_pending', 'uint8_t', false],
-		['tx_session_pending', 'uint8_t', false],
-		['rx_session_pending', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['timestamp', 'uint64_t', false, 0],
+		['last_heartbeat', 'uint64_t', false, 0],
+		['failed_sessions', 'uint16_t', false, 0],
+		['successful_sessions', 'uint16_t', false, 0],
+		['signal_quality', 'uint8_t', false, 0],
+		['ring_pending', 'uint8_t', false, 0],
+		['tx_session_pending', 'uint8_t', false, 0],
+		['rx_session_pending', 'uint8_t', false, 0],
 	];
 }

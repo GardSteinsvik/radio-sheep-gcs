@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {UavcanNodeHealth} from '../enums/uavcan-node-health';
 import {UavcanNodeMode} from '../enums/uavcan-node-mode';
 /*
@@ -20,12 +21,12 @@ export class UavcanNodeStatus extends MAVLinkMessage {
 	public _message_id: number = 310;
 	public _message_name: string = 'UAVCAN_NODE_STATUS';
 	public _crc_extra: number = 28;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['uptime_sec', 'uint32_t', false],
-		['vendor_specific_status_code', 'uint16_t', false],
-		['health', 'uint8_t', false],
-		['mode', 'uint8_t', false],
-		['sub_mode', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['uptime_sec', 'uint32_t', false, 0],
+		['vendor_specific_status_code', 'uint16_t', false, 0],
+		['health', 'uint8_t', false, 0],
+		['mode', 'uint8_t', false, 0],
+		['sub_mode', 'uint8_t', false, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavWinchStatusFlag} from '../enums/mav-winch-status-flag';
 /*
 Winch status.
@@ -23,14 +24,14 @@ export class WinchStatus extends MAVLinkMessage {
 	public _message_id: number = 9005;
 	public _message_name: string = 'WINCH_STATUS';
 	public _crc_extra: number = 117;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['line_length', 'float', false],
-		['speed', 'float', false],
-		['tension', 'float', false],
-		['voltage', 'float', false],
-		['current', 'float', false],
-		['status', 'uint32_t', false],
-		['temperature', 'int16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['line_length', 'float', false, 0],
+		['speed', 'float', false, 0],
+		['tension', 'float', false, 0],
+		['voltage', 'float', false, 0],
+		['current', 'float', false, 0],
+		['status', 'uint32_t', false, 0],
+		['temperature', 'int16_t', false, 0],
 	];
 }

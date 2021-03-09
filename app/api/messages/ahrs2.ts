@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Status of secondary AHRS filter if available.
 */
@@ -18,12 +19,12 @@ export class Ahrs2 extends MAVLinkMessage {
 	public _message_id: number = 178;
 	public _message_name: string = 'AHRS2';
 	public _crc_extra: number = 47;
-	public _message_fields: [string, string, boolean][] = [
-		['roll', 'float', false],
-		['pitch', 'float', false],
-		['yaw', 'float', false],
-		['altitude', 'float', false],
-		['lat', 'int32_t', false],
-		['lng', 'int32_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['roll', 'float', false, 0],
+		['pitch', 'float', false, 0],
+		['yaw', 'float', false, 0],
+		['altitude', 'float', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lng', 'int32_t', false, 0],
 	];
 }

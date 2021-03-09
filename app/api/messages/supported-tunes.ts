@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {TuneFormat} from '../enums/tune-format';
 /*
 Tune formats supported by vehicle. This should be emitted as response to MAV_CMD_REQUEST_MESSAGE.
@@ -13,9 +14,9 @@ export class SupportedTunes extends MAVLinkMessage {
 	public _message_id: number = 401;
 	public _message_name: string = 'SUPPORTED_TUNES';
 	public _crc_extra: number = 183;
-	public _message_fields: [string, string, boolean][] = [
-		['format', 'uint32_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['format', 'uint32_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
 	];
 }

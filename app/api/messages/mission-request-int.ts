@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavMissionType} from '../enums/mav-mission-type';
 /*
 Request the information of the mission item with the sequence number seq. The response of the system to this message should be a MISSION_ITEM_INT message. https://mavlink.io/en/services/mission.html
@@ -15,10 +16,10 @@ export class MissionRequestInt extends MAVLinkMessage {
 	public _message_id: number = 51;
 	public _message_name: string = 'MISSION_REQUEST_INT';
 	public _crc_extra: number = 196;
-	public _message_fields: [string, string, boolean][] = [
-		['seq', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['mission_type', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['seq', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['mission_type', 'uint8_t', true, 0],
 	];
 }

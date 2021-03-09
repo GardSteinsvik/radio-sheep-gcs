@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Read registers reply.
 */
@@ -13,17 +14,17 @@ export class DeviceOpReadReply extends MAVLinkMessage {
 	public result!: number;
 	public regstart!: number;
 	public count!: number;
-	public data!: number;
+	public data!: number[];
 	public bank!: number;
 	public _message_id: number = 11001;
 	public _message_name: string = 'DEVICE_OP_READ_REPLY';
 	public _crc_extra: number = 15;
-	public _message_fields: [string, string, boolean][] = [
-		['request_id', 'uint32_t', false],
-		['result', 'uint8_t', false],
-		['regstart', 'uint8_t', false],
-		['count', 'uint8_t', false],
-		['data', 'uint8_t', false],
-		['bank', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['request_id', 'uint32_t', false, 0],
+		['result', 'uint8_t', false, 0],
+		['regstart', 'uint8_t', false, 0],
+		['count', 'uint8_t', false, 0],
+		['data', 'uint8_t', false, 128],
+		['bank', 'uint8_t', true, 0],
 	];
 }

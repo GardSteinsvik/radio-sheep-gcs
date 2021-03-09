@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The current system altitude.
 */
@@ -20,13 +21,13 @@ export class Altitude extends MAVLinkMessage {
 	public _message_id: number = 141;
 	public _message_name: string = 'ALTITUDE';
 	public _crc_extra: number = 47;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['altitude_monotonic', 'float', false],
-		['altitude_amsl', 'float', false],
-		['altitude_local', 'float', false],
-		['altitude_relative', 'float', false],
-		['altitude_terrain', 'float', false],
-		['bottom_clearance', 'float', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['altitude_monotonic', 'float', false, 0],
+		['altitude_amsl', 'float', false, 0],
+		['altitude_local', 'float', false, 0],
+		['altitude_relative', 'float', false, 0],
+		['altitude_terrain', 'float', false, 0],
+		['bottom_clearance', 'float', false, 0],
 	];
 }

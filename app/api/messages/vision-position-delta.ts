@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Camera vision based attitude and position deltas.
 */
@@ -10,17 +11,17 @@ Camera vision based attitude and position deltas.
 export class VisionPositionDelta extends MAVLinkMessage {
 	public time_usec!: number;
 	public time_delta_usec!: number;
-	public angle_delta!: number;
-	public position_delta!: number;
+	public angle_delta!: number[];
+	public position_delta!: number[];
 	public confidence!: number;
 	public _message_id: number = 11011;
 	public _message_name: string = 'VISION_POSITION_DELTA';
 	public _crc_extra: number = 106;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['time_delta_usec', 'uint64_t', false],
-		['angle_delta', 'float', false],
-		['position_delta', 'float', false],
-		['confidence', 'float', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['time_delta_usec', 'uint64_t', false, 0],
+		['angle_delta', 'float', false, 3],
+		['position_delta', 'float', false, 3],
+		['confidence', 'float', false, 0],
 	];
 }

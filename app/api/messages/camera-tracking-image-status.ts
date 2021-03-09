@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {CameraTrackingStatusFlags} from '../enums/camera-tracking-status-flags';
 import {CameraTrackingMode} from '../enums/camera-tracking-mode';
 import {CameraTrackingTargetData} from '../enums/camera-tracking-target-data';
@@ -29,16 +30,16 @@ export class CameraTrackingImageStatus extends MAVLinkMessage {
 	public _message_id: number = 275;
 	public _message_name: string = 'CAMERA_TRACKING_IMAGE_STATUS';
 	public _crc_extra: number = 126;
-	public _message_fields: [string, string, boolean][] = [
-		['point_x', 'float', false],
-		['point_y', 'float', false],
-		['radius', 'float', false],
-		['rec_top_x', 'float', false],
-		['rec_top_y', 'float', false],
-		['rec_bottom_x', 'float', false],
-		['rec_bottom_y', 'float', false],
-		['tracking_status', 'uint8_t', false],
-		['tracking_mode', 'uint8_t', false],
-		['target_data', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['point_x', 'float', false, 0],
+		['point_y', 'float', false, 0],
+		['radius', 'float', false, 0],
+		['rec_top_x', 'float', false, 0],
+		['rec_top_y', 'float', false, 0],
+		['rec_bottom_x', 'float', false, 0],
+		['rec_bottom_y', 'float', false, 0],
+		['tracking_status', 'uint8_t', false, 0],
+		['tracking_mode', 'uint8_t', false, 0],
+		['target_data', 'uint8_t', false, 0],
 	];
 }

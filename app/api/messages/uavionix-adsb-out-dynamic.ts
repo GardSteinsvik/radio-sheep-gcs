@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {UavionixAdsbOutDynamicGpsFix} from '../enums/uavionix-adsb-out-dynamic-gps-fix';
 import {UavionixAdsbEmergencyStatus} from '../enums/uavionix-adsb-emergency-status';
 import {UavionixAdsbOutDynamicState} from '../enums/uavionix-adsb-out-dynamic-state';
@@ -41,22 +42,22 @@ export class UavionixAdsbOutDynamic extends MAVLinkMessage {
 	public _message_id: number = 10002;
 	public _message_name: string = 'UAVIONIX_ADSB_OUT_DYNAMIC';
 	public _crc_extra: number = 186;
-	public _message_fields: [string, string, boolean][] = [
-		['utcTime', 'uint32_t', false],
-		['gpsLat', 'int32_t', false],
-		['gpsLon', 'int32_t', false],
-		['gpsAlt', 'int32_t', false],
-		['baroAltMSL', 'int32_t', false],
-		['accuracyHor', 'uint32_t', false],
-		['accuracyVert', 'uint16_t', false],
-		['accuracyVel', 'uint16_t', false],
-		['velVert', 'int16_t', false],
-		['velNS', 'int16_t', false],
-		['VelEW', 'int16_t', false],
-		['state', 'uint16_t', false],
-		['squawk', 'uint16_t', false],
-		['gpsFix', 'uint8_t', false],
-		['numSats', 'uint8_t', false],
-		['emergencyStatus', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['utcTime', 'uint32_t', false, 0],
+		['gpsLat', 'int32_t', false, 0],
+		['gpsLon', 'int32_t', false, 0],
+		['gpsAlt', 'int32_t', false, 0],
+		['baroAltMSL', 'int32_t', false, 0],
+		['accuracyHor', 'uint32_t', false, 0],
+		['accuracyVert', 'uint16_t', false, 0],
+		['accuracyVel', 'uint16_t', false, 0],
+		['velVert', 'int16_t', false, 0],
+		['velNS', 'int16_t', false, 0],
+		['VelEW', 'int16_t', false, 0],
+		['state', 'uint16_t', false, 0],
+		['squawk', 'uint16_t', false, 0],
+		['gpsFix', 'uint8_t', false, 0],
+		['numSats', 'uint8_t', false, 0],
+		['emergencyStatus', 'uint8_t', false, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Local position/attitude estimate from a vision source.
 */
@@ -19,20 +20,20 @@ export class VisionPositionEstimate extends MAVLinkMessage {
 	public roll!: number;
 	public pitch!: number;
 	public yaw!: number;
-	public covariance!: number;
+	public covariance!: number[];
 	public reset_counter!: number;
 	public _message_id: number = 102;
 	public _message_name: string = 'VISION_POSITION_ESTIMATE';
 	public _crc_extra: number = 158;
-	public _message_fields: [string, string, boolean][] = [
-		['usec', 'uint64_t', false],
-		['x', 'float', false],
-		['y', 'float', false],
-		['z', 'float', false],
-		['roll', 'float', false],
-		['pitch', 'float', false],
-		['yaw', 'float', false],
-		['covariance', 'float', true],
-		['reset_counter', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['usec', 'uint64_t', false, 0],
+		['x', 'float', false, 0],
+		['y', 'float', false, 0],
+		['z', 'float', false, 0],
+		['roll', 'float', false, 0],
+		['pitch', 'float', false, 0],
+		['yaw', 'float', false, 0],
+		['covariance', 'float', true, 21],
+		['reset_counter', 'uint8_t', true, 0],
 	];
 }

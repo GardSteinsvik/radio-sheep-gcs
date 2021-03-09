@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The system time is the time of the master clock, typically the computer clock of the main onboard computer.
 */
@@ -10,8 +11,8 @@ export class SystemTime extends MAVLinkMessage {
 	public _message_id: number = 2;
 	public _message_name: string = 'SYSTEM_TIME';
 	public _crc_extra: number = 137;
-	public _message_fields: [string, string, boolean][] = [
-		['time_unix_usec', 'uint64_t', false],
-		['time_boot_ms', 'uint32_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_unix_usec', 'uint64_t', false, 0],
+		['time_boot_ms', 'uint32_t', false, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavEstimatorType} from '../enums/mav-estimator-type';
 /*
 The filtered global position (e.g. fused GPS and accelerometers). The position is in GPS-frame (right-handed, Z-up). It  is designed as scaled integer message since the resolution of float is not sufficient. NOTE: This message is intended for onboard networks / companion computers and higher-bandwidth links and optimized for accuracy and completeness. Please use the GLOBAL_POSITION_INT message for a minimal subset.
@@ -23,20 +24,20 @@ export class GlobalPositionIntCov extends MAVLinkMessage {
 	public vx!: number;
 	public vy!: number;
 	public vz!: number;
-	public covariance!: number;
+	public covariance!: number[];
 	public _message_id: number = 63;
 	public _message_name: string = 'GLOBAL_POSITION_INT_COV';
 	public _crc_extra: number = 119;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['lat', 'int32_t', false],
-		['lon', 'int32_t', false],
-		['alt', 'int32_t', false],
-		['relative_alt', 'int32_t', false],
-		['vx', 'float', false],
-		['vy', 'float', false],
-		['vz', 'float', false],
-		['covariance', 'float', false],
-		['estimator_type', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lon', 'int32_t', false, 0],
+		['alt', 'int32_t', false, 0],
+		['relative_alt', 'int32_t', false, 0],
+		['vx', 'float', false, 0],
+		['vy', 'float', false, 0],
+		['vz', 'float', false, 0],
+		['covariance', 'float', false, 36],
+		['estimator_type', 'uint8_t', false, 0],
 	];
 }

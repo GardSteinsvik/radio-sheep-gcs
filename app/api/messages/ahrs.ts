@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Status of DCM attitude estimator.
 */
@@ -20,13 +21,13 @@ export class Ahrs extends MAVLinkMessage {
 	public _message_id: number = 163;
 	public _message_name: string = 'AHRS';
 	public _crc_extra: number = 127;
-	public _message_fields: [string, string, boolean][] = [
-		['omegaIx', 'float', false],
-		['omegaIy', 'float', false],
-		['omegaIz', 'float', false],
-		['accel_weight', 'float', false],
-		['renorm_val', 'float', false],
-		['error_rp', 'float', false],
-		['error_yaw', 'float', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['omegaIx', 'float', false, 0],
+		['omegaIy', 'float', false, 0],
+		['omegaIz', 'float', false, 0],
+		['accel_weight', 'float', false, 0],
+		['renorm_val', 'float', false, 0],
+		['error_rp', 'float', false, 0],
+		['error_yaw', 'float', false, 0],
 	];
 }

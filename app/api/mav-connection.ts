@@ -2,7 +2,7 @@ import events from 'events'
 import {Socket} from "net";
 
 import {MAVLinkMessage, MAVLinkModule} from '@gardsteinsvik/node-mavlink';
-import {messageRegistry} from "./message-registry";
+import {messageRegistry} from './message-registry';
 import {RequestDataStream} from "./messages/request-data-stream";
 import {MavDataStream} from "./enums/mav-data-stream";
 import {GlobalPositionInt} from "./messages/global-position-int";
@@ -27,13 +27,14 @@ import {createLandCommand, createTakeOffCommand, createWaypointCommand} from "./
 import {MissionRequest} from "./messages/mission-request";
 import {MissionRequestList} from "./messages/mission-request-list";
 import {MissionClearAll} from "./messages/mission-clear-all";
-import {SetHomePosition} from "./messages/set-home-position";
 import {BatteryStatus} from "./messages/battery-status";
 import {SheepRttAck} from "./messages/sheep-rtt-ack";
 import {SheepRttData} from "./messages/sheep-rtt-data";
 import {Data16} from "./messages/data16";
 import {Data32} from "./messages/data32";
 import {Statustext} from "./messages/statustext";
+import {ParamSet} from "./messages/param-set";
+import {MavParamType} from "./enums/mav-param-type";
 
 const GCS_SYSTEM_ID = 255
 const GCS_COMP_ID = MavComponent.MAV_COMP_ID_MISSIONPLANNER
@@ -87,9 +88,7 @@ function startConnection(connectionPath: string, connectionPort: number) {
         socket.destroy()
     })
 
-    socket.on('data', async data => {
-        await mavLink.parse(data)
-    })
+    socket.on('data', async data => await mavLink.parse(data))
 
     mavLink.on('error', function (e: Error) {
         // event listener for node-mavlink ALL error message
@@ -146,6 +145,7 @@ function startConnection(connectionPath: string, connectionPort: number) {
             'TERRAIN_REQUEST',
             'SENSOR_OFFSETS',
             'POSITION_TARGET_GLOBAL_INT',
+            'MISSION_ITEM_REACHED',
             'DATA32',
             // 'SHEEP_RTT_DATA',
         ]
@@ -216,7 +216,19 @@ function startConnection(connectionPath: string, connectionPort: number) {
         }
     })
 
-    mavLink.on('SHEEP_RTT_DATA', (sheepRttData: SheepRttData) => {
+    mavLink.on('DATA32', async (data32: Data32) => {
+        if (data32.type !== 129) {
+            return
+        }
+
+        console.log()
+
+        const parsedMessages: MAVLinkMessage[] = await mavLink.parse(Buffer.from(data32.data))
+
+        const sheepRttData: SheepRttData = parsedMessages.pop() as SheepRttData
+
+        if (!sheepRttData) return
+
         emitter.emit('sheep_data', sheepRttData)
 
         const sheepRttAckBuffer: Buffer = mavLink.pack([Object.assign(new SheepRttAck(GCS_SYSTEM_ID, GCS_COMP_ID), {seq: sheepRttData.seq})])
@@ -226,12 +238,6 @@ function startConnection(connectionPath: string, connectionPort: number) {
             len: sheepRttAckBuffer.length,
             data: sheepRttAckBuffer,
         }))
-    })
-
-    mavLink.on('DATA32', async (data32: Data32) => {
-        if (data32.type !== 129) {
-            return
-        }
     })
 }
 
@@ -530,6 +536,7 @@ function clearMission() {
 }
 
 function startMission() {
+    setSimSpeed()
     emitter.emit('status_text', 'Starting mission...')
     sendMavlinkMessage(Object.assign(new CommandLong(GCS_SYSTEM_ID, GCS_COMP_ID), {
         target_system: MAV_SYSTEM_ID,
@@ -543,6 +550,16 @@ function startMission() {
         param5: 0,
         param6: 0,
         param7: 0,
+    }))
+}
+
+function setSimSpeed() {
+    sendMavlinkMessage(Object.assign(new ParamSet(GCS_SYSTEM_ID, GCS_COMP_ID), {
+        target_system: MAV_SYSTEM_ID,
+        target_component: MAV_COMP_ID,
+        param_id: 'sim_speedup',
+        param_value: 10,
+        param_type: MavParamType.MAV_PARAM_TYPE_REAL32,
     }))
 }
 

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavParamExtType} from '../enums/mav-param-ext-type';
 /*
 Emit the value of a parameter. The inclusion of param_count and param_index in the message allows the recipient to keep track of received parameters and allows them to re-request missing parameters after a loss or timeout.
@@ -17,11 +18,11 @@ export class ParamExtValue extends MAVLinkMessage {
 	public _message_id: number = 322;
 	public _message_name: string = 'PARAM_EXT_VALUE';
 	public _crc_extra: number = 243;
-	public _message_fields: [string, string, boolean][] = [
-		['param_count', 'uint16_t', false],
-		['param_index', 'uint16_t', false],
-		['param_id', 'char', false],
-		['param_value', 'char', false],
-		['param_type', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['param_count', 'uint16_t', false, 0],
+		['param_index', 'uint16_t', false, 0],
+		['param_id', 'char', false, 16],
+		['param_value', 'char', false, 128],
+		['param_type', 'uint8_t', false, 0],
 	];
 }

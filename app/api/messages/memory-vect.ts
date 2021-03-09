@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Send raw controller memory. The use of this message is discouraged for normal packets, but a quite efficient way for testing new messages and getting experimental debug output.
 */
@@ -10,14 +11,14 @@ export class MemoryVect extends MAVLinkMessage {
 	public address!: number;
 	public ver!: number;
 	public type!: number;
-	public value!: number;
+	public value!: number[];
 	public _message_id: number = 249;
 	public _message_name: string = 'MEMORY_VECT';
 	public _crc_extra: number = 204;
-	public _message_fields: [string, string, boolean][] = [
-		['address', 'uint16_t', false],
-		['ver', 'uint8_t', false],
-		['type', 'uint8_t', false],
-		['value', 'int8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['address', 'uint16_t', false, 0],
+		['ver', 'uint8_t', false, 0],
+		['type', 'uint8_t', false, 0],
+		['value', 'int8_t', false, 32],
 	];
 }

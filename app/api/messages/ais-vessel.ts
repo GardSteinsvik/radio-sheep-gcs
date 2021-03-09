@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {AisNavStatus} from '../enums/ais-nav-status';
 import {AisType} from '../enums/ais-type';
 import {AisFlags} from '../enums/ais-flags';
@@ -43,23 +44,23 @@ export class AisVessel extends MAVLinkMessage {
 	public _message_id: number = 301;
 	public _message_name: string = 'AIS_VESSEL';
 	public _crc_extra: number = 243;
-	public _message_fields: [string, string, boolean][] = [
-		['MMSI', 'uint32_t', false],
-		['lat', 'int32_t', false],
-		['lon', 'int32_t', false],
-		['COG', 'uint16_t', false],
-		['heading', 'uint16_t', false],
-		['velocity', 'uint16_t', false],
-		['dimension_bow', 'uint16_t', false],
-		['dimension_stern', 'uint16_t', false],
-		['tslc', 'uint16_t', false],
-		['flags', 'uint16_t', false],
-		['turn_rate', 'int8_t', false],
-		['navigational_status', 'uint8_t', false],
-		['type', 'uint8_t', false],
-		['dimension_port', 'uint8_t', false],
-		['dimension_starboard', 'uint8_t', false],
-		['callsign', 'char', false],
-		['name', 'char', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['MMSI', 'uint32_t', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lon', 'int32_t', false, 0],
+		['COG', 'uint16_t', false, 0],
+		['heading', 'uint16_t', false, 0],
+		['velocity', 'uint16_t', false, 0],
+		['dimension_bow', 'uint16_t', false, 0],
+		['dimension_stern', 'uint16_t', false, 0],
+		['tslc', 'uint16_t', false, 0],
+		['flags', 'uint16_t', false, 0],
+		['turn_rate', 'int8_t', false, 0],
+		['navigational_status', 'uint8_t', false, 0],
+		['type', 'uint8_t', false, 0],
+		['dimension_port', 'uint8_t', false, 0],
+		['dimension_starboard', 'uint8_t', false, 0],
+		['callsign', 'char', false, 7],
+		['name', 'char', false, 20],
 	];
 }

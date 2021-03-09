@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Optical flow from a flow sensor (e.g. optical mouse sensor)
 */
@@ -26,16 +27,16 @@ export class OpticalFlow extends MAVLinkMessage {
 	public _message_id: number = 100;
 	public _message_name: string = 'OPTICAL_FLOW';
 	public _crc_extra: number = 175;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['flow_comp_m_x', 'float', false],
-		['flow_comp_m_y', 'float', false],
-		['ground_distance', 'float', false],
-		['flow_x', 'int16_t', false],
-		['flow_y', 'int16_t', false],
-		['sensor_id', 'uint8_t', false],
-		['quality', 'uint8_t', false],
-		['flow_rate_x', 'float', true],
-		['flow_rate_y', 'float', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['flow_comp_m_x', 'float', false, 0],
+		['flow_comp_m_y', 'float', false, 0],
+		['ground_distance', 'float', false, 0],
+		['flow_x', 'int16_t', false, 0],
+		['flow_y', 'int16_t', false, 0],
+		['sensor_id', 'uint8_t', false, 0],
+		['quality', 'uint8_t', false, 0],
+		['flow_rate_x', 'float', true, 0],
+		['flow_rate_y', 'float', true, 0],
 	];
 }

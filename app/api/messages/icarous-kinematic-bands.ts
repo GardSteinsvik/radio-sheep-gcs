@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {IcarousTrackBandTypes} from '../enums/icarous-track-band-types';
 /*
 Kinematic multi bands (track) output from Daidalus
@@ -39,22 +40,22 @@ export class IcarousKinematicBands extends MAVLinkMessage {
 	public _message_id: number = 42001;
 	public _message_name: string = 'ICAROUS_KINEMATIC_BANDS';
 	public _crc_extra: number = 239;
-	public _message_fields: [string, string, boolean][] = [
-		['min1', 'float', false],
-		['max1', 'float', false],
-		['min2', 'float', false],
-		['max2', 'float', false],
-		['min3', 'float', false],
-		['max3', 'float', false],
-		['min4', 'float', false],
-		['max4', 'float', false],
-		['min5', 'float', false],
-		['max5', 'float', false],
-		['numBands', 'int8_t', false],
-		['type1', 'uint8_t', false],
-		['type2', 'uint8_t', false],
-		['type3', 'uint8_t', false],
-		['type4', 'uint8_t', false],
-		['type5', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['min1', 'float', false, 0],
+		['max1', 'float', false, 0],
+		['min2', 'float', false, 0],
+		['max2', 'float', false, 0],
+		['min3', 'float', false, 0],
+		['max3', 'float', false, 0],
+		['min4', 'float', false, 0],
+		['max4', 'float', false, 0],
+		['min5', 'float', false, 0],
+		['max5', 'float', false, 0],
+		['numBands', 'int8_t', false, 0],
+		['type1', 'uint8_t', false, 0],
+		['type2', 'uint8_t', false, 0],
+		['type3', 'uint8_t', false, 0],
+		['type4', 'uint8_t', false, 0],
+		['type5', 'uint8_t', false, 0],
 	];
 }

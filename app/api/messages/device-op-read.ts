@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {DeviceOpBustype} from '../enums/device-op-bustype';
 /*
 Read registers for a device.
@@ -27,16 +28,16 @@ export class DeviceOpRead extends MAVLinkMessage {
 	public _message_id: number = 11000;
 	public _message_name: string = 'DEVICE_OP_READ';
 	public _crc_extra: number = 134;
-	public _message_fields: [string, string, boolean][] = [
-		['request_id', 'uint32_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['bustype', 'uint8_t', false],
-		['bus', 'uint8_t', false],
-		['address', 'uint8_t', false],
-		['busname', 'char', false],
-		['regstart', 'uint8_t', false],
-		['count', 'uint8_t', false],
-		['bank', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['request_id', 'uint32_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['bustype', 'uint8_t', false, 0],
+		['bus', 'uint8_t', false, 0],
+		['address', 'uint8_t', false, 0],
+		['busname', 'char', false, 40],
+		['regstart', 'uint8_t', false, 0],
+		['count', 'uint8_t', false, 0],
+		['bank', 'uint8_t', true, 0],
 	];
 }

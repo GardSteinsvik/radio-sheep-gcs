@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavGeneratorStatusFlag} from '../enums/mav-generator-status-flag';
 /*
 Telemetry of power generation system. Alternator or mechanical generator.
@@ -29,17 +30,17 @@ export class GeneratorStatus extends MAVLinkMessage {
 	public _message_id: number = 373;
 	public _message_name: string = 'GENERATOR_STATUS';
 	public _crc_extra: number = 117;
-	public _message_fields: [string, string, boolean][] = [
-		['status', 'uint64_t', false],
-		['battery_current', 'float', false],
-		['load_current', 'float', false],
-		['power_generated', 'float', false],
-		['bus_voltage', 'float', false],
-		['bat_current_setpoint', 'float', false],
-		['runtime', 'uint32_t', false],
-		['time_until_maintenance', 'int32_t', false],
-		['generator_speed', 'uint16_t', false],
-		['rectifier_temperature', 'int16_t', false],
-		['generator_temperature', 'int16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['status', 'uint64_t', false, 0],
+		['battery_current', 'float', false, 0],
+		['load_current', 'float', false, 0],
+		['power_generated', 'float', false, 0],
+		['bus_voltage', 'float', false, 0],
+		['bat_current_setpoint', 'float', false, 0],
+		['runtime', 'uint32_t', false, 0],
+		['time_until_maintenance', 'int32_t', false, 0],
+		['generator_speed', 'uint16_t', false, 0],
+		['rectifier_temperature', 'int16_t', false, 0],
+		['generator_temperature', 'int16_t', false, 0],
 	];
 }

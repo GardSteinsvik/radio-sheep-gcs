@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {CameraTrackingStatusFlags} from '../enums/camera-tracking-status-flags';
 /*
 Camera tracking status, sent while in active tracking. Use MAV_CMD_SET_MESSAGE_INTERVAL to define message interval.
@@ -33,19 +34,19 @@ export class CameraTrackingGeoStatus extends MAVLinkMessage {
 	public _message_id: number = 276;
 	public _message_name: string = 'CAMERA_TRACKING_GEO_STATUS';
 	public _crc_extra: number = 18;
-	public _message_fields: [string, string, boolean][] = [
-		['lat', 'int32_t', false],
-		['lon', 'int32_t', false],
-		['alt', 'float', false],
-		['h_acc', 'float', false],
-		['v_acc', 'float', false],
-		['vel_n', 'float', false],
-		['vel_e', 'float', false],
-		['vel_d', 'float', false],
-		['vel_acc', 'float', false],
-		['dist', 'float', false],
-		['hdg', 'float', false],
-		['hdg_acc', 'float', false],
-		['tracking_status', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['lat', 'int32_t', false, 0],
+		['lon', 'int32_t', false, 0],
+		['alt', 'float', false, 0],
+		['h_acc', 'float', false, 0],
+		['v_acc', 'float', false, 0],
+		['vel_n', 'float', false, 0],
+		['vel_e', 'float', false, 0],
+		['vel_d', 'float', false, 0],
+		['vel_acc', 'float', false, 0],
+		['dist', 'float', false, 0],
+		['hdg', 'float', false, 0],
+		['hdg_acc', 'float', false, 0],
+		['tracking_status', 'uint8_t', false, 0],
 	];
 }

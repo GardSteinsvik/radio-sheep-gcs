@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Bind a RC channel to a parameter. The parameter should change according to the RC channel value.
 */
@@ -24,15 +25,15 @@ export class ParamMapRc extends MAVLinkMessage {
 	public _message_id: number = 50;
 	public _message_name: string = 'PARAM_MAP_RC';
 	public _crc_extra: number = 78;
-	public _message_fields: [string, string, boolean][] = [
-		['param_value0', 'float', false],
-		['scale', 'float', false],
-		['param_value_min', 'float', false],
-		['param_value_max', 'float', false],
-		['param_index', 'int16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['param_id', 'char', false],
-		['parameter_rc_channel_index', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['param_value0', 'float', false, 0],
+		['scale', 'float', false, 0],
+		['param_value_min', 'float', false, 0],
+		['param_value_max', 'float', false, 0],
+		['param_index', 'int16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['param_id', 'char', false, 16],
+		['parameter_rc_channel_index', 'uint8_t', false, 0],
 	];
 }

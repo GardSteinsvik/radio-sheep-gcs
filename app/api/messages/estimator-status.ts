@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {EstimatorStatusFlags} from '../enums/estimator-status-flags';
 /*
 Estimator status message including flags, innovation test ratios and estimated accuracies. The flags message is an integer bitmask containing information on which EKF outputs are valid. See the ESTIMATOR_STATUS_FLAGS enum definition for further information. The innovation test ratios show the magnitude of the sensor innovation divided by the innovation check threshold. Under normal operation the innovation test ratios should be below 0.5 with occasional values up to 1.0. Values greater than 1.0 should be rare under normal operation and indicate that a measurement has been rejected by the filter. The user should be notified if an innovation test ratio greater than 1.0 is recorded. Notifications for values in the range between 0.5 and 1.0 should be optional and controllable by the user.
@@ -27,16 +28,16 @@ export class EstimatorStatus extends MAVLinkMessage {
 	public _message_id: number = 230;
 	public _message_name: string = 'ESTIMATOR_STATUS';
 	public _crc_extra: number = 163;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['vel_ratio', 'float', false],
-		['pos_horiz_ratio', 'float', false],
-		['pos_vert_ratio', 'float', false],
-		['mag_ratio', 'float', false],
-		['hagl_ratio', 'float', false],
-		['tas_ratio', 'float', false],
-		['pos_horiz_accuracy', 'float', false],
-		['pos_vert_accuracy', 'float', false],
-		['flags', 'uint16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['vel_ratio', 'float', false, 0],
+		['pos_horiz_ratio', 'float', false, 0],
+		['pos_vert_ratio', 'float', false, 0],
+		['mag_ratio', 'float', false, 0],
+		['hagl_ratio', 'float', false, 0],
+		['tas_ratio', 'float', false, 0],
+		['pos_horiz_accuracy', 'float', false, 0],
+		['pos_vert_accuracy', 'float', false, 0],
+		['flags', 'uint16_t', false, 0],
 	];
 }

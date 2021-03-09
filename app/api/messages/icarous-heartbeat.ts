@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {IcarousFmsState} from '../enums/icarous-fms-state';
 /*
 ICAROUS heartbeat
@@ -9,7 +10,7 @@ export class IcarousHeartbeat extends MAVLinkMessage {
 	public _message_id: number = 42000;
 	public _message_name: string = 'ICAROUS_HEARTBEAT';
 	public _crc_extra: number = 227;
-	public _message_fields: [string, string, boolean][] = [
-		['status', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['status', 'uint8_t', false, 0],
 	];
 }

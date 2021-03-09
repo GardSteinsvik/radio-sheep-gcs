@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Message containing a sheepRTT sample. Position of the drone and the distance to the tag with a specific id.
 */
@@ -18,12 +19,12 @@ export class SheepRttData extends MAVLinkMessage {
 	public _message_id: number = 19200;
 	public _message_name: string = 'SHEEP_RTT_DATA';
 	public _crc_extra: number = 7;
-	public _message_fields: [string, string, boolean][] = [
-		['seq', 'uint32_t', false],
-		['lat', 'int32_t', false],
-		['lon', 'int32_t', false],
-		['alt', 'int32_t', false],
-		['tid', 'uint16_t', false],
-		['dis', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['seq', 'uint32_t', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lon', 'int32_t', false, 0],
+		['alt', 'int32_t', false, 0],
+		['tid', 'uint16_t', false, 0],
+		['dis', 'uint8_t', false, 0],
 	];
 }

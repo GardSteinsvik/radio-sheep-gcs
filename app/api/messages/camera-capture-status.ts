@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Information about the status of a capture. Can be requested with a MAV_CMD_REQUEST_MESSAGE command.
 */
@@ -20,13 +21,13 @@ export class CameraCaptureStatus extends MAVLinkMessage {
 	public _message_id: number = 262;
 	public _message_name: string = 'CAMERA_CAPTURE_STATUS';
 	public _crc_extra: number = 12;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['image_interval', 'float', false],
-		['recording_time_ms', 'uint32_t', false],
-		['available_capacity', 'float', false],
-		['image_status', 'uint8_t', false],
-		['video_status', 'uint8_t', false],
-		['image_count', 'int32_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['image_interval', 'float', false, 0],
+		['recording_time_ms', 'uint32_t', false, 0],
+		['available_capacity', 'float', false, 0],
+		['image_status', 'uint8_t', false, 0],
+		['video_status', 'uint8_t', false, 0],
+		['image_count', 'int32_t', true, 0],
 	];
 }

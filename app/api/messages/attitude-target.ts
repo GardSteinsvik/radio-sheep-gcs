@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {AttitudeTargetTypemask} from '../enums/attitude-target-typemask';
 /*
 Reports the current commanded attitude of the vehicle as specified by the autopilot. This should match the commands sent in a SET_ATTITUDE_TARGET message if the vehicle is being controlled this way.
@@ -13,7 +14,7 @@ Reports the current commanded attitude of the vehicle as specified by the autopi
 export class AttitudeTarget extends MAVLinkMessage {
 	public time_boot_ms!: number;
 	public type_mask!: AttitudeTargetTypemask;
-	public q!: number;
+	public q!: number[];
 	public body_roll_rate!: number;
 	public body_pitch_rate!: number;
 	public body_yaw_rate!: number;
@@ -21,13 +22,13 @@ export class AttitudeTarget extends MAVLinkMessage {
 	public _message_id: number = 83;
 	public _message_name: string = 'ATTITUDE_TARGET';
 	public _crc_extra: number = 22;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['q', 'float', false],
-		['body_roll_rate', 'float', false],
-		['body_pitch_rate', 'float', false],
-		['body_yaw_rate', 'float', false],
-		['thrust', 'float', false],
-		['type_mask', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['q', 'float', false, 4],
+		['body_roll_rate', 'float', false, 0],
+		['body_pitch_rate', 'float', false, 0],
+		['body_yaw_rate', 'float', false, 0],
+		['thrust', 'float', false, 0],
+		['type_mask', 'uint8_t', false, 0],
 	];
 }

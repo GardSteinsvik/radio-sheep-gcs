@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {CompMetadataType} from '../enums/comp-metadata-type';
 /*
 Information about a component. For camera components instead use CAMERA_INFORMATION, and for autopilots use AUTOPILOT_VERSION. Components including GCSes should consider supporting requests of this message via MAV_CMD_REQUEST_MESSAGE.
@@ -19,12 +20,12 @@ export class ComponentInformation extends MAVLinkMessage {
 	public _message_id: number = 395;
 	public _message_name: string = 'COMPONENT_INFORMATION';
 	public _crc_extra: number = 163;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['metadata_type', 'uint32_t', false],
-		['metadata_uid', 'uint32_t', false],
-		['translation_uid', 'uint32_t', false],
-		['metadata_uri', 'char', false],
-		['translation_uri', 'char', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['metadata_type', 'uint32_t', false, 0],
+		['metadata_uid', 'uint32_t', false, 0],
+		['translation_uid', 'uint32_t', false, 0],
+		['metadata_uri', 'char', false, 70],
+		['translation_uri', 'char', false, 70],
 	];
 }

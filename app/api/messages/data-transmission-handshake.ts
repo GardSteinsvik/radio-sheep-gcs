@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavlinkDataStreamType} from '../enums/mavlink-data-stream-type';
 /*
 Handshake message to initiate, control and stop image streaming when using the Image Transmission Protocol: https://mavlink.io/en/services/image_transmission.html.
@@ -21,13 +22,13 @@ export class DataTransmissionHandshake extends MAVLinkMessage {
 	public _message_id: number = 130;
 	public _message_name: string = 'DATA_TRANSMISSION_HANDSHAKE';
 	public _crc_extra: number = 29;
-	public _message_fields: [string, string, boolean][] = [
-		['size', 'uint32_t', false],
-		['width', 'uint16_t', false],
-		['height', 'uint16_t', false],
-		['packets', 'uint16_t', false],
-		['type', 'uint8_t', false],
-		['payload', 'uint8_t', false],
-		['jpg_quality', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['size', 'uint32_t', false, 0],
+		['width', 'uint16_t', false, 0],
+		['height', 'uint16_t', false, 0],
+		['packets', 'uint16_t', false, 0],
+		['type', 'uint8_t', false, 0],
+		['payload', 'uint8_t', false, 0],
+		['jpg_quality', 'uint8_t', false, 0],
 	];
 }

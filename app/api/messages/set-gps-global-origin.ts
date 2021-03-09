@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Sets the GPS co-ordinates of the vehicle local origin (0,0,0) position. Vehicle should emit GPS_GLOBAL_ORIGIN irrespective of whether the origin is changed. This enables transform between the local coordinate frame and the global (GPS) coordinate frame, which may be necessary when (for example) indoor and outdoor settings are connected and the MAV should move from in- to outdoor.
 */
@@ -16,11 +17,11 @@ export class SetGpsGlobalOrigin extends MAVLinkMessage {
 	public _message_id: number = 48;
 	public _message_name: string = 'SET_GPS_GLOBAL_ORIGIN';
 	public _crc_extra: number = 41;
-	public _message_fields: [string, string, boolean][] = [
-		['latitude', 'int32_t', false],
-		['longitude', 'int32_t', false],
-		['altitude', 'int32_t', false],
-		['target_system', 'uint8_t', false],
-		['time_usec', 'uint64_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['latitude', 'int32_t', false, 0],
+		['longitude', 'int32_t', false, 0],
+		['altitude', 'int32_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['time_usec', 'uint64_t', true, 0],
 	];
 }

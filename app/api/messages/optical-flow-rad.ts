@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Optical flow from an angular rate flow sensor (e.g. PX4FLOW or mouse sensor)
 */
@@ -30,18 +31,18 @@ export class OpticalFlowRad extends MAVLinkMessage {
 	public _message_id: number = 106;
 	public _message_name: string = 'OPTICAL_FLOW_RAD';
 	public _crc_extra: number = 138;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['integration_time_us', 'uint32_t', false],
-		['integrated_x', 'float', false],
-		['integrated_y', 'float', false],
-		['integrated_xgyro', 'float', false],
-		['integrated_ygyro', 'float', false],
-		['integrated_zgyro', 'float', false],
-		['time_delta_distance_us', 'uint32_t', false],
-		['distance', 'float', false],
-		['temperature', 'int16_t', false],
-		['sensor_id', 'uint8_t', false],
-		['quality', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['integration_time_us', 'uint32_t', false, 0],
+		['integrated_x', 'float', false, 0],
+		['integrated_y', 'float', false, 0],
+		['integrated_xgyro', 'float', false, 0],
+		['integrated_ygyro', 'float', false, 0],
+		['integrated_zgyro', 'float', false, 0],
+		['time_delta_distance_us', 'uint32_t', false, 0],
+		['distance', 'float', false, 0],
+		['temperature', 'int16_t', false, 0],
+		['sensor_id', 'uint8_t', false, 0],
+		['quality', 'uint8_t', false, 0],
 	];
 }

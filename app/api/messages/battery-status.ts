@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavBatteryFunction} from '../enums/mav-battery-function';
 import {MavBatteryType} from '../enums/mav-battery-type';
 import {MavBatteryChargeState} from '../enums/mav-battery-charge-state';
@@ -26,33 +27,33 @@ export class BatteryStatus extends MAVLinkMessage {
 	public battery_function!: MavBatteryFunction;
 	public type!: MavBatteryType;
 	public temperature!: number;
-	public voltages!: number;
+	public voltages!: number[];
 	public current_battery!: number;
 	public current_consumed!: number;
 	public energy_consumed!: number;
 	public battery_remaining!: number;
 	public time_remaining!: number;
 	public charge_state!: MavBatteryChargeState;
-	public voltages_ext!: number;
+	public voltages_ext!: number[];
 	public mode!: MavBatteryMode;
 	public fault_bitmask!: MavBatteryFault;
 	public _message_id: number = 147;
 	public _message_name: string = 'BATTERY_STATUS';
 	public _crc_extra: number = 154;
-	public _message_fields: [string, string, boolean][] = [
-		['current_consumed', 'int32_t', false],
-		['energy_consumed', 'int32_t', false],
-		['temperature', 'int16_t', false],
-		['voltages', 'uint16_t', false],
-		['current_battery', 'int16_t', false],
-		['id', 'uint8_t', false],
-		['battery_function', 'uint8_t', false],
-		['type', 'uint8_t', false],
-		['battery_remaining', 'int8_t', false],
-		['time_remaining', 'int32_t', true],
-		['charge_state', 'uint8_t', true],
-		['voltages_ext', 'uint16_t', true],
-		['mode', 'uint8_t', true],
-		['fault_bitmask', 'uint32_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['current_consumed', 'int32_t', false, 0],
+		['energy_consumed', 'int32_t', false, 0],
+		['temperature', 'int16_t', false, 0],
+		['voltages', 'uint16_t', false, 10],
+		['current_battery', 'int16_t', false, 0],
+		['id', 'uint8_t', false, 0],
+		['battery_function', 'uint8_t', false, 0],
+		['type', 'uint8_t', false, 0],
+		['battery_remaining', 'int8_t', false, 0],
+		['time_remaining', 'int32_t', true, 0],
+		['charge_state', 'uint8_t', true, 0],
+		['voltages_ext', 'uint16_t', true, 4],
+		['mode', 'uint8_t', true, 0],
+		['fault_bitmask', 'uint32_t', true, 0],
 	];
 }

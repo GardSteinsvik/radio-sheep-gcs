@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Data stream status information.
 */
@@ -12,9 +13,9 @@ export class DataStream extends MAVLinkMessage {
 	public _message_id: number = 67;
 	public _message_name: string = 'DATA_STREAM';
 	public _crc_extra: number = 21;
-	public _message_fields: [string, string, boolean][] = [
-		['message_rate', 'uint16_t', false],
-		['stream_id', 'uint8_t', false],
-		['on_off', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['message_rate', 'uint16_t', false, 0],
+		['stream_id', 'uint8_t', false, 0],
+		['on_off', 'uint8_t', false, 0],
 	];
 }

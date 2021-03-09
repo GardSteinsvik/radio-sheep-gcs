@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Current motion information from a designated system
 */
@@ -19,26 +20,26 @@ export class FollowTarget extends MAVLinkMessage {
 	public lat!: number;
 	public lon!: number;
 	public alt!: number;
-	public vel!: number;
-	public acc!: number;
-	public attitude_q!: number;
-	public rates!: number;
-	public position_cov!: number;
+	public vel!: number[];
+	public acc!: number[];
+	public attitude_q!: number[];
+	public rates!: number[];
+	public position_cov!: number[];
 	public custom_state!: number;
 	public _message_id: number = 144;
 	public _message_name: string = 'FOLLOW_TARGET';
 	public _crc_extra: number = 127;
-	public _message_fields: [string, string, boolean][] = [
-		['timestamp', 'uint64_t', false],
-		['custom_state', 'uint64_t', false],
-		['lat', 'int32_t', false],
-		['lon', 'int32_t', false],
-		['alt', 'float', false],
-		['vel', 'float', false],
-		['acc', 'float', false],
-		['attitude_q', 'float', false],
-		['rates', 'float', false],
-		['position_cov', 'float', false],
-		['est_capabilities', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['timestamp', 'uint64_t', false, 0],
+		['custom_state', 'uint64_t', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lon', 'int32_t', false, 0],
+		['alt', 'float', false, 0],
+		['vel', 'float', false, 3],
+		['acc', 'float', false, 3],
+		['attitude_q', 'float', false, 4],
+		['rates', 'float', false, 3],
+		['position_cov', 'float', false, 3],
+		['est_capabilities', 'uint8_t', false, 0],
 	];
 }

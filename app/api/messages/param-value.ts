@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavParamType} from '../enums/mav-param-type';
 /*
 Emit the value of a onboard parameter. The inclusion of param_count and param_index in the message allows the recipient to keep track of received parameters and allows him to re-request missing parameters after a loss or timeout. The parameter microservice is documented at https://mavlink.io/en/services/parameter.html
@@ -17,11 +18,11 @@ export class ParamValue extends MAVLinkMessage {
 	public _message_id: number = 22;
 	public _message_name: string = 'PARAM_VALUE';
 	public _crc_extra: number = 220;
-	public _message_fields: [string, string, boolean][] = [
-		['param_value', 'float', false],
-		['param_count', 'uint16_t', false],
-		['param_index', 'uint16_t', false],
-		['param_id', 'char', false],
-		['param_type', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['param_value', 'float', false, 0],
+		['param_count', 'uint16_t', false, 0],
+		['param_index', 'uint16_t', false, 0],
+		['param_id', 'char', false, 16],
+		['param_type', 'uint8_t', false, 0],
 	];
 }

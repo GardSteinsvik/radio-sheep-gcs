@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Reply to LOG_REQUEST_LIST
 */
@@ -16,11 +17,11 @@ export class LogEntry extends MAVLinkMessage {
 	public _message_id: number = 118;
 	public _message_name: string = 'LOG_ENTRY';
 	public _crc_extra: number = 56;
-	public _message_fields: [string, string, boolean][] = [
-		['time_utc', 'uint32_t', false],
-		['size', 'uint32_t', false],
-		['id', 'uint16_t', false],
-		['num_logs', 'uint16_t', false],
-		['last_log_num', 'uint16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_utc', 'uint32_t', false, 0],
+		['size', 'uint32_t', false, 0],
+		['id', 'uint16_t', false, 0],
+		['num_logs', 'uint16_t', false, 0],
+		['last_log_num', 'uint16_t', false, 0],
 	];
 }

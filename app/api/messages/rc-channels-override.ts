@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The RAW values of the RC channels sent to the MAV to override info received from the RC radio. The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%. Individual receivers/transmitters might violate this specification.  Note carefully the semantic differences between the first 8 channels and the subsequent channels
 */
@@ -46,26 +47,26 @@ export class RcChannelsOverride extends MAVLinkMessage {
 	public _message_id: number = 70;
 	public _message_name: string = 'RC_CHANNELS_OVERRIDE';
 	public _crc_extra: number = 124;
-	public _message_fields: [string, string, boolean][] = [
-		['chan1_raw', 'uint16_t', false],
-		['chan2_raw', 'uint16_t', false],
-		['chan3_raw', 'uint16_t', false],
-		['chan4_raw', 'uint16_t', false],
-		['chan5_raw', 'uint16_t', false],
-		['chan6_raw', 'uint16_t', false],
-		['chan7_raw', 'uint16_t', false],
-		['chan8_raw', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['chan9_raw', 'uint16_t', true],
-		['chan10_raw', 'uint16_t', true],
-		['chan11_raw', 'uint16_t', true],
-		['chan12_raw', 'uint16_t', true],
-		['chan13_raw', 'uint16_t', true],
-		['chan14_raw', 'uint16_t', true],
-		['chan15_raw', 'uint16_t', true],
-		['chan16_raw', 'uint16_t', true],
-		['chan17_raw', 'uint16_t', true],
-		['chan18_raw', 'uint16_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['chan1_raw', 'uint16_t', false, 0],
+		['chan2_raw', 'uint16_t', false, 0],
+		['chan3_raw', 'uint16_t', false, 0],
+		['chan4_raw', 'uint16_t', false, 0],
+		['chan5_raw', 'uint16_t', false, 0],
+		['chan6_raw', 'uint16_t', false, 0],
+		['chan7_raw', 'uint16_t', false, 0],
+		['chan8_raw', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['chan9_raw', 'uint16_t', true, 0],
+		['chan10_raw', 'uint16_t', true, 0],
+		['chan11_raw', 'uint16_t', true, 0],
+		['chan12_raw', 'uint16_t', true, 0],
+		['chan13_raw', 'uint16_t', true, 0],
+		['chan14_raw', 'uint16_t', true, 0],
+		['chan15_raw', 'uint16_t', true, 0],
+		['chan16_raw', 'uint16_t', true, 0],
+		['chan17_raw', 'uint16_t', true, 0],
+		['chan18_raw', 'uint16_t', true, 0],
 	];
 }

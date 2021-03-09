@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MagCalStatus} from '../enums/mag-cal-status';
 import {MavSensorOrientation} from '../enums/mav-sensor-orientation';
 /*
@@ -44,24 +45,24 @@ export class MagCalReport extends MAVLinkMessage {
 	public _message_id: number = 192;
 	public _message_name: string = 'MAG_CAL_REPORT';
 	public _crc_extra: number = 36;
-	public _message_fields: [string, string, boolean][] = [
-		['fitness', 'float', false],
-		['ofs_x', 'float', false],
-		['ofs_y', 'float', false],
-		['ofs_z', 'float', false],
-		['diag_x', 'float', false],
-		['diag_y', 'float', false],
-		['diag_z', 'float', false],
-		['offdiag_x', 'float', false],
-		['offdiag_y', 'float', false],
-		['offdiag_z', 'float', false],
-		['compass_id', 'uint8_t', false],
-		['cal_mask', 'uint8_t', false],
-		['cal_status', 'uint8_t', false],
-		['autosaved', 'uint8_t', false],
-		['orientation_confidence', 'float', true],
-		['old_orientation', 'uint8_t', true],
-		['new_orientation', 'uint8_t', true],
-		['scale_factor', 'float', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['fitness', 'float', false, 0],
+		['ofs_x', 'float', false, 0],
+		['ofs_y', 'float', false, 0],
+		['ofs_z', 'float', false, 0],
+		['diag_x', 'float', false, 0],
+		['diag_y', 'float', false, 0],
+		['diag_z', 'float', false, 0],
+		['offdiag_x', 'float', false, 0],
+		['offdiag_y', 'float', false, 0],
+		['offdiag_z', 'float', false, 0],
+		['compass_id', 'uint8_t', false, 0],
+		['cal_mask', 'uint8_t', false, 0],
+		['cal_status', 'uint8_t', false, 0],
+		['autosaved', 'uint8_t', false, 0],
+		['orientation_confidence', 'float', true, 0],
+		['old_orientation', 'uint8_t', true, 0],
+		['new_orientation', 'uint8_t', true, 0],
+		['scale_factor', 'float', true, 0],
 	];
 }

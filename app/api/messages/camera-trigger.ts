@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Camera-IMU triggering and synchronisation message.
 */
@@ -10,8 +11,8 @@ export class CameraTrigger extends MAVLinkMessage {
 	public _message_id: number = 112;
 	public _message_name: string = 'CAMERA_TRIGGER';
 	public _crc_extra: number = 174;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['seq', 'uint32_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['seq', 'uint32_t', false, 0],
 	];
 }

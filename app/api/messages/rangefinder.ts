@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Rangefinder reporting.
 */
@@ -10,8 +11,8 @@ export class Rangefinder extends MAVLinkMessage {
 	public _message_id: number = 173;
 	public _message_name: string = 'RANGEFINDER';
 	public _crc_extra: number = 83;
-	public _message_fields: [string, string, boolean][] = [
-		['distance', 'float', false],
-		['voltage', 'float', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['distance', 'float', false, 0],
+		['voltage', 'float', false, 0],
 	];
 }

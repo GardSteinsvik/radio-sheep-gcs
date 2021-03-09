@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Information about flight since last arming.
 */
@@ -14,10 +15,10 @@ export class FlightInformation extends MAVLinkMessage {
 	public _message_id: number = 264;
 	public _message_name: string = 'FLIGHT_INFORMATION';
 	public _crc_extra: number = 49;
-	public _message_fields: [string, string, boolean][] = [
-		['arming_time_utc', 'uint64_t', false],
-		['takeoff_time_utc', 'uint64_t', false],
-		['flight_uuid', 'uint64_t', false],
-		['time_boot_ms', 'uint32_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['arming_time_utc', 'uint64_t', false, 0],
+		['takeoff_time_utc', 'uint64_t', false, 0],
+		['flight_uuid', 'uint64_t', false, 0],
+		['time_boot_ms', 'uint32_t', false, 0],
 	];
 }

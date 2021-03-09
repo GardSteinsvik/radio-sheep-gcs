@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 This message can be requested by sending the MAV_CMD_GET_HOME_POSITION command. The position the system will return to and land on. The position is set automatically by the system during the takeoff in case it was not explicitly set by the operator before or after. The global and local positions encode the position in the respective coordinate frames, while the q parameter encodes the orientation of the surface. Under normal conditions it describes the heading and terrain slope, which can be used by the aircraft to adjust the approach. The approach 3D vector describes the point to which the system should fly in normal flight mode and then perform a landing sequence along the vector.
 */
@@ -20,7 +21,7 @@ export class HomePosition extends MAVLinkMessage {
 	public x!: number;
 	public y!: number;
 	public z!: number;
-	public q!: number;
+	public q!: number[];
 	public approach_x!: number;
 	public approach_y!: number;
 	public approach_z!: number;
@@ -28,17 +29,17 @@ export class HomePosition extends MAVLinkMessage {
 	public _message_id: number = 242;
 	public _message_name: string = 'HOME_POSITION';
 	public _crc_extra: number = 104;
-	public _message_fields: [string, string, boolean][] = [
-		['latitude', 'int32_t', false],
-		['longitude', 'int32_t', false],
-		['altitude', 'int32_t', false],
-		['x', 'float', false],
-		['y', 'float', false],
-		['z', 'float', false],
-		['q', 'float', false],
-		['approach_x', 'float', false],
-		['approach_y', 'float', false],
-		['approach_z', 'float', false],
-		['time_usec', 'uint64_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['latitude', 'int32_t', false, 0],
+		['longitude', 'int32_t', false, 0],
+		['altitude', 'int32_t', false, 0],
+		['x', 'float', false, 0],
+		['y', 'float', false, 0],
+		['z', 'float', false, 0],
+		['q', 'float', false, 4],
+		['approach_x', 'float', false, 0],
+		['approach_y', 'float', false, 0],
+		['approach_z', 'float', false, 0],
+		['time_usec', 'uint64_t', true, 0],
 	];
 }

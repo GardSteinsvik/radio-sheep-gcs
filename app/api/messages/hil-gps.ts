@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The global position, as returned by the Global Positioning System (GPS). This is
                  NOT the global position estimate of the sytem, but rather a RAW sensor value. See message GLOBAL_POSITION for the global position estimate.
@@ -37,21 +38,21 @@ export class HilGps extends MAVLinkMessage {
 	public _message_id: number = 113;
 	public _message_name: string = 'HIL_GPS';
 	public _crc_extra: number = 124;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['lat', 'int32_t', false],
-		['lon', 'int32_t', false],
-		['alt', 'int32_t', false],
-		['eph', 'uint16_t', false],
-		['epv', 'uint16_t', false],
-		['vel', 'uint16_t', false],
-		['vn', 'int16_t', false],
-		['ve', 'int16_t', false],
-		['vd', 'int16_t', false],
-		['cog', 'uint16_t', false],
-		['fix_type', 'uint8_t', false],
-		['satellites_visible', 'uint8_t', false],
-		['id', 'uint8_t', true],
-		['yaw', 'uint16_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lon', 'int32_t', false, 0],
+		['alt', 'int32_t', false, 0],
+		['eph', 'uint16_t', false, 0],
+		['epv', 'uint16_t', false, 0],
+		['vel', 'uint16_t', false, 0],
+		['vn', 'int16_t', false, 0],
+		['ve', 'int16_t', false, 0],
+		['vd', 'int16_t', false, 0],
+		['cog', 'uint16_t', false, 0],
+		['fix_type', 'uint8_t', false, 0],
+		['satellites_visible', 'uint8_t', false, 0],
+		['id', 'uint8_t', true, 0],
+		['yaw', 'uint16_t', true, 0],
 	];
 }

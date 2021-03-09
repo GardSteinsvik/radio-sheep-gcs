@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The filtered global position (e.g. fused GPS and accelerometers). The position is in GPS-frame (right-handed, Z-up). It
                is designed as scaled integer message since the resolution of float is not sufficient.
@@ -25,15 +26,15 @@ export class GlobalPositionInt extends MAVLinkMessage {
 	public _message_id: number = 33;
 	public _message_name: string = 'GLOBAL_POSITION_INT';
 	public _crc_extra: number = 104;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['lat', 'int32_t', false],
-		['lon', 'int32_t', false],
-		['alt', 'int32_t', false],
-		['relative_alt', 'int32_t', false],
-		['vx', 'int16_t', false],
-		['vy', 'int16_t', false],
-		['vz', 'int16_t', false],
-		['hdg', 'uint16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lon', 'int32_t', false, 0],
+		['alt', 'int32_t', false, 0],
+		['relative_alt', 'int32_t', false, 0],
+		['vx', 'int16_t', false, 0],
+		['vy', 'int16_t', false, 0],
+		['vz', 'int16_t', false, 0],
+		['hdg', 'uint16_t', false, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {CameraStatusTypes} from '../enums/camera-status-types';
 /*
 Camera Event.
@@ -25,15 +26,15 @@ export class CameraStatus extends MAVLinkMessage {
 	public _message_id: number = 179;
 	public _message_name: string = 'CAMERA_STATUS';
 	public _crc_extra: number = 189;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['p1', 'float', false],
-		['p2', 'float', false],
-		['p3', 'float', false],
-		['p4', 'float', false],
-		['img_idx', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['cam_idx', 'uint8_t', false],
-		['event_id', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['p1', 'float', false, 0],
+		['p2', 'float', false, 0],
+		['p3', 'float', false, 0],
+		['p4', 'float', false, 0],
+		['img_idx', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['cam_idx', 'uint8_t', false, 0],
+		['event_id', 'uint8_t', false, 0],
 	];
 }

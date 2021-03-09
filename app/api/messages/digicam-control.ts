@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Control on-board Camera Control System to take shots.
 */
@@ -26,16 +27,16 @@ export class DigicamControl extends MAVLinkMessage {
 	public _message_id: number = 155;
 	public _message_name: string = 'DIGICAM_CONTROL';
 	public _crc_extra: number = 22;
-	public _message_fields: [string, string, boolean][] = [
-		['extra_value', 'float', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['session', 'uint8_t', false],
-		['zoom_pos', 'uint8_t', false],
-		['zoom_step', 'int8_t', false],
-		['focus_lock', 'uint8_t', false],
-		['shot', 'uint8_t', false],
-		['command_id', 'uint8_t', false],
-		['extra_param', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['extra_value', 'float', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['session', 'uint8_t', false, 0],
+		['zoom_pos', 'uint8_t', false, 0],
+		['zoom_step', 'int8_t', false, 0],
+		['focus_lock', 'uint8_t', false, 0],
+		['shot', 'uint8_t', false, 0],
+		['command_id', 'uint8_t', false, 0],
+		['extra_param', 'uint8_t', false, 0],
 	];
 }

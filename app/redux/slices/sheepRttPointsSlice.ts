@@ -1,11 +1,24 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../store';
-import {FeatureCollection, Point} from "geojson";
+import {Feature, FeatureCollection, Point} from "geojson";
 
 const sheepRttPoints = createSlice({
     name: 'sheepRttPoints',
     initialState: {value: <FeatureCollection<Point>> {type: "FeatureCollection", features: []}},
     reducers: {
+        storeSheepRttPoint: (state, action: PayloadAction<Feature<Point>>) => {
+            const index = state.value.features.findIndex(({id}) => id === action.payload.properties?.seq)
+            const features = state.value.features.slice();
+            if (index === -1) {
+                features.push(action.payload)
+            } else {
+                features[index] = action.payload
+            }
+            state.value = {
+                type: 'FeatureCollection',
+                features,
+            }
+        },
         setSheepRttPoints: (state, action: PayloadAction<FeatureCollection<Point>>) => {
             state.value = action.payload;
         },
@@ -15,7 +28,7 @@ const sheepRttPoints = createSlice({
     },
 });
 
-export const {setSheepRttPoints, removeSheepRttPoints} = sheepRttPoints.actions;
+export const {storeSheepRttPoint, setSheepRttPoints, removeSheepRttPoints} = sheepRttPoints.actions;
 
 export default sheepRttPoints.reducer;
 

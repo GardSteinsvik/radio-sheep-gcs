@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {UtmFlightState} from '../enums/utm-flight-state';
 import {UtmDataAvailFlags} from '../enums/utm-data-avail-flags';
 /*
@@ -24,7 +25,7 @@ The global position resulting from GPS and sensor fusion.
 // flags Bitwise OR combination of the data available flags. uint8_t
 export class UtmGlobalPosition extends MAVLinkMessage {
 	public time!: number;
-	public uas_id!: number;
+	public uas_id!: number[];
 	public lat!: number;
 	public lon!: number;
 	public alt!: number;
@@ -44,24 +45,24 @@ export class UtmGlobalPosition extends MAVLinkMessage {
 	public _message_id: number = 340;
 	public _message_name: string = 'UTM_GLOBAL_POSITION';
 	public _crc_extra: number = 99;
-	public _message_fields: [string, string, boolean][] = [
-		['time', 'uint64_t', false],
-		['lat', 'int32_t', false],
-		['lon', 'int32_t', false],
-		['alt', 'int32_t', false],
-		['relative_alt', 'int32_t', false],
-		['next_lat', 'int32_t', false],
-		['next_lon', 'int32_t', false],
-		['next_alt', 'int32_t', false],
-		['vx', 'int16_t', false],
-		['vy', 'int16_t', false],
-		['vz', 'int16_t', false],
-		['h_acc', 'uint16_t', false],
-		['v_acc', 'uint16_t', false],
-		['vel_acc', 'uint16_t', false],
-		['update_rate', 'uint16_t', false],
-		['uas_id', 'uint8_t', false],
-		['flight_state', 'uint8_t', false],
-		['flags', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time', 'uint64_t', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lon', 'int32_t', false, 0],
+		['alt', 'int32_t', false, 0],
+		['relative_alt', 'int32_t', false, 0],
+		['next_lat', 'int32_t', false, 0],
+		['next_lon', 'int32_t', false, 0],
+		['next_alt', 'int32_t', false, 0],
+		['vx', 'int16_t', false, 0],
+		['vy', 'int16_t', false, 0],
+		['vz', 'int16_t', false, 0],
+		['h_acc', 'uint16_t', false, 0],
+		['v_acc', 'uint16_t', false, 0],
+		['vel_acc', 'uint16_t', false, 0],
+		['update_rate', 'uint16_t', false, 0],
+		['uas_id', 'uint8_t', false, 18],
+		['flight_state', 'uint8_t', false, 0],
+		['flags', 'uint8_t', false, 0],
 	];
 }

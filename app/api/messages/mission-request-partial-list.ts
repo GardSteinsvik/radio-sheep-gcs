@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavMissionType} from '../enums/mav-mission-type';
 /*
 Request a partial list of mission items from the system/component. https://mavlink.io/en/services/mission.html. If start and end index are the same, just send one waypoint.
@@ -17,11 +18,11 @@ export class MissionRequestPartialList extends MAVLinkMessage {
 	public _message_id: number = 37;
 	public _message_name: string = 'MISSION_REQUEST_PARTIAL_LIST';
 	public _crc_extra: number = 212;
-	public _message_fields: [string, string, boolean][] = [
-		['start_index', 'int16_t', false],
-		['end_index', 'int16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['mission_type', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['start_index', 'int16_t', false, 0],
+		['end_index', 'int16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['mission_type', 'uint8_t', true, 0],
 	];
 }

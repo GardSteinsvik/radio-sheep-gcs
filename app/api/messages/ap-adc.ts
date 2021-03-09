@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Raw ADC output.
 */
@@ -18,12 +19,12 @@ export class ApAdc extends MAVLinkMessage {
 	public _message_id: number = 153;
 	public _message_name: string = 'AP_ADC';
 	public _crc_extra: number = 188;
-	public _message_fields: [string, string, boolean][] = [
-		['adc1', 'uint16_t', false],
-		['adc2', 'uint16_t', false],
-		['adc3', 'uint16_t', false],
-		['adc4', 'uint16_t', false],
-		['adc5', 'uint16_t', false],
-		['adc6', 'uint16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['adc1', 'uint16_t', false, 0],
+		['adc2', 'uint16_t', false, 0],
+		['adc3', 'uint16_t', false, 0],
+		['adc4', 'uint16_t', false, 0],
+		['adc5', 'uint16_t', false, 0],
+		['adc6', 'uint16_t', false, 0],
 	];
 }

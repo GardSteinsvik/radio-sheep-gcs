@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 A certain mission item has been reached. The system will either hold this position (or circle on the orbit) or (if the autocontinue on the WP was set) continue to the next waypoint.
 */
@@ -8,7 +9,7 @@ export class MissionItemReached extends MAVLinkMessage {
 	public _message_id: number = 46;
 	public _message_name: string = 'MISSION_ITEM_REACHED';
 	public _crc_extra: number = 11;
-	public _message_fields: [string, string, boolean][] = [
-		['seq', 'uint16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['seq', 'uint16_t', false, 0],
 	];
 }

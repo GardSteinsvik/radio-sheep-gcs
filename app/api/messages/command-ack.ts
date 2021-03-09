@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavCmd} from '../enums/mav-cmd';
 import {MavResult} from '../enums/mav-result';
 /*
@@ -20,12 +21,12 @@ export class CommandAck extends MAVLinkMessage {
 	public _message_id: number = 77;
 	public _message_name: string = 'COMMAND_ACK';
 	public _crc_extra: number = 143;
-	public _message_fields: [string, string, boolean][] = [
-		['command', 'uint16_t', false],
-		['result', 'uint8_t', false],
-		['progress', 'uint8_t', true],
-		['result_param2', 'int32_t', true],
-		['target_system', 'uint8_t', true],
-		['target_component', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['command', 'uint16_t', false, 0],
+		['result', 'uint8_t', false, 0],
+		['progress', 'uint8_t', true, 0],
+		['result_param2', 'int32_t', true, 0],
+		['target_system', 'uint8_t', true, 0],
+		['target_component', 'uint8_t', true, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Setpoint in roll, pitch, yaw and thrust from the operator
 */
@@ -20,13 +21,13 @@ export class ManualSetpoint extends MAVLinkMessage {
 	public _message_id: number = 81;
 	public _message_name: string = 'MANUAL_SETPOINT';
 	public _crc_extra: number = 106;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['roll', 'float', false],
-		['pitch', 'float', false],
-		['yaw', 'float', false],
-		['thrust', 'float', false],
-		['mode_switch', 'uint8_t', false],
-		['manual_override_switch', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['roll', 'float', false, 0],
+		['pitch', 'float', false, 0],
+		['yaw', 'float', false, 0],
+		['thrust', 'float', false, 0],
+		['mode_switch', 'uint8_t', false, 0],
+		['manual_override_switch', 'uint8_t', false, 0],
 	];
 }

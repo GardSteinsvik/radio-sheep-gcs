@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {RallyFlags} from '../enums/rally-flags';
 /*
 A rally point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS.
@@ -27,16 +28,16 @@ export class RallyPoint extends MAVLinkMessage {
 	public _message_id: number = 175;
 	public _message_name: string = 'RALLY_POINT';
 	public _crc_extra: number = 138;
-	public _message_fields: [string, string, boolean][] = [
-		['lat', 'int32_t', false],
-		['lng', 'int32_t', false],
-		['alt', 'int16_t', false],
-		['break_alt', 'int16_t', false],
-		['land_dir', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['idx', 'uint8_t', false],
-		['count', 'uint8_t', false],
-		['flags', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['lat', 'int32_t', false, 0],
+		['lng', 'int32_t', false, 0],
+		['alt', 'int16_t', false, 0],
+		['break_alt', 'int16_t', false, 0],
+		['land_dir', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['idx', 'uint8_t', false, 0],
+		['count', 'uint8_t', false, 0],
+		['flags', 'uint8_t', false, 0],
 	];
 }

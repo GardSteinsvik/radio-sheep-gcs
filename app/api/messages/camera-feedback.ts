@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {CameraFeedbackFlags} from '../enums/camera-feedback-flags';
 /*
 Camera Capture Feedback.
@@ -35,20 +36,20 @@ export class CameraFeedback extends MAVLinkMessage {
 	public _message_id: number = 180;
 	public _message_name: string = 'CAMERA_FEEDBACK';
 	public _crc_extra: number = 52;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['lat', 'int32_t', false],
-		['lng', 'int32_t', false],
-		['alt_msl', 'float', false],
-		['alt_rel', 'float', false],
-		['roll', 'float', false],
-		['pitch', 'float', false],
-		['yaw', 'float', false],
-		['foc_len', 'float', false],
-		['img_idx', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['cam_idx', 'uint8_t', false],
-		['flags', 'uint8_t', false],
-		['completed_captures', 'uint16_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lng', 'int32_t', false, 0],
+		['alt_msl', 'float', false, 0],
+		['alt_rel', 'float', false, 0],
+		['roll', 'float', false, 0],
+		['pitch', 'float', false, 0],
+		['yaw', 'float', false, 0],
+		['foc_len', 'float', false, 0],
+		['img_idx', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['cam_idx', 'uint8_t', false, 0],
+		['flags', 'uint8_t', false, 0],
+		['completed_captures', 'uint16_t', true, 0],
 	];
 }

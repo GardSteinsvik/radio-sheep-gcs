@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Request the autopilot version from the system/component.
 */
@@ -10,8 +11,8 @@ export class AutopilotVersionRequest extends MAVLinkMessage {
 	public _message_id: number = 183;
 	public _message_name: string = 'AUTOPILOT_VERSION_REQUEST';
 	public _crc_extra: number = 85;
-	public _message_fields: [string, string, boolean][] = [
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
 	];
 }

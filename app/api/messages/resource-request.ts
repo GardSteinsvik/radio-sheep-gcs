@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The autopilot is requesting a resource (file, binary, other type of data)
 */
@@ -10,17 +11,17 @@ The autopilot is requesting a resource (file, binary, other type of data)
 export class ResourceRequest extends MAVLinkMessage {
 	public request_id!: number;
 	public uri_type!: number;
-	public uri!: number;
+	public uri!: number[];
 	public transfer_type!: number;
-	public storage!: number;
+	public storage!: number[];
 	public _message_id: number = 142;
 	public _message_name: string = 'RESOURCE_REQUEST';
 	public _crc_extra: number = 72;
-	public _message_fields: [string, string, boolean][] = [
-		['request_id', 'uint8_t', false],
-		['uri_type', 'uint8_t', false],
-		['uri', 'uint8_t', false],
-		['transfer_type', 'uint8_t', false],
-		['storage', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['request_id', 'uint8_t', false, 0],
+		['uri_type', 'uint8_t', false, 0],
+		['uri', 'uint8_t', false, 120],
+		['transfer_type', 'uint8_t', false, 0],
+		['storage', 'uint8_t', false, 120],
 	];
 }

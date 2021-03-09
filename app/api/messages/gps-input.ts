@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {GpsInputIgnoreFlags} from '../enums/gps-input-ignore-flags';
 /*
 GPS sensor input message.  This is a raw sensor value sent by the GPS. This is NOT the global position estimate of the system.
@@ -45,25 +46,25 @@ export class GpsInput extends MAVLinkMessage {
 	public _message_id: number = 232;
 	public _message_name: string = 'GPS_INPUT';
 	public _crc_extra: number = 151;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['time_week_ms', 'uint32_t', false],
-		['lat', 'int32_t', false],
-		['lon', 'int32_t', false],
-		['alt', 'float', false],
-		['hdop', 'float', false],
-		['vdop', 'float', false],
-		['vn', 'float', false],
-		['ve', 'float', false],
-		['vd', 'float', false],
-		['speed_accuracy', 'float', false],
-		['horiz_accuracy', 'float', false],
-		['vert_accuracy', 'float', false],
-		['ignore_flags', 'uint16_t', false],
-		['time_week', 'uint16_t', false],
-		['gps_id', 'uint8_t', false],
-		['fix_type', 'uint8_t', false],
-		['satellites_visible', 'uint8_t', false],
-		['yaw', 'uint16_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['time_week_ms', 'uint32_t', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lon', 'int32_t', false, 0],
+		['alt', 'float', false, 0],
+		['hdop', 'float', false, 0],
+		['vdop', 'float', false, 0],
+		['vn', 'float', false, 0],
+		['ve', 'float', false, 0],
+		['vd', 'float', false, 0],
+		['speed_accuracy', 'float', false, 0],
+		['horiz_accuracy', 'float', false, 0],
+		['vert_accuracy', 'float', false, 0],
+		['ignore_flags', 'uint16_t', false, 0],
+		['time_week', 'uint16_t', false, 0],
+		['gps_id', 'uint8_t', false, 0],
+		['fix_type', 'uint8_t', false, 0],
+		['satellites_visible', 'uint8_t', false, 0],
+		['yaw', 'uint16_t', true, 0],
 	];
 }

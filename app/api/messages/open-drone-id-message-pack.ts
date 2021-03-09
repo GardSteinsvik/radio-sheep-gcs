@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 An OpenDroneID message pack is a container for multiple encoded OpenDroneID messages (i.e. not in the format given for the above messages descriptions but after encoding into the compressed OpenDroneID byte format). Used e.g. when transmitting on Bluetooth 5.0 Long Range/Extended Advertising or on WiFi Neighbor Aware Networking.
 */
@@ -12,15 +13,15 @@ export class OpenDroneIdMessagePack extends MAVLinkMessage {
 	public target_component!: number;
 	public single_message_size!: number;
 	public msg_pack_size!: number;
-	public messages!: number;
+	public messages!: number[];
 	public _message_id: number = 12915;
 	public _message_name: string = 'OPEN_DRONE_ID_MESSAGE_PACK';
 	public _crc_extra: number = 62;
-	public _message_fields: [string, string, boolean][] = [
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['single_message_size', 'uint8_t', false],
-		['msg_pack_size', 'uint8_t', false],
-		['messages', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['single_message_size', 'uint8_t', false, 0],
+		['msg_pack_size', 'uint8_t', false, 0],
+		['messages', 'uint8_t', false, 250],
 	];
 }

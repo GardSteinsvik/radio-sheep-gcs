@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Reply to LOG_REQUEST_DATA
 */
@@ -10,14 +11,14 @@ export class LogData extends MAVLinkMessage {
 	public id!: number;
 	public ofs!: number;
 	public count!: number;
-	public data!: number;
+	public data!: number[];
 	public _message_id: number = 120;
 	public _message_name: string = 'LOG_DATA';
 	public _crc_extra: number = 134;
-	public _message_fields: [string, string, boolean][] = [
-		['ofs', 'uint32_t', false],
-		['id', 'uint16_t', false],
-		['count', 'uint8_t', false],
-		['data', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['ofs', 'uint32_t', false, 0],
+		['id', 'uint16_t', false, 0],
+		['count', 'uint8_t', false, 0],
+		['data', 'uint8_t', false, 90],
 	];
 }

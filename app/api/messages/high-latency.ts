@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavModeFlag} from '../enums/mav-mode-flag';
 import {MavLandedState} from '../enums/mav-landed-state';
 import {GpsFixType} from '../enums/gps-fix-type';
@@ -57,30 +58,30 @@ export class HighLatency extends MAVLinkMessage {
 	public _message_id: number = 234;
 	public _message_name: string = 'HIGH_LATENCY';
 	public _crc_extra: number = 150;
-	public _message_fields: [string, string, boolean][] = [
-		['custom_mode', 'uint32_t', false],
-		['latitude', 'int32_t', false],
-		['longitude', 'int32_t', false],
-		['roll', 'int16_t', false],
-		['pitch', 'int16_t', false],
-		['heading', 'uint16_t', false],
-		['heading_sp', 'int16_t', false],
-		['altitude_amsl', 'int16_t', false],
-		['altitude_sp', 'int16_t', false],
-		['wp_distance', 'uint16_t', false],
-		['base_mode', 'uint8_t', false],
-		['landed_state', 'uint8_t', false],
-		['throttle', 'int8_t', false],
-		['airspeed', 'uint8_t', false],
-		['airspeed_sp', 'uint8_t', false],
-		['groundspeed', 'uint8_t', false],
-		['climb_rate', 'int8_t', false],
-		['gps_nsat', 'uint8_t', false],
-		['gps_fix_type', 'uint8_t', false],
-		['battery_remaining', 'uint8_t', false],
-		['temperature', 'int8_t', false],
-		['temperature_air', 'int8_t', false],
-		['failsafe', 'uint8_t', false],
-		['wp_num', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['custom_mode', 'uint32_t', false, 0],
+		['latitude', 'int32_t', false, 0],
+		['longitude', 'int32_t', false, 0],
+		['roll', 'int16_t', false, 0],
+		['pitch', 'int16_t', false, 0],
+		['heading', 'uint16_t', false, 0],
+		['heading_sp', 'int16_t', false, 0],
+		['altitude_amsl', 'int16_t', false, 0],
+		['altitude_sp', 'int16_t', false, 0],
+		['wp_distance', 'uint16_t', false, 0],
+		['base_mode', 'uint8_t', false, 0],
+		['landed_state', 'uint8_t', false, 0],
+		['throttle', 'int8_t', false, 0],
+		['airspeed', 'uint8_t', false, 0],
+		['airspeed_sp', 'uint8_t', false, 0],
+		['groundspeed', 'uint8_t', false, 0],
+		['climb_rate', 'int8_t', false, 0],
+		['gps_nsat', 'uint8_t', false, 0],
+		['gps_fix_type', 'uint8_t', false, 0],
+		['battery_remaining', 'uint8_t', false, 0],
+		['temperature', 'int8_t', false, 0],
+		['temperature_air', 'int8_t', false, 0],
+		['failsafe', 'uint8_t', false, 0],
+		['wp_num', 'uint8_t', false, 0],
 	];
 }

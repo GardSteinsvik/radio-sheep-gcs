@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Set the magnetometer offsets
 */
@@ -16,11 +17,11 @@ export class SetMagOffsets extends MAVLinkMessage {
 	public _message_id: number = 151;
 	public _message_name: string = 'SET_MAG_OFFSETS';
 	public _crc_extra: number = 219;
-	public _message_fields: [string, string, boolean][] = [
-		['mag_ofs_x', 'int16_t', false],
-		['mag_ofs_y', 'int16_t', false],
-		['mag_ofs_z', 'int16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['mag_ofs_x', 'int16_t', false, 0],
+		['mag_ofs_y', 'int16_t', false, 0],
+		['mag_ofs_z', 'int16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
 	];
 }

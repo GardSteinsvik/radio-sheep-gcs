@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {CameraMode} from '../enums/camera-mode';
 /*
 Settings of a camera. Can be requested with a MAV_CMD_REQUEST_MESSAGE command.
@@ -15,10 +16,10 @@ export class CameraSettings extends MAVLinkMessage {
 	public _message_id: number = 260;
 	public _message_name: string = 'CAMERA_SETTINGS';
 	public _crc_extra: number = 146;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['mode_id', 'uint8_t', false],
-		['zoomLevel', 'float', true],
-		['focusLevel', 'float', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['mode_id', 'uint8_t', false, 0],
+		['zoomLevel', 'float', true, 0],
+		['focusLevel', 'float', true, 0],
 	];
 }

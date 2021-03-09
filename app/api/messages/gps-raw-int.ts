@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {GpsFixType} from '../enums/gps-fix-type';
 /*
 The global position, as returned by the Global Positioning System (GPS). This is
@@ -40,22 +41,22 @@ export class GpsRawInt extends MAVLinkMessage {
 	public _message_id: number = 24;
 	public _message_name: string = 'GPS_RAW_INT';
 	public _crc_extra: number = 24;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['lat', 'int32_t', false],
-		['lon', 'int32_t', false],
-		['alt', 'int32_t', false],
-		['eph', 'uint16_t', false],
-		['epv', 'uint16_t', false],
-		['vel', 'uint16_t', false],
-		['cog', 'uint16_t', false],
-		['fix_type', 'uint8_t', false],
-		['satellites_visible', 'uint8_t', false],
-		['alt_ellipsoid', 'int32_t', true],
-		['h_acc', 'uint32_t', true],
-		['v_acc', 'uint32_t', true],
-		['vel_acc', 'uint32_t', true],
-		['hdg_acc', 'uint32_t', true],
-		['yaw', 'uint16_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lon', 'int32_t', false, 0],
+		['alt', 'int32_t', false, 0],
+		['eph', 'uint16_t', false, 0],
+		['epv', 'uint16_t', false, 0],
+		['vel', 'uint16_t', false, 0],
+		['cog', 'uint16_t', false, 0],
+		['fix_type', 'uint8_t', false, 0],
+		['satellites_visible', 'uint8_t', false, 0],
+		['alt_ellipsoid', 'int32_t', true, 0],
+		['h_acc', 'uint32_t', true, 0],
+		['v_acc', 'uint32_t', true, 0],
+		['vel_acc', 'uint32_t', true, 0],
+		['hdg_acc', 'uint32_t', true, 0],
+		['yaw', 'uint16_t', true, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavMode} from '../enums/mav-mode';
 /*
 Sent from autopilot to simulation. Hardware in the loop control outputs
@@ -29,17 +30,17 @@ export class HilControls extends MAVLinkMessage {
 	public _message_id: number = 91;
 	public _message_name: string = 'HIL_CONTROLS';
 	public _crc_extra: number = 63;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['roll_ailerons', 'float', false],
-		['pitch_elevator', 'float', false],
-		['yaw_rudder', 'float', false],
-		['throttle', 'float', false],
-		['aux1', 'float', false],
-		['aux2', 'float', false],
-		['aux3', 'float', false],
-		['aux4', 'float', false],
-		['mode', 'uint8_t', false],
-		['nav_mode', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['roll_ailerons', 'float', false, 0],
+		['pitch_elevator', 'float', false, 0],
+		['yaw_rudder', 'float', false, 0],
+		['throttle', 'float', false, 0],
+		['aux1', 'float', false, 0],
+		['aux2', 'float', false, 0],
+		['aux3', 'float', false, 0],
+		['aux4', 'float', false, 0],
+		['mode', 'uint8_t', false, 0],
+		['nav_mode', 'uint8_t', false, 0],
 	];
 }

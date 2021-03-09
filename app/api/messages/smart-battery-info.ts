@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavBatteryFunction} from '../enums/mav-battery-function';
 import {MavBatteryType} from '../enums/mav-battery-type';
 /*
@@ -32,18 +33,18 @@ export class SmartBatteryInfo extends MAVLinkMessage {
 	public _message_id: number = 370;
 	public _message_name: string = 'SMART_BATTERY_INFO';
 	public _crc_extra: number = 75;
-	public _message_fields: [string, string, boolean][] = [
-		['capacity_full_specification', 'int32_t', false],
-		['capacity_full', 'int32_t', false],
-		['cycle_count', 'uint16_t', false],
-		['weight', 'uint16_t', false],
-		['discharge_minimum_voltage', 'uint16_t', false],
-		['charging_minimum_voltage', 'uint16_t', false],
-		['resting_minimum_voltage', 'uint16_t', false],
-		['id', 'uint8_t', false],
-		['battery_function', 'uint8_t', false],
-		['type', 'uint8_t', false],
-		['serial_number', 'char', false],
-		['device_name', 'char', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['capacity_full_specification', 'int32_t', false, 0],
+		['capacity_full', 'int32_t', false, 0],
+		['cycle_count', 'uint16_t', false, 0],
+		['weight', 'uint16_t', false, 0],
+		['discharge_minimum_voltage', 'uint16_t', false, 0],
+		['charging_minimum_voltage', 'uint16_t', false, 0],
+		['resting_minimum_voltage', 'uint16_t', false, 0],
+		['id', 'uint8_t', false, 0],
+		['battery_function', 'uint8_t', false, 0],
+		['type', 'uint8_t', false, 0],
+		['serial_number', 'char', false, 16],
+		['device_name', 'char', false, 50],
 	];
 }

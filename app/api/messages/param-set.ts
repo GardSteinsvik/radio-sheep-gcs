@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavParamType} from '../enums/mav-param-type';
 /*
 Set a parameter value (write new value to permanent storage).
@@ -19,11 +20,11 @@ export class ParamSet extends MAVLinkMessage {
 	public _message_id: number = 23;
 	public _message_name: string = 'PARAM_SET';
 	public _crc_extra: number = 168;
-	public _message_fields: [string, string, boolean][] = [
-		['param_value', 'float', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['param_id', 'char', false],
-		['param_type', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['param_value', 'float', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['param_id', 'char', false, 16],
+		['param_type', 'uint8_t', false, 0],
 	];
 }

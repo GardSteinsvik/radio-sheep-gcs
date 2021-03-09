@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavOdidStatus} from '../enums/mav-odid-status';
 import {MavOdidHeightRef} from '../enums/mav-odid-height-ref';
 import {MavOdidHorAcc} from '../enums/mav-odid-hor-acc';
@@ -30,7 +31,7 @@ Data for filling the OpenDroneID Location message. The float data types are 32-b
 export class OpenDroneIdLocation extends MAVLinkMessage {
 	public target_system!: number;
 	public target_component!: number;
-	public id_or_mac!: number;
+	public id_or_mac!: number[];
 	public status!: MavOdidStatus;
 	public direction!: number;
 	public speed_horizontal!: number;
@@ -50,25 +51,25 @@ export class OpenDroneIdLocation extends MAVLinkMessage {
 	public _message_id: number = 12901;
 	public _message_name: string = 'OPEN_DRONE_ID_LOCATION';
 	public _crc_extra: number = 254;
-	public _message_fields: [string, string, boolean][] = [
-		['latitude', 'int32_t', false],
-		['longitude', 'int32_t', false],
-		['altitude_barometric', 'float', false],
-		['altitude_geodetic', 'float', false],
-		['height', 'float', false],
-		['timestamp', 'float', false],
-		['direction', 'uint16_t', false],
-		['speed_horizontal', 'uint16_t', false],
-		['speed_vertical', 'int16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['id_or_mac', 'uint8_t', false],
-		['status', 'uint8_t', false],
-		['height_reference', 'uint8_t', false],
-		['horizontal_accuracy', 'uint8_t', false],
-		['vertical_accuracy', 'uint8_t', false],
-		['barometer_accuracy', 'uint8_t', false],
-		['speed_accuracy', 'uint8_t', false],
-		['timestamp_accuracy', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['latitude', 'int32_t', false, 0],
+		['longitude', 'int32_t', false, 0],
+		['altitude_barometric', 'float', false, 0],
+		['altitude_geodetic', 'float', false, 0],
+		['height', 'float', false, 0],
+		['timestamp', 'float', false, 0],
+		['direction', 'uint16_t', false, 0],
+		['speed_horizontal', 'uint16_t', false, 0],
+		['speed_vertical', 'int16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['id_or_mac', 'uint8_t', false, 20],
+		['status', 'uint8_t', false, 0],
+		['height_reference', 'uint8_t', false, 0],
+		['horizontal_accuracy', 'uint8_t', false, 0],
+		['vertical_accuracy', 'uint8_t', false, 0],
+		['barometer_accuracy', 'uint8_t', false, 0],
+		['speed_accuracy', 'uint8_t', false, 0],
+		['timestamp_accuracy', 'uint8_t', false, 0],
 	];
 }

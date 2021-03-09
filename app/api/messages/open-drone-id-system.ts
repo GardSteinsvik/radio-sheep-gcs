@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavOdidOperatorLocationType} from '../enums/mav-odid-operator-location-type';
 import {MavOdidClassificationType} from '../enums/mav-odid-classification-type';
 import {MavOdidCategoryEu} from '../enums/mav-odid-category-eu';
@@ -22,7 +23,7 @@ Data for filling the OpenDroneID System message. The System Message contains gen
 export class OpenDroneIdSystem extends MAVLinkMessage {
 	public target_system!: number;
 	public target_component!: number;
-	public id_or_mac!: number;
+	public id_or_mac!: number[];
 	public operator_location_type!: MavOdidOperatorLocationType;
 	public classification_type!: MavOdidClassificationType;
 	public operator_latitude!: number;
@@ -36,19 +37,19 @@ export class OpenDroneIdSystem extends MAVLinkMessage {
 	public _message_id: number = 12904;
 	public _message_name: string = 'OPEN_DRONE_ID_SYSTEM';
 	public _crc_extra: number = 203;
-	public _message_fields: [string, string, boolean][] = [
-		['operator_latitude', 'int32_t', false],
-		['operator_longitude', 'int32_t', false],
-		['area_ceiling', 'float', false],
-		['area_floor', 'float', false],
-		['area_count', 'uint16_t', false],
-		['area_radius', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['id_or_mac', 'uint8_t', false],
-		['operator_location_type', 'uint8_t', false],
-		['classification_type', 'uint8_t', false],
-		['category_eu', 'uint8_t', false],
-		['class_eu', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['operator_latitude', 'int32_t', false, 0],
+		['operator_longitude', 'int32_t', false, 0],
+		['area_ceiling', 'float', false, 0],
+		['area_floor', 'float', false, 0],
+		['area_count', 'uint16_t', false, 0],
+		['area_radius', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['id_or_mac', 'uint8_t', false, 20],
+		['operator_location_type', 'uint8_t', false, 0],
+		['classification_type', 'uint8_t', false, 0],
+		['category_eu', 'uint8_t', false, 0],
+		['class_eu', 'uint8_t', false, 0],
 	];
 }

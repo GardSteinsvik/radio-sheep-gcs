@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Request to read the value of a parameter with either the param_id string id or param_index. PARAM_EXT_VALUE should be emitted in response.
 */
@@ -14,10 +15,10 @@ export class ParamExtRequestRead extends MAVLinkMessage {
 	public _message_id: number = 320;
 	public _message_name: string = 'PARAM_EXT_REQUEST_READ';
 	public _crc_extra: number = 243;
-	public _message_fields: [string, string, boolean][] = [
-		['param_index', 'int16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['param_id', 'char', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['param_index', 'int16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['param_id', 'char', false, 16],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Barometer readings for 2nd barometer
 */
@@ -16,11 +17,11 @@ export class ScaledPressure2 extends MAVLinkMessage {
 	public _message_id: number = 137;
 	public _message_name: string = 'SCALED_PRESSURE2';
 	public _crc_extra: number = 195;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['press_abs', 'float', false],
-		['press_diff', 'float', false],
-		['temperature', 'int16_t', false],
-		['temperature_press_diff', 'int16_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['press_abs', 'float', false, 0],
+		['press_diff', 'float', false, 0],
+		['temperature', 'int16_t', false, 0],
+		['temperature_press_diff', 'int16_t', true, 0],
 	];
 }

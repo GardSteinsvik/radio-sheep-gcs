@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 General information describing a particular UAVCAN node. Please refer to the definition of the UAVCAN service "uavcan.protocol.GetNodeInfo" for the background information. This message should be emitted by the system whenever a new node appears online, or an existing node reboots. Additionally, it can be emitted upon request from the other end of the MAVLink channel (see MAV_CMD_UAVCAN_GET_NODE_INFO). It is also not prohibited to emit this message unconditionally at a low frequency. The UAVCAN specification is available at http://uavcan.org.
 */
@@ -17,22 +18,22 @@ export class UavcanNodeInfo extends MAVLinkMessage {
 	public name!: string;
 	public hw_version_major!: number;
 	public hw_version_minor!: number;
-	public hw_unique_id!: number;
+	public hw_unique_id!: number[];
 	public sw_version_major!: number;
 	public sw_version_minor!: number;
 	public sw_vcs_commit!: number;
 	public _message_id: number = 311;
 	public _message_name: string = 'UAVCAN_NODE_INFO';
 	public _crc_extra: number = 95;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['uptime_sec', 'uint32_t', false],
-		['sw_vcs_commit', 'uint32_t', false],
-		['name', 'char', false],
-		['hw_version_major', 'uint8_t', false],
-		['hw_version_minor', 'uint8_t', false],
-		['hw_unique_id', 'uint8_t', false],
-		['sw_version_major', 'uint8_t', false],
-		['sw_version_minor', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['uptime_sec', 'uint32_t', false, 0],
+		['sw_vcs_commit', 'uint32_t', false, 0],
+		['name', 'char', false, 80],
+		['hw_version_major', 'uint8_t', false, 0],
+		['hw_version_minor', 'uint8_t', false, 0],
+		['hw_unique_id', 'uint8_t', false, 16],
+		['sw_version_major', 'uint8_t', false, 0],
+		['sw_version_minor', 'uint8_t', false, 0],
 	];
 }

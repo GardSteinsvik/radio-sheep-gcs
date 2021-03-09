@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The positioning status, as reported by GPS. This message is intended to display status information about each satellite visible to the receiver. See message GLOBAL_POSITION for the global position estimate. This message can contain information for up to 20 satellites.
 */
@@ -10,20 +11,20 @@ The positioning status, as reported by GPS. This message is intended to display 
 // satellite_snr Signal to noise ratio of satellite uint8_t
 export class GpsStatus extends MAVLinkMessage {
 	public satellites_visible!: number;
-	public satellite_prn!: number;
-	public satellite_used!: number;
-	public satellite_elevation!: number;
-	public satellite_azimuth!: number;
-	public satellite_snr!: number;
+	public satellite_prn!: number[];
+	public satellite_used!: number[];
+	public satellite_elevation!: number[];
+	public satellite_azimuth!: number[];
+	public satellite_snr!: number[];
 	public _message_id: number = 25;
 	public _message_name: string = 'GPS_STATUS';
 	public _crc_extra: number = 23;
-	public _message_fields: [string, string, boolean][] = [
-		['satellites_visible', 'uint8_t', false],
-		['satellite_prn', 'uint8_t', false],
-		['satellite_used', 'uint8_t', false],
-		['satellite_elevation', 'uint8_t', false],
-		['satellite_azimuth', 'uint8_t', false],
-		['satellite_snr', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['satellites_visible', 'uint8_t', false, 0],
+		['satellite_prn', 'uint8_t', false, 20],
+		['satellite_used', 'uint8_t', false, 20],
+		['satellite_elevation', 'uint8_t', false, 20],
+		['satellite_azimuth', 'uint8_t', false, 20],
+		['satellite_snr', 'uint8_t', false, 20],
 	];
 }

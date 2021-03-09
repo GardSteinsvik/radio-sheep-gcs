@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavModeFlag} from '../enums/mav-mode-flag';
 /*
 Sent from autopilot to simulation. Hardware in the loop control outputs (replacement for HIL_CONTROLS)
@@ -9,16 +10,16 @@ Sent from autopilot to simulation. Hardware in the loop control outputs (replace
 // flags Flags as bitfield, 1: indicate simulation using lockstep. uint64_t
 export class HilActuatorControls extends MAVLinkMessage {
 	public time_usec!: number;
-	public controls!: number;
+	public controls!: number[];
 	public mode!: MavModeFlag;
 	public flags!: number;
 	public _message_id: number = 93;
 	public _message_name: string = 'HIL_ACTUATOR_CONTROLS';
 	public _crc_extra: number = 47;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['flags', 'uint64_t', false],
-		['controls', 'float', false],
-		['mode', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['flags', 'uint64_t', false, 0],
+		['controls', 'float', false, 16],
+		['mode', 'uint8_t', false, 0],
 	];
 }

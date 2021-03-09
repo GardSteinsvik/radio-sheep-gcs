@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Control message for rate gimbal.
 */
@@ -16,11 +17,11 @@ export class GimbalControl extends MAVLinkMessage {
 	public _message_id: number = 201;
 	public _message_name: string = 'GIMBAL_CONTROL';
 	public _crc_extra: number = 205;
-	public _message_fields: [string, string, boolean][] = [
-		['demanded_rate_x', 'float', false],
-		['demanded_rate_y', 'float', false],
-		['demanded_rate_z', 'float', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['demanded_rate_x', 'float', false, 0],
+		['demanded_rate_y', 'float', false, 0],
+		['demanded_rate_z', 'float', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
 	];
 }

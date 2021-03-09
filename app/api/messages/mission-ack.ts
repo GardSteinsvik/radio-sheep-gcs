@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavMissionResult} from '../enums/mav-mission-result';
 import {MavMissionType} from '../enums/mav-mission-type';
 /*
@@ -16,10 +17,10 @@ export class MissionAck extends MAVLinkMessage {
 	public _message_id: number = 47;
 	public _message_name: string = 'MISSION_ACK';
 	public _crc_extra: number = 153;
-	public _message_fields: [string, string, boolean][] = [
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['type', 'uint8_t', false],
-		['mission_type', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['type', 'uint8_t', false, 0],
+		['mission_type', 'uint8_t', true, 0],
 	];
 }

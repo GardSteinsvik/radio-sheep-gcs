@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {TuneFormat} from '../enums/tune-format';
 /*
 Play vehicle tone/tune (buzzer). Supersedes message PLAY_TUNE.
@@ -15,10 +16,10 @@ export class PlayTuneV2 extends MAVLinkMessage {
 	public _message_id: number = 400;
 	public _message_name: string = 'PLAY_TUNE_V2';
 	public _crc_extra: number = 110;
-	public _message_fields: [string, string, boolean][] = [
-		['format', 'uint32_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['tune', 'char', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['format', 'uint32_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['tune', 'char', false, 248],
 	];
 }

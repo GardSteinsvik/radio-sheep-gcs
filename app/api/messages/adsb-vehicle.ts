@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {AdsbAltitudeType} from '../enums/adsb-altitude-type';
 import {AdsbEmitterType} from '../enums/adsb-emitter-type';
 import {AdsbFlags} from '../enums/adsb-flags';
@@ -35,19 +36,19 @@ export class AdsbVehicle extends MAVLinkMessage {
 	public _message_id: number = 246;
 	public _message_name: string = 'ADSB_VEHICLE';
 	public _crc_extra: number = 184;
-	public _message_fields: [string, string, boolean][] = [
-		['ICAO_address', 'uint32_t', false],
-		['lat', 'int32_t', false],
-		['lon', 'int32_t', false],
-		['altitude', 'int32_t', false],
-		['heading', 'uint16_t', false],
-		['hor_velocity', 'uint16_t', false],
-		['ver_velocity', 'int16_t', false],
-		['flags', 'uint16_t', false],
-		['squawk', 'uint16_t', false],
-		['altitude_type', 'uint8_t', false],
-		['callsign', 'char', false],
-		['emitter_type', 'uint8_t', false],
-		['tslc', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['ICAO_address', 'uint32_t', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lon', 'int32_t', false, 0],
+		['altitude', 'int32_t', false, 0],
+		['heading', 'uint16_t', false, 0],
+		['hor_velocity', 'uint16_t', false, 0],
+		['ver_velocity', 'int16_t', false, 0],
+		['flags', 'uint16_t', false, 0],
+		['squawk', 'uint16_t', false, 0],
+		['altitude_type', 'uint8_t', false, 0],
+		['callsign', 'char', false, 9],
+		['emitter_type', 'uint8_t', false, 0],
+		['tslc', 'uint8_t', false, 0],
 	];
 }

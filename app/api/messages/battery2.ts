@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 2nd Battery status
 */
@@ -10,8 +11,8 @@ export class Battery2 extends MAVLinkMessage {
 	public _message_id: number = 181;
 	public _message_name: string = 'BATTERY2';
 	public _crc_extra: number = 174;
-	public _message_fields: [string, string, boolean][] = [
-		['voltage', 'uint16_t', false],
-		['current_battery', 'int16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['voltage', 'uint16_t', false, 0],
+		['current_battery', 'int16_t', false, 0],
 	];
 }

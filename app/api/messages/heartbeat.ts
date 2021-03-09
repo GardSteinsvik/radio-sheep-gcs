@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavType} from '../enums/mav-type';
 import {MavAutopilot} from '../enums/mav-autopilot';
 import {MavModeFlag} from '../enums/mav-mode-flag';
@@ -22,12 +23,12 @@ export class Heartbeat extends MAVLinkMessage {
 	public _message_id: number = 0;
 	public _message_name: string = 'HEARTBEAT';
 	public _crc_extra: number = 50;
-	public _message_fields: [string, string, boolean][] = [
-		['custom_mode', 'uint32_t', false],
-		['type', 'uint8_t', false],
-		['autopilot', 'uint8_t', false],
-		['base_mode', 'uint8_t', false],
-		['system_status', 'uint8_t', false],
-		['mavlink_version', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['custom_mode', 'uint32_t', false, 0],
+		['type', 'uint8_t', false, 0],
+		['autopilot', 'uint8_t', false, 0],
+		['base_mode', 'uint8_t', false, 0],
+		['system_status', 'uint8_t', false, 0],
+		['mavlink_version', 'uint8_t', false, 0],
 	];
 }

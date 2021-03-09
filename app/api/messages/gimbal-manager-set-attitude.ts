@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {GimbalManagerFlags} from '../enums/gimbal-manager-flags';
 /*
 High level message to control a gimbal's attitude. This message is to be sent to the gimbal manager (e.g. from a ground station). Angles and rates can be set to NaN according to use case.
@@ -16,21 +17,21 @@ export class GimbalManagerSetAttitude extends MAVLinkMessage {
 	public target_component!: number;
 	public flags!: GimbalManagerFlags;
 	public gimbal_device_id!: number;
-	public q!: number;
+	public q!: number[];
 	public angular_velocity_x!: number;
 	public angular_velocity_y!: number;
 	public angular_velocity_z!: number;
 	public _message_id: number = 282;
 	public _message_name: string = 'GIMBAL_MANAGER_SET_ATTITUDE';
 	public _crc_extra: number = 123;
-	public _message_fields: [string, string, boolean][] = [
-		['flags', 'uint32_t', false],
-		['q', 'float', false],
-		['angular_velocity_x', 'float', false],
-		['angular_velocity_y', 'float', false],
-		['angular_velocity_z', 'float', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['gimbal_device_id', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['flags', 'uint32_t', false, 0],
+		['q', 'float', false, 4],
+		['angular_velocity_x', 'float', false, 0],
+		['angular_velocity_y', 'float', false, 0],
+		['angular_velocity_z', 'float', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['gimbal_device_id', 'uint8_t', false, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Control vehicle tone generation (buzzer).
 */
@@ -14,10 +15,10 @@ export class PlayTune extends MAVLinkMessage {
 	public _message_id: number = 258;
 	public _message_name: string = 'PLAY_TUNE';
 	public _crc_extra: number = 187;
-	public _message_fields: [string, string, boolean][] = [
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['tune', 'char', false],
-		['tune2', 'char', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['tune', 'char', false, 30],
+		['tune2', 'char', true, 200],
 	];
 }

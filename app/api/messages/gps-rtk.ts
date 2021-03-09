@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {RtkBaselineCoordinateSystem} from '../enums/rtk-baseline-coordinate-system';
 /*
 RTK GPS data. Gives information on the relative baseline calculation the GPS is reporting
@@ -33,19 +34,19 @@ export class GpsRtk extends MAVLinkMessage {
 	public _message_id: number = 127;
 	public _message_name: string = 'GPS_RTK';
 	public _crc_extra: number = 25;
-	public _message_fields: [string, string, boolean][] = [
-		['time_last_baseline_ms', 'uint32_t', false],
-		['tow', 'uint32_t', false],
-		['baseline_a_mm', 'int32_t', false],
-		['baseline_b_mm', 'int32_t', false],
-		['baseline_c_mm', 'int32_t', false],
-		['accuracy', 'uint32_t', false],
-		['iar_num_hypotheses', 'int32_t', false],
-		['wn', 'uint16_t', false],
-		['rtk_receiver_id', 'uint8_t', false],
-		['rtk_health', 'uint8_t', false],
-		['rtk_rate', 'uint8_t', false],
-		['nsats', 'uint8_t', false],
-		['baseline_coords_type', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_last_baseline_ms', 'uint32_t', false, 0],
+		['tow', 'uint32_t', false, 0],
+		['baseline_a_mm', 'int32_t', false, 0],
+		['baseline_b_mm', 'int32_t', false, 0],
+		['baseline_c_mm', 'int32_t', false, 0],
+		['accuracy', 'uint32_t', false, 0],
+		['iar_num_hypotheses', 'int32_t', false, 0],
+		['wn', 'uint16_t', false, 0],
+		['rtk_receiver_id', 'uint8_t', false, 0],
+		['rtk_health', 'uint8_t', false, 0],
+		['rtk_rate', 'uint8_t', false, 0],
+		['nsats', 'uint8_t', false, 0],
+		['baseline_coords_type', 'uint8_t', false, 0],
 	];
 }

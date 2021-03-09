@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MagCalStatus} from '../enums/mag-cal-status';
 /*
 Reports progress of compass calibration.
@@ -18,22 +19,22 @@ export class MagCalProgress extends MAVLinkMessage {
 	public cal_status!: MagCalStatus;
 	public attempt!: number;
 	public completion_pct!: number;
-	public completion_mask!: number;
+	public completion_mask!: number[];
 	public direction_x!: number;
 	public direction_y!: number;
 	public direction_z!: number;
 	public _message_id: number = 191;
 	public _message_name: string = 'MAG_CAL_PROGRESS';
 	public _crc_extra: number = 92;
-	public _message_fields: [string, string, boolean][] = [
-		['direction_x', 'float', false],
-		['direction_y', 'float', false],
-		['direction_z', 'float', false],
-		['compass_id', 'uint8_t', false],
-		['cal_mask', 'uint8_t', false],
-		['cal_status', 'uint8_t', false],
-		['attempt', 'uint8_t', false],
-		['completion_pct', 'uint8_t', false],
-		['completion_mask', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['direction_x', 'float', false, 0],
+		['direction_y', 'float', false, 0],
+		['direction_z', 'float', false, 0],
+		['compass_id', 'uint8_t', false, 0],
+		['cal_mask', 'uint8_t', false, 0],
+		['cal_status', 'uint8_t', false, 0],
+		['attempt', 'uint8_t', false, 0],
+		['completion_pct', 'uint8_t', false, 0],
+		['completion_mask', 'uint8_t', false, 10],
 	];
 }

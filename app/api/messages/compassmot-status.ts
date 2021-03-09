@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Status of compassmot calibration.
 */
@@ -18,12 +19,12 @@ export class CompassmotStatus extends MAVLinkMessage {
 	public _message_id: number = 177;
 	public _message_name: string = 'COMPASSMOT_STATUS';
 	public _crc_extra: number = 240;
-	public _message_fields: [string, string, boolean][] = [
-		['current', 'float', false],
-		['CompensationX', 'float', false],
-		['CompensationY', 'float', false],
-		['CompensationZ', 'float', false],
-		['throttle', 'uint16_t', false],
-		['interference', 'uint16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['current', 'float', false, 0],
+		['CompensationX', 'float', false, 0],
+		['CompensationY', 'float', false, 0],
+		['CompensationZ', 'float', false, 0],
+		['throttle', 'uint16_t', false, 0],
+		['interference', 'uint16_t', false, 0],
 	];
 }

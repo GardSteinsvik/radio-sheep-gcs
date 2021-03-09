@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {EstimatorStatusFlags} from '../enums/estimator-status-flags';
 import {MavLandedState} from '../enums/mav-landed-state';
 /*
@@ -20,7 +21,7 @@ export class AutopilotStateForGimbalDevice extends MAVLinkMessage {
 	public target_system!: number;
 	public target_component!: number;
 	public time_boot_us!: number;
-	public q!: number;
+	public q!: number[];
 	public q_estimated_delay_us!: number;
 	public vx!: number;
 	public vy!: number;
@@ -32,18 +33,18 @@ export class AutopilotStateForGimbalDevice extends MAVLinkMessage {
 	public _message_id: number = 286;
 	public _message_name: string = 'AUTOPILOT_STATE_FOR_GIMBAL_DEVICE';
 	public _crc_extra: number = 210;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_us', 'uint64_t', false],
-		['q', 'float', false],
-		['q_estimated_delay_us', 'uint32_t', false],
-		['vx', 'float', false],
-		['vy', 'float', false],
-		['vz', 'float', false],
-		['v_estimated_delay_us', 'uint32_t', false],
-		['feed_forward_angular_velocity_z', 'float', false],
-		['estimator_status', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['landed_state', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_us', 'uint64_t', false, 0],
+		['q', 'float', false, 4],
+		['q_estimated_delay_us', 'uint32_t', false, 0],
+		['vx', 'float', false, 0],
+		['vy', 'float', false, 0],
+		['vz', 'float', false, 0],
+		['v_estimated_delay_us', 'uint32_t', false, 0],
+		['feed_forward_angular_velocity_z', 'float', false, 0],
+		['estimator_status', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['landed_state', 'uint8_t', false, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavDistanceSensor} from '../enums/mav-distance-sensor';
 import {MavFrame} from '../enums/mav-frame';
 /*
@@ -16,7 +17,7 @@ Obstacle distances in front of the sensor, starting from the left in increment d
 export class ObstacleDistance extends MAVLinkMessage {
 	public time_usec!: number;
 	public sensor_type!: MavDistanceSensor;
-	public distances!: number;
+	public distances!: number[];
 	public increment!: number;
 	public min_distance!: number;
 	public max_distance!: number;
@@ -26,15 +27,15 @@ export class ObstacleDistance extends MAVLinkMessage {
 	public _message_id: number = 330;
 	public _message_name: string = 'OBSTACLE_DISTANCE';
 	public _crc_extra: number = 23;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['distances', 'uint16_t', false],
-		['min_distance', 'uint16_t', false],
-		['max_distance', 'uint16_t', false],
-		['sensor_type', 'uint8_t', false],
-		['increment', 'uint8_t', false],
-		['increment_f', 'float', true],
-		['angle_offset', 'float', true],
-		['frame', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['distances', 'uint16_t', false, 72],
+		['min_distance', 'uint16_t', false, 0],
+		['max_distance', 'uint16_t', false, 0],
+		['sensor_type', 'uint8_t', false, 0],
+		['increment', 'uint8_t', false, 0],
+		['increment_f', 'float', true, 0],
+		['angle_offset', 'float', true, 0],
+		['frame', 'uint8_t', true, 0],
 	];
 }

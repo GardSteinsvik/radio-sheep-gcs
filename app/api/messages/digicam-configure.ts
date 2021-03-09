@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Configure on-board Camera Control System.
 */
@@ -28,17 +29,17 @@ export class DigicamConfigure extends MAVLinkMessage {
 	public _message_id: number = 154;
 	public _message_name: string = 'DIGICAM_CONFIGURE';
 	public _crc_extra: number = 84;
-	public _message_fields: [string, string, boolean][] = [
-		['extra_value', 'float', false],
-		['shutter_speed', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['mode', 'uint8_t', false],
-		['aperture', 'uint8_t', false],
-		['iso', 'uint8_t', false],
-		['exposure_type', 'uint8_t', false],
-		['command_id', 'uint8_t', false],
-		['engine_cut_off', 'uint8_t', false],
-		['extra_param', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['extra_value', 'float', false, 0],
+		['shutter_speed', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['mode', 'uint8_t', false, 0],
+		['aperture', 'uint8_t', false, 0],
+		['iso', 'uint8_t', false, 0],
+		['exposure_type', 'uint8_t', false, 0],
+		['command_id', 'uint8_t', false, 0],
+		['engine_cut_off', 'uint8_t', false, 0],
+		['extra_param', 'uint8_t', false, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {GoproCommand} from '../enums/gopro-command';
 import {GoproRequestStatus} from '../enums/gopro-request-status';
 /*
@@ -12,8 +13,8 @@ export class GoproSetResponse extends MAVLinkMessage {
 	public _message_id: number = 219;
 	public _message_name: string = 'GOPRO_SET_RESPONSE';
 	public _crc_extra: number = 162;
-	public _message_fields: [string, string, boolean][] = [
-		['cmd_id', 'uint8_t', false],
-		['status', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['cmd_id', 'uint8_t', false, 0],
+		['status', 'uint8_t', false, 0],
 	];
 }

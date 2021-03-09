@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The interval between messages for a particular MAVLink message ID. This message is the response to the MAV_CMD_GET_MESSAGE_INTERVAL command. This interface replaces DATA_STREAM.
 */
@@ -10,8 +11,8 @@ export class MessageInterval extends MAVLinkMessage {
 	public _message_id: number = 244;
 	public _message_name: string = 'MESSAGE_INTERVAL';
 	public _crc_extra: number = 95;
-	public _message_fields: [string, string, boolean][] = [
-		['interval_us', 'int32_t', false],
-		['message_id', 'uint16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['interval_us', 'int32_t', false, 0],
+		['message_id', 'uint16_t', false, 0],
 	];
 }

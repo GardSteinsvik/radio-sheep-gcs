@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {PidTuningAxis} from '../enums/pid-tuning-axis';
 /*
 Adaptive Controller tuning information.
@@ -33,19 +34,19 @@ export class AdapTuning extends MAVLinkMessage {
 	public _message_id: number = 11010;
 	public _message_name: string = 'ADAP_TUNING';
 	public _crc_extra: number = 46;
-	public _message_fields: [string, string, boolean][] = [
-		['desired', 'float', false],
-		['achieved', 'float', false],
-		['error', 'float', false],
-		['theta', 'float', false],
-		['omega', 'float', false],
-		['sigma', 'float', false],
-		['theta_dot', 'float', false],
-		['omega_dot', 'float', false],
-		['sigma_dot', 'float', false],
-		['f', 'float', false],
-		['f_dot', 'float', false],
-		['u', 'float', false],
-		['axis', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['desired', 'float', false, 0],
+		['achieved', 'float', false, 0],
+		['error', 'float', false, 0],
+		['theta', 'float', false, 0],
+		['omega', 'float', false, 0],
+		['sigma', 'float', false, 0],
+		['theta_dot', 'float', false, 0],
+		['omega_dot', 'float', false, 0],
+		['sigma_dot', 'float', false, 0],
+		['f', 'float', false, 0],
+		['f_dot', 'float', false, 0],
+		['u', 'float', false, 0],
+		['axis', 'uint8_t', false, 0],
 	];
 }

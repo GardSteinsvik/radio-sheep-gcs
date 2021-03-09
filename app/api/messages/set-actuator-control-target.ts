@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Set the vehicle attitude and body angular rates.
 */
@@ -12,15 +13,15 @@ export class SetActuatorControlTarget extends MAVLinkMessage {
 	public group_mlx!: number;
 	public target_system!: number;
 	public target_component!: number;
-	public controls!: number;
+	public controls!: number[];
 	public _message_id: number = 139;
 	public _message_name: string = 'SET_ACTUATOR_CONTROL_TARGET';
 	public _crc_extra: number = 168;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['controls', 'float', false],
-		['group_mlx', 'uint8_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['controls', 'float', false, 8],
+		['group_mlx', 'uint8_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
 	];
 }

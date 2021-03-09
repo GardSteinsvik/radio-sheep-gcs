@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavCollisionSrc} from '../enums/mav-collision-src';
 import {MavCollisionAction} from '../enums/mav-collision-action';
 import {MavCollisionThreatLevel} from '../enums/mav-collision-threat-level';
@@ -23,13 +24,13 @@ export class Collision extends MAVLinkMessage {
 	public _message_id: number = 247;
 	public _message_name: string = 'COLLISION';
 	public _crc_extra: number = 81;
-	public _message_fields: [string, string, boolean][] = [
-		['id', 'uint32_t', false],
-		['time_to_minimum_delta', 'float', false],
-		['altitude_minimum_delta', 'float', false],
-		['horizontal_minimum_delta', 'float', false],
-		['src', 'uint8_t', false],
-		['action', 'uint8_t', false],
-		['threat_level', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['id', 'uint32_t', false, 0],
+		['time_to_minimum_delta', 'float', false, 0],
+		['altitude_minimum_delta', 'float', false, 0],
+		['horizontal_minimum_delta', 'float', false, 0],
+		['src', 'uint8_t', false, 0],
+		['action', 'uint8_t', false, 0],
+		['threat_level', 'uint8_t', false, 0],
 	];
 }

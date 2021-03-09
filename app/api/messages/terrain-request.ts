@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Request for terrain data and terrain status. See terrain protocol docs: https://mavlink.io/en/services/terrain.html
 */
@@ -14,10 +15,10 @@ export class TerrainRequest extends MAVLinkMessage {
 	public _message_id: number = 133;
 	public _message_name: string = 'TERRAIN_REQUEST';
 	public _crc_extra: number = 6;
-	public _message_fields: [string, string, boolean][] = [
-		['mask', 'uint64_t', false],
-		['lat', 'int32_t', false],
-		['lon', 'int32_t', false],
-		['grid_spacing', 'uint16_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['mask', 'uint64_t', false, 0],
+		['lat', 'int32_t', false, 0],
+		['lon', 'int32_t', false, 0],
+		['grid_spacing', 'uint16_t', false, 0],
 	];
 }

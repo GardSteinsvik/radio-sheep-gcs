@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Wind covariance estimate from vehicle.
 */
@@ -24,15 +25,15 @@ export class WindCov extends MAVLinkMessage {
 	public _message_id: number = 231;
 	public _message_name: string = 'WIND_COV';
 	public _crc_extra: number = 105;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['wind_x', 'float', false],
-		['wind_y', 'float', false],
-		['wind_z', 'float', false],
-		['var_horiz', 'float', false],
-		['var_vert', 'float', false],
-		['wind_alt', 'float', false],
-		['horiz_accuracy', 'float', false],
-		['vert_accuracy', 'float', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['wind_x', 'float', false, 0],
+		['wind_y', 'float', false, 0],
+		['wind_z', 'float', false, 0],
+		['var_horiz', 'float', false, 0],
+		['var_vert', 'float', false, 0],
+		['wind_alt', 'float', false, 0],
+		['horiz_accuracy', 'float', false, 0],
+		['vert_accuracy', 'float', false, 0],
 	];
 }

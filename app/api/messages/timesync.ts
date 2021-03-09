@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Time synchronization message.
 */
@@ -10,8 +11,8 @@ export class Timesync extends MAVLinkMessage {
 	public _message_id: number = 111;
 	public _message_name: string = 'TIMESYNC';
 	public _crc_extra: number = 34;
-	public _message_fields: [string, string, boolean][] = [
-		['tc1', 'int64_t', false],
-		['ts1', 'int64_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['tc1', 'int64_t', false, 0],
+		['ts1', 'int64_t', false, 0],
 	];
 }

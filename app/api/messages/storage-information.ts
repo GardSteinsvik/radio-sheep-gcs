@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {StorageStatus} from '../enums/storage-status';
 import {StorageType} from '../enums/storage-type';
 /*
@@ -30,17 +31,17 @@ export class StorageInformation extends MAVLinkMessage {
 	public _message_id: number = 261;
 	public _message_name: string = 'STORAGE_INFORMATION';
 	public _crc_extra: number = 179;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['total_capacity', 'float', false],
-		['used_capacity', 'float', false],
-		['available_capacity', 'float', false],
-		['read_speed', 'float', false],
-		['write_speed', 'float', false],
-		['storage_id', 'uint8_t', false],
-		['storage_count', 'uint8_t', false],
-		['status', 'uint8_t', false],
-		['type', 'uint8_t', true],
-		['name', 'char', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['total_capacity', 'float', false, 0],
+		['used_capacity', 'float', false, 0],
+		['available_capacity', 'float', false, 0],
+		['read_speed', 'float', false, 0],
+		['write_speed', 'float', false, 0],
+		['storage_id', 'uint8_t', false, 0],
+		['storage_count', 'uint8_t', false, 0],
+		['status', 'uint8_t', false, 0],
+		['type', 'uint8_t', true, 0],
+		['name', 'char', true, 32],
 	];
 }

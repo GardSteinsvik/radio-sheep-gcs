@@ -2,7 +2,10 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../store';
 import {MapParameters} from "@interfaces/MapParameters";
 
-const initialValues = ({elevationProfileVisibility: 30})
+const initialValues = ({
+    elevationProfileVisibility: 30,
+    grayTone: false,
+})
 
 const mapParametersSlice = createSlice({
     name: 'mapParameters',

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavFrame} from '../enums/mav-frame';
 import {MavEstimatorType} from '../enums/mav-estimator-type';
 /*
@@ -28,37 +29,37 @@ export class Odometry extends MAVLinkMessage {
 	public x!: number;
 	public y!: number;
 	public z!: number;
-	public q!: number;
+	public q!: number[];
 	public vx!: number;
 	public vy!: number;
 	public vz!: number;
 	public rollspeed!: number;
 	public pitchspeed!: number;
 	public yawspeed!: number;
-	public pose_covariance!: number;
-	public velocity_covariance!: number;
+	public pose_covariance!: number[];
+	public velocity_covariance!: number[];
 	public reset_counter!: number;
 	public estimator_type!: MavEstimatorType;
 	public _message_id: number = 331;
 	public _message_name: string = 'ODOMETRY';
 	public _crc_extra: number = 91;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['x', 'float', false],
-		['y', 'float', false],
-		['z', 'float', false],
-		['q', 'float', false],
-		['vx', 'float', false],
-		['vy', 'float', false],
-		['vz', 'float', false],
-		['rollspeed', 'float', false],
-		['pitchspeed', 'float', false],
-		['yawspeed', 'float', false],
-		['pose_covariance', 'float', false],
-		['velocity_covariance', 'float', false],
-		['frame_id', 'uint8_t', false],
-		['child_frame_id', 'uint8_t', false],
-		['reset_counter', 'uint8_t', true],
-		['estimator_type', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['x', 'float', false, 0],
+		['y', 'float', false, 0],
+		['z', 'float', false, 0],
+		['q', 'float', false, 4],
+		['vx', 'float', false, 0],
+		['vy', 'float', false, 0],
+		['vz', 'float', false, 0],
+		['rollspeed', 'float', false, 0],
+		['pitchspeed', 'float', false, 0],
+		['yawspeed', 'float', false, 0],
+		['pose_covariance', 'float', false, 21],
+		['velocity_covariance', 'float', false, 21],
+		['frame_id', 'uint8_t', false, 0],
+		['child_frame_id', 'uint8_t', false, 0],
+		['reset_counter', 'uint8_t', true, 0],
+		['estimator_type', 'uint8_t', true, 0],
 	];
 }

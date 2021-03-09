@@ -18,8 +18,8 @@ import {addStatusText, selectStatusTexts} from '@slices/statusTextsSlice'
 import {selectCompletedPoints} from '@slices/completedPointsSlice'
 import {selectFlightParameters} from '@slices/flightParametersSlice'
 import {SheepRttData} from "@/api/messages/sheep-rtt-data";
-import {selectSheepRttPoints, setSheepRttPoints} from "@slices/sheepRttPointsSlice";
-import {FeatureCollection, Point, Feature} from "geojson";
+import {storeSheepRttPoint} from "@slices/sheepRttPointsSlice";
+import {Feature, Point} from "geojson";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -51,7 +51,6 @@ export default function Drone() {
     const droneStatus = useSelector(selectDroneStatus)
     const completedPoints = useSelector(selectCompletedPoints)
     const flightParameters = useSelector(selectFlightParameters)
-    const sheepRttPoints: FeatureCollection<Point> = useSelector(selectSheepRttPoints)
 
     const [drawerOpen, setDrawerOpen] = useState(false)
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -71,11 +70,12 @@ export default function Drone() {
         mav.emitter.on('connecting', setConnecting)
 
         mav.emitter.on('sheep_data', (sheepRttData: SheepRttData) => {
+            console.log(sheepRttData.seq)
             const sheepRttFeature: Feature<Point> = {
                 type: "Feature",
                 id: sheepRttData.seq,
                 properties: {
-                    alt: sheepRttData.alt,
+                    alt: sheepRttData.alt / 1e3,
                     tid: sheepRttData.tid,
                     dis: sheepRttData.dis,
                 },
@@ -85,21 +85,7 @@ export default function Drone() {
                 }
             }
 
-            const index = sheepRttPoints.features.findIndex(({id}) => id === sheepRttData.seq)
-            const features = sheepRttPoints.features.slice()
-
-            if (index === -1) {
-                features.push(sheepRttFeature)
-            } else {
-                features[index] = sheepRttFeature
-            }
-
-            const sheepRttFeatureCollection: FeatureCollection<Point> = {
-                type: "FeatureCollection",
-                features: features.sort((f1, f2) => +(f1?.id ?? 0) - +(f2?.id ?? 0))
-            }
-
-            dispatch(setSheepRttPoints(sheepRttFeatureCollection))
+            dispatch(storeSheepRttPoint(sheepRttFeature))
         })
 
         return () => {
@@ -196,7 +182,6 @@ export default function Drone() {
                                 <pre>Drone data: {JSON.stringify(droneStatus, null, 1)}</pre>
                             </div>
                         </div>
-                        <Button onClick={() => flightParameters.velocity && mav.setDroneVelocity(flightParameters.velocity)}>Set velocity</Button>
                         <Button onClick={() => mav.uploadMission(flightParameters, completedPoints)}>Upload mission</Button>
                         <Button onClick={() => mav.startMission()}>Start mission</Button>
                         <Button onClick={() => mav.clearMission()}>Clear mission</Button>

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Wind estimation.
 */
@@ -12,9 +13,9 @@ export class Wind extends MAVLinkMessage {
 	public _message_id: number = 168;
 	public _message_name: string = 'WIND';
 	public _crc_extra: number = 1;
-	public _message_fields: [string, string, boolean][] = [
-		['direction', 'float', false],
-		['speed', 'float', false],
-		['speed_z', 'float', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['direction', 'float', false, 0],
+		['speed', 'float', false, 0],
+		['speed_z', 'float', false, 0],
 	];
 }

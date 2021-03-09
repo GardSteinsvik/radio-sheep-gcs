@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Report button state change.
 */
@@ -12,9 +13,9 @@ export class ButtonChange extends MAVLinkMessage {
 	public _message_id: number = 257;
 	public _message_name: string = 'BUTTON_CHANGE';
 	public _crc_extra: number = 131;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['last_change_ms', 'uint32_t', false],
-		['state', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['last_change_ms', 'uint32_t', false, 0],
+		['state', 'uint8_t', false, 0],
 	];
 }

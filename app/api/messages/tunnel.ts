@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavTunnelPayloadType} from '../enums/mav-tunnel-payload-type';
 /*
 Message for transporting "arbitrary" variable-length data from one component to another (broadcast is not forbidden, but discouraged). The encoding of the data is usually extension specific, i.e. determined by the source, and is usually not documented as part of the MAVLink specification.
@@ -13,15 +14,15 @@ export class Tunnel extends MAVLinkMessage {
 	public target_component!: number;
 	public payload_type!: MavTunnelPayloadType;
 	public payload_length!: number;
-	public payload!: number;
+	public payload!: number[];
 	public _message_id: number = 385;
 	public _message_name: string = 'TUNNEL';
 	public _crc_extra: number = 147;
-	public _message_fields: [string, string, boolean][] = [
-		['payload_type', 'uint16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['payload_length', 'uint8_t', false],
-		['payload', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['payload_type', 'uint16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['payload_length', 'uint8_t', false, 0],
+		['payload', 'uint8_t', false, 128],
 	];
 }

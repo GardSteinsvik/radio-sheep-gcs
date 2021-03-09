@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right), expressed as quaternion. Quaternion order is w, x, y, z and a zero rotation would be expressed as (1 0 0 0).
 */
@@ -20,19 +21,19 @@ export class AttitudeQuaternion extends MAVLinkMessage {
 	public rollspeed!: number;
 	public pitchspeed!: number;
 	public yawspeed!: number;
-	public repr_offset_q!: number;
+	public repr_offset_q!: number[];
 	public _message_id: number = 31;
 	public _message_name: string = 'ATTITUDE_QUATERNION';
 	public _crc_extra: number = 246;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['q1', 'float', false],
-		['q2', 'float', false],
-		['q3', 'float', false],
-		['q4', 'float', false],
-		['rollspeed', 'float', false],
-		['pitchspeed', 'float', false],
-		['yawspeed', 'float', false],
-		['repr_offset_q', 'float', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['q1', 'float', false, 0],
+		['q2', 'float', false, 0],
+		['q3', 'float', false, 0],
+		['q4', 'float', false, 0],
+		['rollspeed', 'float', false, 0],
+		['pitchspeed', 'float', false, 0],
+		['yawspeed', 'float', false, 0],
+		['repr_offset_q', 'float', true, 4],
 	];
 }

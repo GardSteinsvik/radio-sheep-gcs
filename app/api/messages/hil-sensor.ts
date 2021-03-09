@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The IMU readings in SI units in NED body frame
 */
@@ -38,22 +39,22 @@ export class HilSensor extends MAVLinkMessage {
 	public _message_id: number = 107;
 	public _message_name: string = 'HIL_SENSOR';
 	public _crc_extra: number = 108;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['xacc', 'float', false],
-		['yacc', 'float', false],
-		['zacc', 'float', false],
-		['xgyro', 'float', false],
-		['ygyro', 'float', false],
-		['zgyro', 'float', false],
-		['xmag', 'float', false],
-		['ymag', 'float', false],
-		['zmag', 'float', false],
-		['abs_pressure', 'float', false],
-		['diff_pressure', 'float', false],
-		['pressure_alt', 'float', false],
-		['temperature', 'float', false],
-		['fields_updated', 'uint32_t', false],
-		['id', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['xacc', 'float', false, 0],
+		['yacc', 'float', false, 0],
+		['zacc', 'float', false, 0],
+		['xgyro', 'float', false, 0],
+		['ygyro', 'float', false, 0],
+		['zgyro', 'float', false, 0],
+		['xmag', 'float', false, 0],
+		['ymag', 'float', false, 0],
+		['zmag', 'float', false, 0],
+		['abs_pressure', 'float', false, 0],
+		['diff_pressure', 'float', false, 0],
+		['pressure_alt', 'float', false, 0],
+		['temperature', 'float', false, 0],
+		['fields_updated', 'uint32_t', false, 0],
+		['id', 'uint8_t', true, 0],
 	];
 }

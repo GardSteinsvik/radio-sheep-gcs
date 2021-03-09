@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 File transfer message
 */
@@ -10,14 +11,14 @@ export class FileTransferProtocol extends MAVLinkMessage {
 	public target_network!: number;
 	public target_system!: number;
 	public target_component!: number;
-	public payload!: number;
+	public payload!: number[];
 	public _message_id: number = 110;
 	public _message_name: string = 'FILE_TRANSFER_PROTOCOL';
 	public _crc_extra: number = 84;
-	public _message_fields: [string, string, boolean][] = [
-		['target_network', 'uint8_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['payload', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['target_network', 'uint8_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['payload', 'uint8_t', false, 251],
 	];
 }

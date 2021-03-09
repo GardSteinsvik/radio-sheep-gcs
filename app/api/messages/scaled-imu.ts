@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 The RAW IMU readings for the usual 9DOF sensor setup. This message should contain the scaled values to the described units
 */
@@ -28,17 +29,17 @@ export class ScaledImu extends MAVLinkMessage {
 	public _message_id: number = 26;
 	public _message_name: string = 'SCALED_IMU';
 	public _crc_extra: number = 170;
-	public _message_fields: [string, string, boolean][] = [
-		['time_boot_ms', 'uint32_t', false],
-		['xacc', 'int16_t', false],
-		['yacc', 'int16_t', false],
-		['zacc', 'int16_t', false],
-		['xgyro', 'int16_t', false],
-		['ygyro', 'int16_t', false],
-		['zgyro', 'int16_t', false],
-		['xmag', 'int16_t', false],
-		['ymag', 'int16_t', false],
-		['zmag', 'int16_t', false],
-		['temperature', 'int16_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_boot_ms', 'uint32_t', false, 0],
+		['xacc', 'int16_t', false, 0],
+		['yacc', 'int16_t', false, 0],
+		['zacc', 'int16_t', false, 0],
+		['xgyro', 'int16_t', false, 0],
+		['ygyro', 'int16_t', false, 0],
+		['zgyro', 'int16_t', false, 0],
+		['xmag', 'int16_t', false, 0],
+		['ymag', 'int16_t', false, 0],
+		['zmag', 'int16_t', false, 0],
+		['temperature', 'int16_t', true, 0],
 	];
 }

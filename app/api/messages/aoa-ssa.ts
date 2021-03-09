@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Angle of Attack and Side Slip Angle.
 */
@@ -12,9 +13,9 @@ export class AoaSsa extends MAVLinkMessage {
 	public _message_id: number = 11020;
 	public _message_name: string = 'AOA_SSA';
 	public _crc_extra: number = 205;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['AOA', 'float', false],
-		['SSA', 'float', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['AOA', 'float', false, 0],
+		['SSA', 'float', false, 0],
 	];
 }

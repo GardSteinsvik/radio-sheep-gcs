@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 3 axis gimbal measurements.
 */
@@ -30,18 +31,18 @@ export class GimbalReport extends MAVLinkMessage {
 	public _message_id: number = 200;
 	public _message_name: string = 'GIMBAL_REPORT';
 	public _crc_extra: number = 134;
-	public _message_fields: [string, string, boolean][] = [
-		['delta_time', 'float', false],
-		['delta_angle_x', 'float', false],
-		['delta_angle_y', 'float', false],
-		['delta_angle_z', 'float', false],
-		['delta_velocity_x', 'float', false],
-		['delta_velocity_y', 'float', false],
-		['delta_velocity_z', 'float', false],
-		['joint_roll', 'float', false],
-		['joint_el', 'float', false],
-		['joint_az', 'float', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['delta_time', 'float', false, 0],
+		['delta_angle_x', 'float', false, 0],
+		['delta_angle_y', 'float', false, 0],
+		['delta_angle_z', 'float', false, 0],
+		['delta_velocity_x', 'float', false, 0],
+		['delta_velocity_y', 'float', false, 0],
+		['delta_velocity_z', 'float', false, 0],
+		['joint_roll', 'float', false, 0],
+		['joint_el', 'float', false, 0],
+		['joint_az', 'float', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
 	];
 }

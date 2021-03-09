@@ -122,29 +122,20 @@ export enum MavCmd {
 	MAV_CMD_REQUEST_VIDEO_STREAM_STATUS = 2505, // Request video stream status (VIDEO_STREAM_STATUS)
 	MAV_CMD_LOGGING_START = 2510, // Request to start streaming logging data over MAVLink (see also LOGGING_DATA message)
 	MAV_CMD_LOGGING_STOP = 2511, // Request to stop streaming log data over MAVLink
-	MAV_CMD_AIRFRAME_CONFIGURATION = 2520, //
+	MAV_CMD_AIRFRAME_CONFIGURATION = 2520, // 
 	MAV_CMD_CONTROL_HIGH_LATENCY = 2600, // Request to start/stop transmitting over the high latency telemetry
 	MAV_CMD_PANORAMA_CREATE = 2800, // Create a panorama at the current position
 	MAV_CMD_DO_VTOL_TRANSITION = 3000, // Request VTOL transition
-	MAV_CMD_ARM_AUTHORIZATION_REQUEST = 3001, // Request authorization to arm the vehicle to a external entity, the arm authorizer is responsible to request all data that is needs from the vehicle before authorize or deny the request. If approved the progress of command_ack message should be set with period of time that this authorization is valid in seconds or in case it was denied it should be set with one of the reasons in ARM_AUTH_DENIED_REASON.
-
-	MAV_CMD_SET_GUIDED_SUBMODE_STANDARD = 4000, // This command sets the submode to standard guided when vehicle is in guided mode. The vehicle holds position and altitude and the user can input the desired velocities along all three axes.
-
-	MAV_CMD_SET_GUIDED_SUBMODE_CIRCLE = 4001, // This command sets submode circle when vehicle is in guided mode. Vehicle flies along a circle facing the center of the circle. The user can input the velocity along the circle and change the radius. If no input is given the vehicle will hold position.
-
+	MAV_CMD_ARM_AUTHORIZATION_REQUEST = 3001, // Request authorization to arm the vehicle to a external entity, the arm authorizer is responsible to request all data that is needs from the vehicle before authorize or deny the request. If approved the progress of command_ack message should be set with period of time that this authorization is valid in seconds or in case it was denied it should be set with one of the reasons in ARM_AUTH_DENIED_REASON.        
+	MAV_CMD_SET_GUIDED_SUBMODE_STANDARD = 4000, // This command sets the submode to standard guided when vehicle is in guided mode. The vehicle holds position and altitude and the user can input the desired velocities along all three axes.                  
+	MAV_CMD_SET_GUIDED_SUBMODE_CIRCLE = 4001, // This command sets submode circle when vehicle is in guided mode. Vehicle flies along a circle facing the center of the circle. The user can input the velocity along the circle and change the radius. If no input is given the vehicle will hold position.                  
 	MAV_CMD_CONDITION_GATE = 4501, // Delay mission state machine until gate has been reached.
-	MAV_CMD_NAV_FENCE_RETURN_POINT = 5000, // Fence return point. There can only be one fence return point.
-
-	MAV_CMD_NAV_FENCE_POLYGON_VERTEX_INCLUSION = 5001, // Fence vertex for an inclusion polygon (the polygon must not be self-intersecting). The vehicle must stay within this area. Minimum of 3 vertices required.
-
-	MAV_CMD_NAV_FENCE_POLYGON_VERTEX_EXCLUSION = 5002, // Fence vertex for an exclusion polygon (the polygon must not be self-intersecting). The vehicle must stay outside this area. Minimum of 3 vertices required.
-
-	MAV_CMD_NAV_FENCE_CIRCLE_INCLUSION = 5003, // Circular fence area. The vehicle must stay inside this area.
-
-	MAV_CMD_NAV_FENCE_CIRCLE_EXCLUSION = 5004, // Circular fence area. The vehicle must stay outside this area.
-
-	MAV_CMD_NAV_RALLY_POINT = 5100, // Rally point. You can have multiple rally points defined.
-
+	MAV_CMD_NAV_FENCE_RETURN_POINT = 5000, // Fence return point. There can only be one fence return point.        
+	MAV_CMD_NAV_FENCE_POLYGON_VERTEX_INCLUSION = 5001, // Fence vertex for an inclusion polygon (the polygon must not be self-intersecting). The vehicle must stay within this area. Minimum of 3 vertices required.        
+	MAV_CMD_NAV_FENCE_POLYGON_VERTEX_EXCLUSION = 5002, // Fence vertex for an exclusion polygon (the polygon must not be self-intersecting). The vehicle must stay outside this area. Minimum of 3 vertices required.        
+	MAV_CMD_NAV_FENCE_CIRCLE_INCLUSION = 5003, // Circular fence area. The vehicle must stay inside this area.        
+	MAV_CMD_NAV_FENCE_CIRCLE_EXCLUSION = 5004, // Circular fence area. The vehicle must stay outside this area.        
+	MAV_CMD_NAV_RALLY_POINT = 5100, // Rally point. You can have multiple rally points defined.        
 	MAV_CMD_UAVCAN_GET_NODE_INFO = 5200, // Commands the vehicle to respond with a sequence of messages UAVCAN_NODE_INFO, one message per every UAVCAN node that is online. Note that some of the response messages can be lost, which the receiver can detect easily by checking whether every received UAVCAN_NODE_STATUS has a matching message UAVCAN_NODE_INFO received earlier; if not, this command should be sent again in order to request re-transmission of the node information messages.
 	MAV_CMD_PAYLOAD_PREPARE_DEPLOY = 30001, // Deploy payload on a Lat / Lon / Alt position. This includes the navigation to reach the required release position and velocity.
 	MAV_CMD_PAYLOAD_CONTROL_DEPLOY = 30002, // Control the payload deployment.
@@ -167,7 +158,7 @@ export enum MavCmd {
 	MAV_CMD_SOLO_BTN_FLY_CLICK = 42001, // FLY button has been clicked.
 	MAV_CMD_SOLO_BTN_FLY_HOLD = 42002, // FLY button has been held for 1.5 seconds.
 	MAV_CMD_SOLO_BTN_PAUSE_CLICK = 42003, // PAUSE button has been clicked.
-	MAV_CMD_FIXED_MAG_CAL = 42004, // Magnetometer calibration based on fixed position in earth field given by inclination, declination and intensity.
+	MAV_CMD_FIXED_MAG_CAL = 42004, // Magnetometer calibration based on fixed position        in earth field given by inclination, declination and intensity.
 	MAV_CMD_FIXED_MAG_CAL_FIELD = 42005, // Magnetometer calibration based on fixed expected field values.
 	MAV_CMD_FIXED_MAG_CAL_YAW = 42006, // Magnetometer calibration based on provided known yaw. This allows for fast calibration using WMM field tables in the vehicle, given only the known yaw of the vehicle. If Latitude and longitude are both zero then use the current vehicle location.
 	MAV_CMD_DO_START_MAG_CAL = 42424, // Initiate a magnetometer calibration.
@@ -188,5 +179,5 @@ export enum MavCmd {
 	MAV_CMD_GUIDED_CHANGE_SPEED = 43000, // Change flight speed at a given rate. This slews the vehicle at a controllable rate between it's previous speed and the new one. (affects GUIDED only. Outside GUIDED, aircraft ignores these commands. Designed for onboard companion-computer command-and-control, not normally operator/GCS control.)
 	MAV_CMD_GUIDED_CHANGE_ALTITUDE = 43001, // Change target altitude at a given rate. This slews the vehicle at a controllable rate between it's previous altitude and the new one. (affects GUIDED only. Outside GUIDED, aircraft ignores these commands. Designed for onboard companion-computer command-and-control, not normally operator/GCS control.)
 	MAV_CMD_GUIDED_CHANGE_HEADING = 43002, // Change to target heading at a given rate, overriding previous heading/s. This slews the vehicle at a controllable rate between it's previous heading and the new one. (affects GUIDED only. Exiting GUIDED returns aircraft to normal behaviour defined elsewhere. Designed for onboard companion-computer command-and-control, not normally operator/GCS control.)
-	MAV_CMD_ENUM_END = 43003, //
+	MAV_CMD_ENUM_END = 43003, // 
 }

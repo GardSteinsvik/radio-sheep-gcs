@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavFrame} from '../enums/mav-frame';
 import {LandingTargetType} from '../enums/landing-target-type';
 /*
@@ -30,26 +31,26 @@ export class LandingTarget extends MAVLinkMessage {
 	public x!: number;
 	public y!: number;
 	public z!: number;
-	public q!: number;
+	public q!: number[];
 	public type!: LandingTargetType;
 	public position_valid!: number;
 	public _message_id: number = 149;
 	public _message_name: string = 'LANDING_TARGET';
 	public _crc_extra: number = 200;
-	public _message_fields: [string, string, boolean][] = [
-		['time_usec', 'uint64_t', false],
-		['angle_x', 'float', false],
-		['angle_y', 'float', false],
-		['distance', 'float', false],
-		['size_x', 'float', false],
-		['size_y', 'float', false],
-		['target_num', 'uint8_t', false],
-		['frame', 'uint8_t', false],
-		['x', 'float', true],
-		['y', 'float', true],
-		['z', 'float', true],
-		['q', 'float', true],
-		['type', 'uint8_t', true],
-		['position_valid', 'uint8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['time_usec', 'uint64_t', false, 0],
+		['angle_x', 'float', false, 0],
+		['angle_y', 'float', false, 0],
+		['distance', 'float', false, 0],
+		['size_x', 'float', false, 0],
+		['size_y', 'float', false, 0],
+		['target_num', 'uint8_t', false, 0],
+		['frame', 'uint8_t', false, 0],
+		['x', 'float', true, 0],
+		['y', 'float', true, 0],
+		['z', 'float', true, 0],
+		['q', 'float', true, 4],
+		['type', 'uint8_t', true, 0],
+		['position_valid', 'uint8_t', true, 0],
 	];
 }

@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {WifiConfigApMode} from '../enums/wifi-config-ap-mode';
 import {WifiConfigApResponse} from '../enums/wifi-config-ap-response';
 /*
@@ -16,10 +17,10 @@ export class WifiConfigAp extends MAVLinkMessage {
 	public _message_id: number = 299;
 	public _message_name: string = 'WIFI_CONFIG_AP';
 	public _crc_extra: number = 19;
-	public _message_fields: [string, string, boolean][] = [
-		['ssid', 'char', false],
-		['password', 'char', false],
-		['mode', 'int8_t', true],
-		['response', 'int8_t', true],
+	public _message_fields: [string, string, boolean, number][] = [
+		['ssid', 'char', false, 32],
+		['password', 'char', false, 64],
+		['mode', 'int8_t', true, 0],
+		['response', 'int8_t', true, 0],
 	];
 }

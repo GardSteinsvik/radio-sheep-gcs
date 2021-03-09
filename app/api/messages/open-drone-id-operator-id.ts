@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 import {MavOdidOperatorIdType} from '../enums/mav-odid-operator-id-type';
 /*
 Data for filling the OpenDroneID Operator ID message, which contains the CAA (Civil Aviation Authority) issued operator ID.
@@ -11,17 +12,17 @@ Data for filling the OpenDroneID Operator ID message, which contains the CAA (Ci
 export class OpenDroneIdOperatorId extends MAVLinkMessage {
 	public target_system!: number;
 	public target_component!: number;
-	public id_or_mac!: number;
+	public id_or_mac!: number[];
 	public operator_id_type!: MavOdidOperatorIdType;
 	public operator_id!: string;
 	public _message_id: number = 12905;
 	public _message_name: string = 'OPEN_DRONE_ID_OPERATOR_ID';
 	public _crc_extra: number = 49;
-	public _message_fields: [string, string, boolean][] = [
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['id_or_mac', 'uint8_t', false],
-		['operator_id_type', 'uint8_t', false],
-		['operator_id', 'char', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['id_or_mac', 'uint8_t', false, 20],
+		['operator_id_type', 'uint8_t', false, 0],
+		['operator_id', 'char', false, 20],
 	];
 }

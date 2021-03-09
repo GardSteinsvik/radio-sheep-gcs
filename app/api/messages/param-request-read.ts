@@ -1,4 +1,5 @@
 import {MAVLinkMessage} from '@gardsteinsvik/node-mavlink';
+import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 /*
 Request to read the onboard parameter with the param_id string id. Onboard parameters are stored as key[const char*] -> value[float]. This allows to send a parameter to any other component (such as the GCS) without the need of previous knowledge of possible parameter names. Thus the same GCS can store different parameters for different autopilots. See also https://mavlink.io/en/services/parameter.html for a full documentation of QGroundControl and IMU code.
 */
@@ -14,10 +15,10 @@ export class ParamRequestRead extends MAVLinkMessage {
 	public _message_id: number = 20;
 	public _message_name: string = 'PARAM_REQUEST_READ';
 	public _crc_extra: number = 214;
-	public _message_fields: [string, string, boolean][] = [
-		['param_index', 'int16_t', false],
-		['target_system', 'uint8_t', false],
-		['target_component', 'uint8_t', false],
-		['param_id', 'char', false],
+	public _message_fields: [string, string, boolean, number][] = [
+		['param_index', 'int16_t', false, 0],
+		['target_system', 'uint8_t', false, 0],
+		['target_component', 'uint8_t', false, 0],
+		['param_id', 'char', false, 16],
 	];
 }
