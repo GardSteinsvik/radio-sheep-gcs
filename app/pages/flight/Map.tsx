@@ -15,11 +15,13 @@ import {selectMapParameters} from "@slices/mapParametersSlice";
 import {FlightParameters} from "@interfaces/FlightParameters";
 import {selectFlightParameters} from "@slices/flightParametersSlice";
 import * as turf from "@turf/turf";
-import {selectSheepRttPoints} from "@slices/sheepRttPointsSlice";
+import {selectSheepRttPoints, setSheepRttPoints} from "@slices/sheepRttPointsSlice";
 import {DroneStatusControl} from "@/components/DroneStatusControl/DroneStatusControl";
 import {selectSelectedSheepRttPoint} from "@slices/selectedSheepRttPointSlice";
 import {topo4, topo4graatone} from "@/pages/flight/mapStyles";
 import {selectEstimatedSheepPoints} from "@slices/estimatedSheepPointsSlice";
+import {sample1} from "@/temp/samples";
+import {selectActualSheepPoints} from "@slices/actualSheepPointsSlice";
 
 const SOURCES = {
     WAYPOINTS: 'waypoints',
@@ -27,6 +29,7 @@ const SOURCES = {
     ELEVATION_PROFILE: 'elevation-profile',
     SHEEP_RTT_POINTS: 'sheep-rtt-points',
     ESTIMATED_SHEEP_POINTS: 'estimated-sheep-points',
+    ACTUAL_SHEEP_POINTS: 'actual-sheep-points',
 }
 
 const LAYERS = ({
@@ -39,6 +42,7 @@ const LAYERS = ({
     COMPLETED_POINTS: 'completed-points',
     SHEEP_RTT_POINTS: 'sheep-rtt-points',
     ESTIMATED_SHEEP_POINTS: 'estimated-sheep-points',
+    ACTUAL_SHEEP_POINTS: 'actual-sheep-points',
 })
 
 interface Props {
@@ -57,6 +61,7 @@ export default function Map({features = []}: Props) {
     const sheepRttPoints: FeatureCollection<Point> = useSelector(selectSheepRttPoints)
     const selectedSheepRttPoint: number = useSelector(selectSelectedSheepRttPoint)
     const estimatedSheepPoints: FeatureCollection<Point> = useSelector(selectEstimatedSheepPoints)
+    const actualSheepPoints: FeatureCollection<Point> = useSelector(selectActualSheepPoints)
 
     const mapParameters: MapParameters = useSelector(selectMapParameters)
 
@@ -189,13 +194,11 @@ export default function Map({features = []}: Props) {
                 map.resize();
                 // const minZoomThreshold = 13;
                 map.addControl(DrawControl);
-                /*
-                dispatch(setSheepRttPoints({
-                    'type': "FeatureCollection",
-                    features: (sample1 as FeatureCollection<Point>).features.filter(f => f.properties?.tid % 2 === 0)
-                }))
 
-                 */
+                // dispatch(setSheepRttPoints({
+                //     'type': "FeatureCollection",
+                //     features: (sample1 as FeatureCollection<Point>).features
+                // }))
 
             });
 
@@ -215,7 +218,8 @@ export default function Map({features = []}: Props) {
                 const coordinates = point.geometry.coordinates.slice();
                 const description = `
                     <strong>Point #${point.id}</strong>
-                    <p>Relative elevation: ${point.properties?.relativeElevation} m</p>
+                    <p>Altitude: ${point.properties?.altitude}m</p>
+                    <p>Terrain: ${point.properties?.terreng}</p>
                 `
 
                 // Ensure that if the map is zoomed out such that multiple
@@ -380,7 +384,7 @@ export default function Map({features = []}: Props) {
             map?.removeSource(SOURCES.SHEEP_RTT_POINTS)
         }
 
-        const sheepRttPolygons = sheepRttPoints.features.map(point => turf.circle(point, point.properties?.dis * 5 ?? 0, {units: "meters"}) as Feature<Polygon>)
+        const sheepRttPolygons = sheepRttPoints.features.map(point => turf.circle(point, point.properties?.dis ?? 0, {units: "meters"}) as Feature<Polygon>)
 
         map?.addSource(SOURCES.SHEEP_RTT_POINTS, {
             type: 'geojson',
@@ -422,12 +426,59 @@ export default function Map({features = []}: Props) {
             'source': SOURCES.ESTIMATED_SHEEP_POINTS,
             'paint': {
                 'circle-radius': 4,
-                'circle-color': '#0fac00',
+                'circle-color': [
+                    'case',
+                    ['boolean', ['==', ['id'], selectedSheepRttPoint], false],
+                    '#ac0000',
+                    '#0fac00',
+                ],
                 'circle-stroke-width': 2,
                 'circle-stroke-color': '#333',
             },
         })
-    }, [estimatedSheepPoints])
+    }, [estimatedSheepPoints, selectedSheepRttPoint])
+
+    useEffect(() => {
+        if (map?.getLayer(SOURCES.ACTUAL_SHEEP_POINTS)) map?.removeLayer(SOURCES.ACTUAL_SHEEP_POINTS)
+
+        if (map?.getSource(SOURCES.ACTUAL_SHEEP_POINTS)) map?.removeSource(SOURCES.ACTUAL_SHEEP_POINTS)
+
+        map?.addSource(SOURCES.ACTUAL_SHEEP_POINTS, {
+            type: 'geojson',
+            data: actualSheepPoints,
+        })
+
+        map?.addLayer({
+            'id': LAYERS.ACTUAL_SHEEP_POINTS,
+            'type': 'circle',
+            'source': SOURCES.ACTUAL_SHEEP_POINTS,
+            'paint': {
+                'circle-radius': 4,
+                'circle-color': [
+                    'case',
+                    ['boolean', ['==', ['id'], selectedSheepRttPoint], false],
+                    '#a55c62',
+                    '#92a987',
+                ],
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#555',
+            },
+        })
+    }, [actualSheepPoints, selectedSheepRttPoint])
+
+    useEffect(() => {
+        if (estimatedSheepPoints.features.length === 0 || actualSheepPoints.features.length === 0) return
+
+        const totalErrorLength = estimatedSheepPoints.features.reduce((acc, curr) => {
+            const point2 = actualSheepPoints.features.find(p => `${p.id}` === `${curr.id}`)
+            if (!point2) throw new Error()
+            const distance = turf.distance(curr.geometry.coordinates, point2.geometry.coordinates, {units: "meters"})
+            return acc + distance
+        }, 0)
+
+        console.log('Total error length', totalErrorLength)
+
+    }, [estimatedSheepPoints, actualSheepPoints])
 
     return <div style={{position: 'absolute', top: 0, bottom: 0, width: '100%', borderRadius: 8}} ref={mapContainerRef} />
 }

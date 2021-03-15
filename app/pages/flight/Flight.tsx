@@ -9,7 +9,7 @@ import {AllGeoJSON} from "@turf/turf";
 import {Feature, FeatureCollection, LineString, Point, Polygon} from "geojson";
 import {selectSelectedPoint} from "@slices/selectedPointSlice";
 import {removeCompletedPoints, selectCompletedPoints, setCompletedPoints} from '@slices/completedPointsSlice'
-import {getTiffBlob} from "@/api/api";
+import {getPointsWithAltitude, getTiffBlob} from "@/api/api";
 import {FlightParameters} from "@interfaces/FlightParameters";
 import {selectFlightParameters, setFlightParameters} from "@slices/flightParametersSlice"
 import {setElevationProfile} from '@slices/elevationProfileSlice'
@@ -78,6 +78,7 @@ export default function Flight() {
     const [features, setFeatures] = useState<Feature[]>([])
     const [sortedPoints, setSortedPoints] = useState<Feature<Point>[]>([])
 
+    // @ts-ignore
     const [elevationBitmap, setElevationBitmap] = useState<any>(undefined)
 
     useEffect(() => {
@@ -191,6 +192,17 @@ export default function Flight() {
     useEffect(() => {
         if (sortedPoints.length === 0 || !selectedPoint) return;
 
+        getPointsWithAltitude({
+            type: "FeatureCollection",
+            features: sortedPoints,
+        }).then((points: FeatureCollection<Point> | undefined) => {
+            dispatch(setCompletedPoints(points ? points : {
+                type: "FeatureCollection",
+                features: sortedPoints,
+            }))
+        })
+
+        /*
         if (!elevationBitmap) {
             dispatch(setCompletedPoints({
                 type: "FeatureCollection",
@@ -228,6 +240,8 @@ export default function Flight() {
             }))
         })
     }, [sortedPoints, selectedPoint, elevationBitmap])
+         */
+    }, [sortedPoints, selectedPoint])
 
 
     useEffect(() => {
@@ -245,7 +259,7 @@ export default function Flight() {
             const point1 = completedPoints.features[i-1];
             const point2 = completedPoints.features[i];
             const distance = turf.distance(point1.geometry.coordinates, point2.geometry.coordinates, {units: "meters"})
-            const heightDifference = Math.abs((point1?.properties?.relativeElevation || 0) - (point2?.properties?.relativeElevation || 0))
+            const heightDifference = Math.abs(Math.max(0, point1?.properties?.altitude ?? 0) - Math.max(0, point2?.properties?.altitude ?? 0))
             calculatedLength += Math.sqrt(distance ** 2 + heightDifference ** 2)
         }
 

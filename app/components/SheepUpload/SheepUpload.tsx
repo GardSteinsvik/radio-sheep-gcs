@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {useDispatch} from "react-redux";
-import { setEstimatedSheepPoints } from '@/redux/slices/estimatedSheepPointsSlice';
+import {setActualSheepPoints} from '@/redux/slices/actualSheepPointsSlice';
 
 const SheepUpload = () => {
     const dispatch = useDispatch()
@@ -12,12 +12,10 @@ const SheepUpload = () => {
 
         try {
             const parsedGeoJSON = JSON.parse(sheepGeoJsonString)
-            console.log({parsedGeoJSON})
-            dispatch(setEstimatedSheepPoints(parsedGeoJSON))
+            dispatch(setActualSheepPoints(parsedGeoJSON))
         } catch (_) {
 
         }
-
     }, [sheepGeoJsonString])
 
     return (

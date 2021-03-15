@@ -8,6 +8,7 @@ import {selectSelectedSheepRttPoint, setSelectedSheepRttPoint} from "@slices/sel
 import {FeatureCollection, Point} from "geojson";
 import {selectSheepRttPoints} from "@slices/sheepRttPointsSlice";
 import SheepUpload from "@/components/SheepUpload/SheepUpload";
+import SheepPointsEstimation from "@/components/SheepPointsEstimation/SheepPointsEstimation";
 
 const useStyles = makeStyles({
     paper: {
@@ -80,12 +81,17 @@ export default function MapControl() {
                 </div>
             )}
             <div className={classes.formSection}>
-                <Typography id="gray-tone-switch" gutterBottom>
+                <Typography gutterBottom>
                     Paste GeoJSON
                 </Typography>
                 <SheepUpload/>
             </div>
-
+            <div className={classes.formSection}>
+                <Typography gutterBottom>
+                    Estimate sheep points
+                </Typography>
+                <SheepPointsEstimation/>
+            </div>
         </Paper>
     )
 }

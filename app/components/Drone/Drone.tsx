@@ -70,14 +70,13 @@ export default function Drone() {
         mav.emitter.on('connecting', setConnecting)
 
         mav.emitter.on('sheep_data', (sheepRttData: SheepRttData) => {
-            console.log(sheepRttData.seq)
             const sheepRttFeature: Feature<Point> = {
                 type: "Feature",
                 id: sheepRttData.seq,
                 properties: {
                     alt: sheepRttData.alt / 1e3,
                     tid: sheepRttData.tid,
-                    dis: sheepRttData.dis,
+                    dis: sheepRttData.dis * 5,
                 },
                 geometry: {
                     type: "Point",

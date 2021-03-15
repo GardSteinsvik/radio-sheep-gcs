@@ -90,7 +90,7 @@ function startConnection(connectionPath: string, connectionPort: number) {
 
     socket.on('data', async data => await mavLink.parse(data))
 
-    mavLink.on('error', function (e: Error) {
+    mavLink.on('error', function (_: Error) {
         // event listener for node-mavlink ALL error message
         // console.error("MAVLINK ON ERROR", e);
     })
@@ -414,7 +414,7 @@ function uploadMission(flightParameters: FlightParameters, completedPoints: Feat
     const missionItemIntList: MissionItemInt[] = [
         createWaypointCommand(0, 0, startPoint.geometry.coordinates[1], startPoint.geometry.coordinates[0], 0), // Dummy waypoint that is ignored by ArduPilot
         createTakeOffCommand(0, startPoint.geometry.coordinates[1], startPoint.geometry.coordinates[0], flightParameters.elevation ?? 0),
-        ...completedPoints.features.map(point => createWaypointCommand(0, flightParameters.acceptanceRadius ?? 10, point.geometry.coordinates[1], point.geometry.coordinates[0], flightParameters.elevation + (point.properties?.relativeElevation ?? 0))),
+        ...completedPoints.features.map(point => createWaypointCommand(0, flightParameters.acceptanceRadius ?? 10, point.geometry.coordinates[1], point.geometry.coordinates[0], flightParameters.elevation + (point.properties?.altitude ?? 0))),
         createLandCommand(0, stopPoint.geometry.coordinates[1], stopPoint.geometry.coordinates[0]),
     ].map((missionItemInt: MissionItemInt, index: number) => Object.assign(missionItemInt, {seq: index}))
 

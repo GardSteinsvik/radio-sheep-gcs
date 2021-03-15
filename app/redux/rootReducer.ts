@@ -12,6 +12,7 @@ import mapParametersSlice from "@slices/mapParametersSlice";
 import sheepRttPointsSlice from "@slices/sheepRttPointsSlice";
 import selectedSheepRttPointSlice from "@slices/selectedSheepRttPointSlice";
 import estimatedSheepPointsSlice from "@slices/estimatedSheepPointsSlice";
+import actualSheepPointsSlice from "@slices/actualSheepPointsSlice";
 
 export default function createRootReducer(history: History) {
     return combineReducers({
@@ -27,5 +28,6 @@ export default function createRootReducer(history: History) {
         sheepRttPoints: sheepRttPointsSlice,
         selectedSheepRttPoint: selectedSheepRttPointSlice,
         estimatedSheepPoints: estimatedSheepPointsSlice,
+        actualSheepPoints: actualSheepPointsSlice,
     });
 }
