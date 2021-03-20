@@ -1,5 +1,5 @@
 import events from 'events'
-import {Socket} from "net";
+import dgram from 'dgram'
 
 import {MAVLinkMessage, MAVLinkModule} from '@gardsteinsvik/node-mavlink';
 import {messageRegistry} from './message-registry';
@@ -33,8 +33,11 @@ import {SheepRttData} from "./messages/sheep-rtt-data";
 import {Data16} from "./messages/data16";
 import {Data32} from "./messages/data32";
 import {Statustext} from "./messages/statustext";
-import {ParamSet} from "./messages/param-set";
-import {MavParamType} from "./enums/mav-param-type";
+
+enum MavLinkVersion {
+    MAVLink1 = 254,
+    MAVLink2 = 253,
+}
 
 const GCS_SYSTEM_ID = 255
 const GCS_COMP_ID = MavComponent.MAV_COMP_ID_MISSIONPLANNER
@@ -44,17 +47,39 @@ const MAV_COMP_ID = MavComponent.MAV_COMP_ID_AUTOPILOT1
 const emitter = new events.EventEmitter()
 setTimeout(() => emitter.emit("status_text", "Connection ready."), 0)
 
-const socket = new Socket()
-const mavLink = new MAVLinkModule(messageRegistry)
-mavLink.upgradeLink()
+let socket = dgram.createSocket("udp4")
+
+let socketAddress = 'localhost'
+let socketSourcePort = 14550
+let socketDestinationPort = 14550
+
+const mavLink = new MAVLinkModule(messageRegistry, GCS_SYSTEM_ID, true)
+let currentMavLinkVersion = MavLinkVersion.MAVLink1
 
 const sentMessages: MAVLinkMessage[] = []
 const messageCounts: any = {}
 
+function sendUdp(buffer: Buffer) {
+    socket.send(buffer, socketDestinationPort, socketAddress, (err) => {
+        if (err) {
+            console.error("Failed to send message.", err)
+        }
+    })
+}
+
+let missingHeartbeatCount = 0
 const HEARTBEAT_INTERVAL = 1 // Hz
-let intervalId: NodeJS.Timeout
-function sendHeartBeat() {
-    // console.log("SENDING HEARTBEAT", intervalId)
+let heartbeatInterval: NodeJS.Timeout
+function breatheInBreatheOut() {
+    // Check received heartbeats
+    if (missingHeartbeatCount === 0) {
+        emitter.emit('status_data', {connected: true})
+    } else if (missingHeartbeatCount === 5) {
+        emitter.emit('status_data', {connected: false})
+    }
+    missingHeartbeatCount++
+
+    // Send heartbeat
     const heartbeat = Object.assign(new Heartbeat(GCS_SYSTEM_ID, GCS_COMP_ID), {
         type: MavType.MAV_TYPE_GCS,
         autopilot: MavAutopilot.MAV_AUTOPILOT_INVALID,
@@ -64,17 +89,24 @@ function sendHeartBeat() {
         mavlink_version: 3,
     })
     const buffer = mavLink.pack([heartbeat])
-    const status = socket.write(buffer)
-    if (!status) console.log("Failed to send heartbeat.")
+    sendUdp(buffer)
 }
 
-function startConnection(connectionPath: string, connectionPort: number) {
-    socket.connect(connectionPort, connectionPath, () => {
-        emitter.emit('status_text', 'Connected via tcp:' + connectionPath + ':' + connectionPort)
-        emitter.emit('status_data', {connected: true})
+
+
+function startConnection(address: string, sourcePort: number) {
+    socketAddress = address
+    socketSourcePort = sourcePort
+    socket = dgram.createSocket("udp4")
+
+    socket.on('listening', () => {
+        const address = socket.address();
+
+        emitter.emit('status_text', 'Connected via udp:' + address.address + ':' + address.port)
         emitter.emit('connecting', false)
-        intervalId = setInterval(sendHeartBeat, HEARTBEAT_INTERVAL * 1000)
-        setTimeout(() => startDataStreams(2, 2, 2, 0, 3, 10, 10, 10), 1000)
+
+        heartbeatInterval = setInterval(breatheInBreatheOut, HEARTBEAT_INTERVAL * 1000)
+        // setTimeout(() => startDataStreams(2, 2, 2, 0, 3, 10, 10, 10), 1000)
     })
 
     socket.on("error", err => emitter.emit('status_text', err.message))
@@ -82,26 +114,56 @@ function startConnection(connectionPath: string, connectionPort: number) {
         emitter.emit('status_text', 'Connection closed.')
         emitter.emit('status_data', {connected: false})
         emitter.emit('connecting', false)
-        clearInterval(intervalId)
+        clearInterval(heartbeatInterval)
         mavLink.removeAllListeners()
-        socket.removeAllListeners()
-        socket.destroy()
     })
 
-    socket.on('data', async data => await mavLink.parse(data))
+    socket.on('message', async (data, rinfo) => {
+        socketDestinationPort = rinfo.port
+        const mavLinkVersion = data[0]
+        if (mavLinkVersion === currentMavLinkVersion) {
+            await mavLink.parse(Buffer.from(data))
+        } else {
+            switch (mavLinkVersion) {
+                case MavLinkVersion.MAVLink1:
+                    mavLink.downgradeLink()
+                    break
+                case MavLinkVersion.MAVLink2:
+                    mavLink.upgradeLink()
+                    break
+            }
+            currentMavLinkVersion = mavLinkVersion
+        }
+    })
 
-    mavLink.on('error', function (_: Error) {
+    socket.bind(socketSourcePort)
+
+    mavLink.on('error', function (e: Error) {
         // event listener for node-mavlink ALL error message
-        // console.error("MAVLINK ON ERROR", e);
+        console.error("MAVLINK ON ERROR", e);
     })
 
     mavLink.once('HEARTBEAT', (heartbeat: Heartbeat) => {
         emitter.emit('status_text', `First heartbeat received. Setting target system id to ${heartbeat._system_id}.`)
         MAV_SYSTEM_ID = heartbeat._system_id
+        sendMavlinkMessage(Object.assign(new CommandLong(GCS_SYSTEM_ID, GCS_COMP_ID), {
+            target_system: MAV_SYSTEM_ID,
+            target_component: MAV_COMP_ID,
+            command: MavCmd.MAV_CMD_REQUEST_PROTOCOL_VERSION,
+            confirmation: 0,
+            param1: 1,
+            param2: 0,
+            param3: 0,
+            param4: 0,
+            param5: 0,
+            param6: 0,
+            param7: 0,
+        }))
     })
 
-    mavLink.once('HEARTBEAT', (heartbeat: Heartbeat) => {
-        emitter.emit('status_data', {systemStatus: heartbeat.system_status})
+    mavLink.on('HEARTBEAT', (heartbeat: Heartbeat) => {
+        missingHeartbeatCount = 0
+        emitter.emit('status_data', {systemStatus: heartbeat.system_status, baseMode: heartbeat.base_mode})
     })
 
     mavLink.on('message', (message: MAVLinkMessage) => {
@@ -148,6 +210,7 @@ function startConnection(connectionPath: string, connectionPort: number) {
             'MISSION_ITEM_REACHED',
             'DATA32',
             // 'SHEEP_RTT_DATA',
+            'FENCE_STATUS',
         ]
 
         // event listener for all messages
@@ -183,6 +246,10 @@ function startConnection(connectionPath: string, connectionPort: number) {
     mavLink.on('COMMAND_ACK', (commandAck: CommandAck) => {
         const lastRelevantCommand = sentMessages.find(mavLinkMessage => mavLinkMessage.command === commandAck.command) as CommandLong
         switch (commandAck.command) {
+            case MavCmd.MAV_CMD_REQUEST_PROTOCOL_VERSION: {
+                // mavLink.upgradeLink()
+                break
+            }
             case MavCmd.MAV_CMD_DO_CHANGE_SPEED: {
                 if (commandAck.result === MavResult.MAV_RESULT_ACCEPTED) {
                     emitter.emit('status_text', `Target velocity set to ${lastRelevantCommand.param2} m/s.`)
@@ -221,8 +288,6 @@ function startConnection(connectionPath: string, connectionPort: number) {
             return
         }
 
-        console.log()
-
         const parsedMessages: MAVLinkMessage[] = await mavLink.parse(Buffer.from(data32.data))
 
         const sheepRttData: SheepRttData = parsedMessages.pop() as SheepRttData
@@ -242,7 +307,8 @@ function startConnection(connectionPath: string, connectionPort: number) {
 }
 
 function closeConnection() {
-    socket.emit("close")
+    // socket.emit("close")
+    socket.close()
 }
 
 function sendMavlinkMessage(message: MAVLinkMessage) {
@@ -251,11 +317,9 @@ function sendMavlinkMessage(message: MAVLinkMessage) {
 
 function sendMavlinkMessages(messages: MAVLinkMessage[]) {
     const buffer = mavLink.pack(messages)
-    const status = socket.write(buffer)
+    sendUdp(buffer)
     console.log('%c[GCS] %c' + messages.map(message => message._message_name).join(', ') + ': ', 'color: teal', '', messages)
-    if (status) {
-        sentMessages.unshift(...messages)
-    }
+    sentMessages.unshift(...messages)
 }
 
 function startDataStreams(rawSensorsRate: number, extendedStatusRate: number, rcChannelsRate: number, rawControllerRate: number, positionRate: number, extra1Rate: number, extra2Rate: number, extra3Rate: number) {
@@ -536,7 +600,6 @@ function clearMission() {
 }
 
 function startMission() {
-    setSimSpeed()
     emitter.emit('status_text', 'Starting mission...')
     sendMavlinkMessage(Object.assign(new CommandLong(GCS_SYSTEM_ID, GCS_COMP_ID), {
         target_system: MAV_SYSTEM_ID,
@@ -550,16 +613,6 @@ function startMission() {
         param5: 0,
         param6: 0,
         param7: 0,
-    }))
-}
-
-function setSimSpeed() {
-    sendMavlinkMessage(Object.assign(new ParamSet(GCS_SYSTEM_ID, GCS_COMP_ID), {
-        target_system: MAV_SYSTEM_ID,
-        target_component: MAV_COMP_ID,
-        param_id: 'sim_speedup',
-        param_value: 10,
-        param_type: MavParamType.MAV_PARAM_TYPE_REAL32,
     }))
 }
 

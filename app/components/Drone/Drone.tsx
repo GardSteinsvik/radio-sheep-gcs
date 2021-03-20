@@ -38,6 +38,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
 }))
 
+const CONNECTIONS = [
+    {label: 'Simulator', address: '192.168.38.2', port: 14550},
+    {label: 'Drone', address: '192.168.4.1', port: 14550},
+]
+
 export default function Drone() {
     const theme = useTheme()
     const classes = useStyles(theme)
@@ -114,7 +119,7 @@ export default function Drone() {
                     type={'number'}
                 />
             </div>
-            <div>
+            <div style={{display: 'flex', flexDirection: "column"}}>
                 <Button
                     variant={"contained"}
                     color={"primary"}
@@ -128,19 +133,22 @@ export default function Drone() {
                 >
                     Connect
                 </Button>
-                <Button
-                    variant={"contained"}
-                    color={"primary"}
-                    onClick={() => {
-                        setConnecting(true)
-                        dispatch(addStatusText(`Trying to connect to 192.168.1.51:${14550}...`))
-                        mav.startConnection('192.168.1.51', 14550)
-                    }}
-                    disabled={connecting}
-                    style={{color: 'white'}}
-                >
-                    192.168.1.51:14550
-                </Button>
+                {CONNECTIONS.map(c => (
+                    <Button
+                        key={c.label}
+                        variant={"contained"}
+                        color={"primary"}
+                        onClick={() => {
+                            setConnecting(true)
+                            dispatch(addStatusText(`Trying to connect to ${c.address}:${c.port}...`))
+                            mav.startConnection(c.address, c.port)
+                        }}
+                        disabled={connecting}
+                        style={{color: 'white'}}
+                    >
+                        {`${c.label} (${c.address}:${c.port})`}
+                    </Button>
+                ))}
             </div>
         </div>
     )

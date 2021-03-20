@@ -171,6 +171,8 @@ export default function Map({features = []}: Props) {
                 },
             })
 
+            map.addControl(DrawControl);
+
             setDroneStatusControl(new DroneStatusControl())
 
             map.addControl(new mapboxgl.FullscreenControl(), 'top-left')
@@ -193,7 +195,7 @@ export default function Map({features = []}: Props) {
                 setMap(map);
                 map.resize();
                 // const minZoomThreshold = 13;
-                map.addControl(DrawControl);
+
 
                 // dispatch(setSheepRttPoints({
                 //     'type': "FeatureCollection",
@@ -338,8 +340,10 @@ export default function Map({features = []}: Props) {
                 droneMarker.getElement().className = 'drone'
             }
 
-            // @ts-ignore
-            droneMarker.setLngLat([droneStatus.longitude, droneStatus.latitude]).setRotation(droneStatus.yaw ?? 0).addTo(map)
+            if (map) {
+                // @ts-ignore
+                droneMarker.setLngLat([droneStatus.longitude, droneStatus.latitude])?.setRotation(droneStatus.yaw ?? 0).addTo(map)
+            }
         }
     }, [droneStatus])
 
