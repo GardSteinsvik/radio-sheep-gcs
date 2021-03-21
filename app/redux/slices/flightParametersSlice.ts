@@ -2,7 +2,7 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../store';
 import {FlightParameters} from "@interfaces/FlightParameters";
 
-const initialValues = ({elevation: 100, velocity: 15, searchRadius: 150, acceptanceRadius: 10})
+const initialValues = ({elevation: 100, velocity: 12, searchRadius: 150, searchRadiusOverlap: 0, acceptanceRadius: 10})
 
 const flightParametersSlice = createSlice({
     name: 'flightParameters',

@@ -30,7 +30,7 @@ export default function Home(): JSX.Element {
     return (
       <div className={classes.root}>
           <div className={classes.content}>
-              <h2>Sheep Search</h2>
+              <h2>Radio Sheep Ground Control Station</h2>
               <div>
                   <Link to={routes.FLIGHT}>to Flight</Link>
               </div>

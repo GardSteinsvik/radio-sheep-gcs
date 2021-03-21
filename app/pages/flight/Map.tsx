@@ -1,27 +1,26 @@
-import React, {useEffect, useRef, useState} from 'react';
-import mapboxgl, {LngLatLike} from 'mapbox-gl';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import React, {useEffect, useRef, useState} from 'react'
+import mapboxgl, {LngLatLike} from 'mapbox-gl'
+import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import {Feature, FeatureCollection, Point, Polygon} from 'geojson'
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux"
 import {removeSelectedArea, setSelectedArea} from '@slices/selectedAreaSlice'
 import {removeSelectedPoint, setSelectedPoint} from '@slices/selectedPointSlice'
-import {selectCompletedPoints} from "@slices/completedPointsSlice";
-import {selectDroneStatus} from "@slices/droneStatusSlice";
-import {DroneStatus} from "@interfaces/DroneStatus";
-import {selectElevationProfile} from "@slices/elevationProfileSlice";
-import {ElevationProfile} from "@interfaces/ElevationProfile";
-import {MapParameters} from "@interfaces/MapParameters";
-import {selectMapParameters} from "@slices/mapParametersSlice";
-import {FlightParameters} from "@interfaces/FlightParameters";
-import {selectFlightParameters} from "@slices/flightParametersSlice";
-import * as turf from "@turf/turf";
-import {selectSheepRttPoints, setSheepRttPoints} from "@slices/sheepRttPointsSlice";
-import {DroneStatusControl} from "@/components/DroneStatusControl/DroneStatusControl";
-import {selectSelectedSheepRttPoint} from "@slices/selectedSheepRttPointSlice";
-import {topo4, topo4graatone} from "@/pages/flight/mapStyles";
-import {selectEstimatedSheepPoints} from "@slices/estimatedSheepPointsSlice";
-import {sample1} from "@/temp/samples";
-import {selectActualSheepPoints} from "@slices/actualSheepPointsSlice";
+import {selectCompletedPoints} from "@slices/completedPointsSlice"
+import {selectDroneStatus} from "@slices/droneStatusSlice"
+import {DroneStatus} from "@interfaces/DroneStatus"
+import {selectElevationProfile} from "@slices/elevationProfileSlice"
+import {ElevationProfile} from "@interfaces/ElevationProfile"
+import {MapParameters} from "@interfaces/MapParameters"
+import {selectMapParameters} from "@slices/mapParametersSlice"
+import {FlightParameters} from "@interfaces/FlightParameters"
+import {selectFlightParameters} from "@slices/flightParametersSlice"
+import * as turf from "@turf/turf"
+import {selectSheepRttPoints} from "@slices/sheepRttPointsSlice"
+import {DroneStatusControl} from "@/components/DroneStatusControl/DroneStatusControl"
+import {selectSelectedSheepRttPoint} from "@slices/selectedSheepRttPointSlice"
+import {topo4, topo4graatone} from "@/pages/flight/mapStyles"
+import {selectEstimatedSheepPoints} from "@slices/estimatedSheepPointsSlice"
+import {selectActualSheepPoints} from "@slices/actualSheepPointsSlice"
 
 const SOURCES = {
     WAYPOINTS: 'waypoints',
