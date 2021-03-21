@@ -1,24 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import Map from "./Map";
-import {useDispatch, useSelector} from "react-redux";
-import {selectSelectedArea} from "@slices/selectedAreaSlice";
-import {Button, Card, CardActions, CardContent, Divider, Slider, Theme, Typography, useTheme} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
-import * as turf from "@turf/turf";
-import {AllGeoJSON} from "@turf/turf";
-import {Feature, FeatureCollection, LineString, Point, Polygon} from "geojson";
-import {selectSelectedPoint} from "@slices/selectedPointSlice";
+import React, {useEffect, useState} from 'react'
+import Map from "./Map"
+import {useDispatch, useSelector} from "react-redux"
+import {selectSelectedArea} from "@slices/selectedAreaSlice"
+import {Button, Card, CardActions, CardContent, Divider, Slider, Theme, Typography, useTheme} from "@material-ui/core"
+import {makeStyles} from "@material-ui/core/styles"
+import * as turf from "@turf/turf"
+import {AllGeoJSON} from "@turf/turf"
+import {Feature, FeatureCollection, LineString, Point, Polygon} from "geojson"
+import {selectSelectedPoint} from "@slices/selectedPointSlice"
 import {removeCompletedPoints, selectCompletedPoints, setCompletedPoints} from '@slices/completedPointsSlice'
-import {getPointsWithAltitude, getTiffBlob} from "@/api/api";
-import {FlightParameters} from "@interfaces/FlightParameters";
+import {getPointsWithAltitude, getTiffBlob} from "@/api/api"
+import {FlightParameters} from "@interfaces/FlightParameters"
 import {selectFlightParameters, setFlightParameters} from "@slices/flightParametersSlice"
 import {setElevationProfile} from '@slices/elevationProfileSlice'
-import mav from '@/api/mav-connection'
-import {DroneStatus} from "@interfaces/DroneStatus";
-import {selectDroneStatus} from "@slices/droneStatusSlice";
+import {DroneStatus} from "@interfaces/DroneStatus"
+import {selectDroneStatus} from "@slices/droneStatusSlice"
 // @ts-ignore
 import * as GeoTIFF from 'geotiff'
-import MapControl from "@/components/MapControl/MapControl";
+import MapControl from "@/components/MapControl/MapControl"
 
 const useStyles = makeStyles({
     root: {
@@ -391,8 +390,6 @@ export default function Flight() {
                         <div className={classes.formSection}>
                             <Typography gutterBottom>Drone connected: {droneStatus.connected ? '✅' : '❌'}</Typography>
                             <Typography gutterBottom>Drone armed: {droneStatus.armed ? '✅' : '❌'}</Typography>
-                            <Typography gutterBottom>Drone velocity: {droneStatus.targetVelocity === flightParameters.velocity ? '✅' : '❌'}</Typography>
-                            <Button size="small" onClick={() => flightParameters.velocity && mav.setDroneVelocity(flightParameters.velocity)} disabled={!droneStatus.connected || droneStatus.targetVelocity === flightParameters.velocity}>Sync velocity</Button>
                         </div>
                     </CardContent>
                     <CardActions>

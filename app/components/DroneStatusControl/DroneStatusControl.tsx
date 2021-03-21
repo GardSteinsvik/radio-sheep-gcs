@@ -20,7 +20,7 @@ export class DroneStatusControl {
         this.container.className = 'droneStatusControl';
 
         this.container.textContent = `
-            Elevation: ${this.droneStatus.altitude?.toFixed(1)}m
+            Elevation: ${this.droneStatus.altitude?.toFixed(1) ?? 0}m\n
             Speed: ${Math.sqrt((this.droneStatus.vx ?? 0)**2 + (this.droneStatus.vy ?? 0)**2).toFixed(1)}m/s
         `;
 

@@ -20,6 +20,7 @@ import {selectFlightParameters} from '@slices/flightParametersSlice'
 import {SheepRttData} from "@/api/messages/sheep-rtt-data";
 import {storeSheepRttPoint} from "@slices/sheepRttPointsSlice";
 import {Feature, Point} from "geojson";
+import {EmitterChannels} from '@/api/emitter-channels'
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -39,8 +40,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }))
 
 const CONNECTIONS = [
-    {label: 'Simulator', address: '192.168.38.2', port: 14550},
-    {label: 'Drone', address: '192.168.4.1', port: 14550},
+    {label: 'SITL', address: '192.168.38.2', port: 14550},
+    {label: 'DRONE', address: '192.168.4.1', port: 14550},
 ]
 
 export default function Drone() {
@@ -66,15 +67,15 @@ export default function Drone() {
     };
 
     useEffect(() => {
-        mav.emitter.on('status_text', text => dispatch(addStatusText(text)))
-        mav.emitter.on('status_data', data => {
+        mav.emitter.on(EmitterChannels.STATUS_TEXT, text => dispatch(addStatusText(text)))
+        mav.emitter.on(EmitterChannels.STATUS_DATA, data => {
             if (!Object.keys(data).every(k => data[k] === (droneStatus as any)[k])) {
                 dispatch(setDroneStatus(data))
             }
         })
-        mav.emitter.on('connecting', setConnecting)
+        mav.emitter.on(EmitterChannels.CONNECTING, setConnecting)
 
-        mav.emitter.on('sheep_data', (sheepRttData: SheepRttData) => {
+        mav.emitter.on(EmitterChannels.SHEEP_DATA, (sheepRttData: SheepRttData) => {
             const sheepRttFeature: Feature<Point> = {
                 type: "Feature",
                 id: sheepRttData.seq,
@@ -110,7 +111,7 @@ export default function Drone() {
                     type={'text'}
                 />
                 <TextField
-                    style={{width: '6rem'}}
+                    style={{width: '6rem', marginRight: '1rem'}}
                     label={'Port'}
                     value={mavPort}
                     onChange={e => setMavPort(+e.target.value)}
@@ -118,8 +119,6 @@ export default function Drone() {
                     size={"small"}
                     type={'number'}
                 />
-            </div>
-            <div style={{display: 'flex', flexDirection: "column"}}>
                 <Button
                     variant={"contained"}
                     color={"primary"}
@@ -133,6 +132,8 @@ export default function Drone() {
                 >
                     Connect
                 </Button>
+            </div>
+            <div style={{display: 'flex', flexDirection: "column"}}>
                 {CONNECTIONS.map(c => (
                     <Button
                         key={c.label}
@@ -140,11 +141,11 @@ export default function Drone() {
                         color={"primary"}
                         onClick={() => {
                             setConnecting(true)
-                            dispatch(addStatusText(`Trying to connect to ${c.address}:${c.port}...`))
+                            dispatch(addStatusText(`Trying to connect to ${c.address}:${c.port}..`))
                             mav.startConnection(c.address, c.port)
                         }}
                         disabled={connecting}
-                        style={{color: 'white'}}
+                        style={{color: 'white', marginTop: 8}}
                     >
                         {`${c.label} (${c.address}:${c.port})`}
                     </Button>
@@ -174,7 +175,7 @@ export default function Drone() {
                                 <>
                                     <Button variant={"contained"} color={"inherit"} onClick={() => mav.closeConnection()}>Disconnect</Button>
                                     <div>
-                                        {!droneStatus.armed ? <Button onClick={() => mav.armDrone()}>Arm drone</Button> : <Button onClick={() => mav.armDrone(0)}>Disarm drone</Button>}
+                                        {!droneStatus.armed ? <Button onClick={() => mav.armDrone()}>Arm drone</Button> : <Button onClick={() => mav.armDrone()}>Disarm drone</Button>}
                                     </div>
                                 </>
                             )}
