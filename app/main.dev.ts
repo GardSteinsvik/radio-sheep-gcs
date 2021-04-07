@@ -57,13 +57,14 @@ const createWindow = async () => {
     }
 
     mainWindow = new BrowserWindow({
+        icon: path.join(__dirname, '/dist/icon.icns'),
         show: false,
+        x: 0,
+        y: 0,
         width: 1024,
         height: 728,
         webPreferences:
-            (process.env.NODE_ENV === 'development' ||
-                process.env.E2E_BUILD === 'true') &&
-            process.env.ERB_SECURE !== 'true'
+            (process.env.NODE_ENV === 'development' || process.env.E2E_BUILD === 'true') && process.env.ERB_SECURE !== 'true'
                 ? {
                     nodeIntegration: true,
                     enableRemoteModule: true,

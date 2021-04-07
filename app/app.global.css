@@ -19,6 +19,11 @@ body {
     height: 100%;
 }
 
+ul {
+    padding: 0;
+    margin: 0;
+}
+
 li {
     list-style: none;
 }
@@ -52,8 +57,8 @@ a:hover {
 }
 
 .droneStatusControl {
-    height: 40px;
-    width: 120px;
+    height: 18rem;
+    width: 16rem;
     margin: 8px;
     padding: 4px;
     background-color: white;

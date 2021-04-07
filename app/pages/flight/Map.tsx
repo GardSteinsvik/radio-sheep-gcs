@@ -259,9 +259,9 @@ export default function Map({features = []}: Props) {
     }, [features])
 
     useEffect(() => {
-        if (droneStatusControl) {
+        if (droneStatusControl && droneStatusControl.shouldUpdate()) {
             map?.removeControl(droneStatusControl)
-            droneStatusControl.setDroneStatus(droneStatus)
+            droneStatusControl.update(droneStatus)
             map?.addControl(droneStatusControl, 'bottom-left')
         }
     }, [droneStatusControl, droneStatus])
@@ -387,7 +387,7 @@ export default function Map({features = []}: Props) {
             map?.removeSource(SOURCES.SHEEP_RTT_POINTS)
         }
 
-        const sheepRttPolygons = sheepRttPoints.features.map(point => turf.circle(point, point.properties?.dis ?? 0, {units: "meters"}) as Feature<Polygon>)
+        const sheepRttPolygons = sheepRttPoints.features.map(point => turf.circle(point, point.properties?.dis || .1, {units: "meters"}) as Feature<Polygon>)
 
         map?.addSource(SOURCES.SHEEP_RTT_POINTS, {
             type: 'geojson',

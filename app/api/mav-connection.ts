@@ -36,10 +36,11 @@ import {Data16} from './messages/data16'
 import {Data32} from './messages/data32'
 import {Statustext} from './messages/statustext'
 import {MavModeFlag} from './enums/mav-mode-flag'
-import {ParamValue} from './messages/param-value'
 import {GcsValues} from './gcs-values'
 import {createArmCommand, createMissionStartCommand, createRequestProtocolVersionCommand} from './commandFactory'
 import {EmitterChannels} from './emitter-channels'
+import {format} from 'date-fns'
+import {GpsRawInt} from './messages/gps-raw-int'
 
 enum MavLinkVersion {
     MAVLink1 = 254,
@@ -61,9 +62,8 @@ let socketDestinationPort = 14550
 const mavLink = new MAVLinkModule(messageRegistry, GcsValues.SYSTEM_ID, true)
 let currentMavLinkVersion = MavLinkVersion.MAVLink1
 
-let droneArmed = false
-
 const messageCounts: any = {}
+const lastHeartbeats: any = {}
 
 function sendUdp(buffer: Buffer) {
     socket.send(buffer, socketDestinationPort, socketAddress, (err) => {
@@ -154,8 +154,9 @@ function startConnection(address: string, sourcePort: number) {
     })
 
     mavLink.on('HEARTBEAT', (heartbeat: Heartbeat) => {
+        lastHeartbeats[`S${heartbeat._system_id}-C${heartbeat._component_id}`] = format(new Date(), 'HH:mm:ss')
         missingHeartbeatCount = 0
-        droneArmed = !!(heartbeat.base_mode & MavModeFlag.MAV_MODE_FLAG_SAFETY_ARMED)
+        const droneArmed = !!(heartbeat.base_mode & MavModeFlag.MAV_MODE_FLAG_SAFETY_ARMED)
         emitter.emit(EmitterChannels.STATUS_DATA, {systemStatus: heartbeat.system_status, armed: droneArmed})
     })
 
@@ -205,6 +206,8 @@ function startConnection(address: string, sourcePort: number) {
             'SHEEP_RTT_DATA',
             'FENCE_STATUS',
             'GPS_GLOBAL_ORIGIN',
+            'ESC_TELEMETRY_1_TO_4',
+            'RADIO_STATUS',
         ]
 
         // event listener for all messages
@@ -229,8 +232,21 @@ function startConnection(address: string, sourcePort: number) {
         })
     })
 
+    mavLink.on('GPS_RAW_INT', (gpsRawInt: GpsRawInt) => {
+        emitter.emit(EmitterChannels.STATUS_DATA, {
+            gpsFixType: gpsRawInt.fix_type,
+            gpsHDOP: gpsRawInt.eph / 1e2,
+            gpsVDOP: gpsRawInt.epv / 1e2,
+            satellitesVisible: gpsRawInt.satellites_visible,
+        })
+    })
+
     mavLink.on('BATTERY_STATUS', (batteryStatus: BatteryStatus) => {
-        emitter.emit(EmitterChannels.STATUS_DATA, {battery: batteryStatus.battery_remaining})
+        const [voltage] = batteryStatus.voltages
+        emitter.emit(EmitterChannels.STATUS_DATA, {
+            battery: batteryStatus.battery_remaining,
+            batteryVoltage: voltage / 1e3,
+        })
     })
 
     mavLink.on('MISSION_CURRENT', (missionCurrent: MissionCurrent) => {
@@ -260,7 +276,7 @@ function startConnection(address: string, sourcePort: number) {
     })
 
     mavLink.on('DATA32', async (data32: Data32) => {
-        if (data32.type !== 129 || droneArmed) {
+        if (data32.type !== 129) {
             return
         }
 
@@ -280,8 +296,6 @@ function startConnection(address: string, sourcePort: number) {
             data: sheepRttAckBuffer,
         }))
     })
-
-    mavLink.on('PARAM_VALUE', (paramValue: ParamValue) => console.log(paramValue.param_id, [paramValue]))
 }
 
 function closeConnection() {
@@ -486,6 +500,7 @@ function startMission() {
 const mav = {
     emitter,
     messageCounts,
+    lastHeartbeats,
     startConnection,
     closeConnection,
     sendMavlinkMessage,

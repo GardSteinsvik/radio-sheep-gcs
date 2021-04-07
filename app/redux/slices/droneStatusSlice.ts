@@ -1,6 +1,6 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from '../store';
-import {DroneStatus} from "../../api/interfaces/DroneStatus";
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {RootState} from '../store'
+import {DroneStatus} from "@interfaces/DroneStatus"
 
 const droneStatusSlice = createSlice({
     name: 'droneStatus',

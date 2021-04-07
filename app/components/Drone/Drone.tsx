@@ -21,6 +21,8 @@ import {SheepRttData} from "@/api/messages/sheep-rtt-data";
 import {storeSheepRttPoint} from "@slices/sheepRttPointsSlice";
 import {Feature, Point} from "geojson";
 import {EmitterChannels} from '@/api/emitter-channels'
+import {GlobalPositionInt} from '@/api/messages/global-position-int'
+import {GcsValues} from '@/api/gcs-values'
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -194,8 +196,22 @@ export default function Drone() {
                         <Button onClick={() => mav.startMission()}>Start mission</Button>
                         <Button onClick={() => mav.clearMission()}>Clear mission</Button>
                         <Button onClick={() => mav.downloadMission()}>Download mission</Button>
+                        <Button disabled={!completedPoints.features[0]} onClick={() => mav.sendMavlinkMessage(Object.assign(new GlobalPositionInt(GcsValues.SYSTEM_ID, GcsValues.COMPONENT_ID), {
+                            time_boot_ms: 1000,
+                            lat: completedPoints.features[0]?.geometry.coordinates[1],
+                            lon: completedPoints.features[0]?.geometry.coordinates[0],
+                            alt: 10,
+                            relative_alt: 1,
+                            vx: 0.01,
+                            vy: 0.01,
+                            vz: 0.01,
+                            hdg: 1,
+                        }))}>Send GPS</Button>
                         <div style={{display: 'flex', justifyContent: 'flex-start', textAlign: 'left'}}>
-                            <pre>Message count: {JSON.stringify(mav.messageCounts, null, 1)}</pre>
+                            <pre>Heartbeats: {JSON.stringify(mav.lastHeartbeats, null, 1)}</pre>
+                        </div>
+                        <div style={{display: 'flex', justifyContent: 'flex-start', textAlign: 'left'}}>
+                            <pre>Message counts: {JSON.stringify(mav.messageCounts, null, 1)}</pre>
                         </div>
                     </div>
                 </div>

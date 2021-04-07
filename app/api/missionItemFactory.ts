@@ -6,7 +6,7 @@ import {PrecisionLandMode} from "./enums/precision-land-mode";
 import {GcsValues} from "./gcs-values";
 
 const MISSION_ITEM_BASE = {
-    frame: MavFrame.MAV_FRAME_GLOBAL_RELATIVE_ALT,
+    frame: MavFrame.MAV_FRAME_GLOBAL,
     mission_type: MavMissionType.MAV_MISSION_TYPE_MISSION,
     autocontinue: 1,
     current: 0,
