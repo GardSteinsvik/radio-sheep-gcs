@@ -14,6 +14,7 @@ import {AllGeoJSON} from '@turf/turf'
 import * as turf from '@turf/turf'
 import {getPointsWithAltitude} from '@/api/api'
 import {setElevationProfile} from '@slices/elevationProfileSlice'
+import {format} from 'date-fns'
 
 const useStyles = makeStyles({
     root: {
@@ -70,7 +71,7 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
 
     function saveRoute() {
         const {dialog} = require('electron').remote
-        dialog.showSaveDialog({title: 'Save Flight Plan', filters: [{name: '', extensions: ['json']}]})
+        dialog.showSaveDialog({title: 'Save Flight Plan', defaultPath: 'route-' + format(new Date(), 'yyyy-MM-dd_HH-mm-ss'), filters: [{name: '', extensions: ['json']}]})
             .then(saveDialogReturnValue => {
                 if (!saveDialogReturnValue.canceled && saveDialogReturnValue.filePath) {
                     writeFile(saveDialogReturnValue.filePath, JSON.stringify({

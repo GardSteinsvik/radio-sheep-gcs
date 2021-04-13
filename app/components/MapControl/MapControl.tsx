@@ -9,6 +9,7 @@ import {FeatureCollection, Point} from "geojson";
 import {selectSheepRttPoints} from "@slices/sheepRttPointsSlice";
 import SheepUpload from "@/components/SheepUpload/SheepUpload";
 import SheepPointsEstimation from "@/components/SheepPointsEstimation/SheepPointsEstimation";
+import SheepPointSaveLoad from '@/components/MapControl/SheepPointSaveLoad'
 
 const useStyles = makeStyles({
     paper: {
@@ -91,6 +92,9 @@ export default function MapControl() {
                     Estimate sheep points
                 </Typography>
                 <SheepPointsEstimation/>
+            </div>
+            <div className={classes.formSection}>
+                <SheepPointSaveLoad />
             </div>
         </Paper>
     )

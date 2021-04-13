@@ -18,7 +18,7 @@ import {addStatusText, selectStatusTexts} from '@slices/statusTextsSlice'
 import {selectCompletedPoints} from '@slices/completedPointsSlice'
 import {selectFlightParameters} from '@slices/flightParametersSlice'
 import {SheepRttData} from "@/api/messages/sheep-rtt-data";
-import {storeSheepRttPoint} from "@slices/sheepRttPointsSlice";
+import {addRssiData, storeSheepRttPoint} from "@slices/sheepRttPointsSlice"
 import {Feature, Point} from "geojson";
 import {EmitterChannels} from '@/api/emitter-channels'
 import {GlobalPositionInt} from '@/api/messages/global-position-int'
@@ -93,6 +93,10 @@ export default function Drone() {
             }
 
             dispatch(storeSheepRttPoint(sheepRttFeature))
+        })
+
+        mav.emitter.on(EmitterChannels.RSSI_DATA, (sheepRttData: SheepRttData) => {
+            dispatch(addRssiData([sheepRttData.seq-1, sheepRttData.dis]))
         })
 
         return () => {

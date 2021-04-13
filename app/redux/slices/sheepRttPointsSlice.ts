@@ -19,6 +19,22 @@ const sheepRttPoints = createSlice({
                 features,
             }
         },
+        addRssiData: (state, action: PayloadAction<number[]>) => {
+            const [sampleId, rssi] = action.payload
+            const features = state.value.features.slice();
+            const sheepRttDataFeature: Feature<Point> | undefined = features.find(feature => feature.id === sampleId)
+            if (sheepRttDataFeature) {
+                sheepRttDataFeature.properties = {
+                    ...sheepRttDataFeature?.properties,
+                    rssi
+                }
+
+                state.value = {
+                    type: 'FeatureCollection',
+                    features,
+                }
+            }
+        },
         setSheepRttPoints: (state, action: PayloadAction<FeatureCollection<Point>>) => {
             state.value = action.payload;
         },
@@ -28,7 +44,7 @@ const sheepRttPoints = createSlice({
     },
 });
 
-export const {storeSheepRttPoint, setSheepRttPoints, removeSheepRttPoints} = sheepRttPoints.actions;
+export const {storeSheepRttPoint, addRssiData, setSheepRttPoints, removeSheepRttPoints} = sheepRttPoints.actions;
 
 export default sheepRttPoints.reducer;
 

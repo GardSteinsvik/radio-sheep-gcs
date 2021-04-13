@@ -35,7 +35,7 @@ const SheepPointsEstimation = () => {
 
                 const weight = (1 + maxRadius - minRadius) / (weightDampening + 1 + radius - minRadius)
 
-                const circlePolygon = turf.circle(rttPoint, radius, {steps: weight * NUMBER_OF_PARTICLES, units: "meters"}) as Feature<Polygon>
+                const circlePolygon = turf.circle(rttPoint, radius || 1, {steps: weight * NUMBER_OF_PARTICLES, units: "meters"}) as Feature<Polygon>
 
                 const particlesForRttPoint: Feature<Point>[] = circlePolygon.geometry.coordinates[0].map((position: Position, i) => ({
                     type: "Feature",

@@ -155,9 +155,11 @@ function startConnection(address: string, sourcePort: number) {
 
     mavLink.on('HEARTBEAT', (heartbeat: Heartbeat) => {
         lastHeartbeats[`S${heartbeat._system_id}-C${heartbeat._component_id}`] = format(new Date(), 'HH:mm:ss')
-        missingHeartbeatCount = 0
-        const droneArmed = !!(heartbeat.base_mode & MavModeFlag.MAV_MODE_FLAG_SAFETY_ARMED)
-        emitter.emit(EmitterChannels.STATUS_DATA, {systemStatus: heartbeat.system_status, armed: droneArmed})
+        if (heartbeat._system_id === MAV_SYSTEM_ID) {
+            missingHeartbeatCount = 0
+            const droneArmed = !!(heartbeat.base_mode & MavModeFlag.MAV_MODE_FLAG_SAFETY_ARMED)
+            emitter.emit(EmitterChannels.STATUS_DATA, {systemStatus: heartbeat.system_status, armed: droneArmed})
+        }
     })
 
     mavLink.on('message', (message: MAVLinkMessage) => {
@@ -286,7 +288,11 @@ function startConnection(address: string, sourcePort: number) {
 
         if (!sheepRttData) return
 
-        emitter.emit(EmitterChannels.SHEEP_DATA, sheepRttData)
+        if (GcsValues.RSSI_ENABLED && sheepRttData.seq % 2 === 1) {
+            emitter.emit(EmitterChannels.SHEEP_DATA, sheepRttData)
+        } else {
+            emitter.emit(EmitterChannels.RSSI_DATA, sheepRttData)
+        }
 
         const sheepRttAckBuffer: Buffer = mavLink.pack([Object.assign(new SheepRttAck(GcsValues.SYSTEM_ID, GcsValues.COMPONENT_ID), {seq: sheepRttData.seq})])
 
