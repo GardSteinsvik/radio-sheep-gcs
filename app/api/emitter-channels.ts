@@ -4,4 +4,5 @@ export enum EmitterChannels {
     STATUS_DATA = 'status_data',
     SHEEP_DATA = 'sheep_data',
     RSSI_DATA = 'rssi_data',
+    DRONE_PARAMETER = 'drone_parameter',
 }

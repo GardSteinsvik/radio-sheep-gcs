@@ -262,10 +262,10 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
                         className={classes.slider}
                         value={flightParameters.elevation}
                         onChange={(_, value) => dispatch(setFlightParameters({elevation: +value}))}
-                        step={10}
-                        min={10}
-                        max={500}
-                        marks={[10, 250, 500].map(v => ({value: v, label: v + 'm'}))}
+                        step={1}
+                        min={5}
+                        max={200}
+                        marks={[5, 50, 100, 200].map(v => ({value: v, label: v + 'm'}))}
                     />
                 </div>
                 <div className={classes.formSection}>
@@ -277,8 +277,8 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
                         className={classes.slider}
                         value={flightParameters.searchRadius}
                         onChange={(_, value) => dispatch(setFlightParameters({searchRadius: +value}))}
-                        step={10}
-                        min={10}
+                        step={1}
+                        min={Math.max(1, flightParameters.searchRadiusOverlap ?? 1)}
                         max={500}
                         marks={[50, 250, 500].map(v => ({value: v, label: v + 'm'}))}
                     />
@@ -294,7 +294,7 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
                         onChange={(_, value) => dispatch(setFlightParameters({searchRadiusOverlap: +value}))}
                         step={1}
                         min={0}
-                        max={50}
+                        max={Math.min(50, flightParameters.searchRadius ?? 50)}
                         marks={[0, 25, 50].map(v => ({value: v, label: v + 'm'}))}
                     />
                 </div>

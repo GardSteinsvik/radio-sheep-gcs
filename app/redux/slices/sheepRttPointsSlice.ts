@@ -7,7 +7,7 @@ const sheepRttPoints = createSlice({
     initialState: {value: <FeatureCollection<Point>> {type: "FeatureCollection", features: []}},
     reducers: {
         storeSheepRttPoint: (state, action: PayloadAction<Feature<Point>>) => {
-            const index = state.value.features.findIndex(({id}) => id === action.payload.properties?.seq)
+            const index = state.value.features.findIndex(({id}) => id === action.payload.id)
             const features = state.value.features.slice();
             if (index === -1) {
                 features.push(action.payload)

@@ -16,11 +16,12 @@ import {FlightParameters} from "@interfaces/FlightParameters"
 import {selectFlightParameters} from "@slices/flightParametersSlice"
 import * as turf from "@turf/turf"
 import {selectSheepRttPoints} from "@slices/sheepRttPointsSlice"
-import {DroneStatusControl} from "@/components/DroneStatusControl/DroneStatusControl"
+import {DroneStatusControl} from "@/components/CustomControls/DroneStatusControl"
 import {selectSelectedSheepRttPoint} from "@slices/selectedSheepRttPointSlice"
 import {topo4, topo4graatone} from "@/pages/flight/mapStyles"
 import {selectEstimatedSheepPoints} from "@slices/estimatedSheepPointsSlice"
 import {selectActualSheepPoints} from "@slices/actualSheepPointsSlice"
+import MapboxGLButtonControl from '@/components/CustomControls/MapboxGLButtonControl'
 
 const SOURCES = {
     WAYPOINTS: 'waypoints',
@@ -70,6 +71,7 @@ export default function Map({features = []}: Props) {
     const [droneMarker] = useState<mapboxgl.Marker>(new mapboxgl.Marker(element))
 
     const [droneStatusControl, setDroneStatusControl] = useState<DroneStatusControl>()
+    const [moveToDroneControl, setMoveToDroneControl] = useState<MapboxGLButtonControl>()
 
     let DrawControl: MapboxDraw
 
@@ -171,18 +173,15 @@ export default function Map({features = []}: Props) {
             })
 
             map.addControl(DrawControl);
-
             setDroneStatusControl(new DroneStatusControl())
+            setMoveToDroneControl(new MapboxGLButtonControl({
+                className: 'mapbox-gl-goto-drone',
+                title: 'Move to drone',
+            }))
 
             map.addControl(new mapboxgl.FullscreenControl(), 'top-left')
             map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
             map.addControl(new mapboxgl.AttributionControl({customAttribution: ['©Kartverket (CC BY 4.0)']}), 'bottom-left')
-            map.addControl(new mapboxgl.GeolocateControl({
-                positionOptions: {
-                    enableHighAccuracy: true
-                },
-                trackUserLocation: true
-            }), 'bottom-right');
 
             map.on('error', () => {}) // Shhhh
 
@@ -191,17 +190,9 @@ export default function Map({features = []}: Props) {
             map.on('draw.delete', deleteArea)
 
             map.on("load", () => {
-                setMap(map);
-                map.resize();
-                // const minZoomThreshold = 13;
-
-
-                // dispatch(setSheepRttPoints({
-                //     'type': "FeatureCollection",
-                //     features: (sample1 as FeatureCollection<Point>).features
-                // }))
-
-            });
+                setMap(map)
+                map.resize()
+            })
 
             // Create a popup, but don't add it to the map yet.
             const popup = new mapboxgl.Popup({
@@ -267,6 +258,22 @@ export default function Map({features = []}: Props) {
     }, [droneStatusControl, droneStatus])
 
     useEffect(() => {
+        if (moveToDroneControl && moveToDroneControl.shouldUpdate()) {
+            map?.removeControl(moveToDroneControl)
+            moveToDroneControl.updateEventHandler(() => {
+                droneStatus.longitude && droneStatus.latitude && map?.flyTo({
+                    center: [
+                        droneStatus.longitude,
+                        droneStatus.latitude,
+                    ],
+                    essential: true
+                })
+            })
+            map?.addControl(moveToDroneControl, 'bottom-right')
+        }
+    }, [moveToDroneControl, droneStatus])
+
+    useEffect(() => {
         if (map?.getLayer(LAYERS.COMPLETED_POINTS)) map?.removeLayer(LAYERS.COMPLETED_POINTS)
         if (map?.getLayer(LAYERS.ACCEPTANCE_RADIUS)) map?.removeLayer(LAYERS.ACCEPTANCE_RADIUS)
         if (map?.getLayer(LAYERS.SEARCH_RADIUS)) map?.removeLayer(LAYERS.SEARCH_RADIUS)
@@ -307,7 +314,7 @@ export default function Map({features = []}: Props) {
             'source': SOURCES.WAYPOINTS,
             'type': 'fill',
             'paint': {
-                'fill-opacity': 0.3,
+                'fill-opacity': 0.1,
                 'fill-color': '#00cfff'
             },
             'filter': ['==', ['get', 'type'], LAYERS.ACCEPTANCE_RADIUS]
@@ -318,7 +325,7 @@ export default function Map({features = []}: Props) {
             'source': SOURCES.WAYPOINTS,
             'type': 'line',
             'paint': {
-                'line-color': '#2a2a2a',
+                'line-color': 'rgba(42,42,42,0.4)',
                 'line-width': 2,
                 'line-dasharray': [1, 2],
             },
@@ -340,7 +347,7 @@ export default function Map({features = []}: Props) {
             }
 
             if (map) {
-                // @ts-ignore
+                // @ts-ignore :: Type library doesnt contain .setRotation()
                 droneMarker.setLngLat([droneStatus.longitude, droneStatus.latitude])?.setRotation(droneStatus.yaw ?? 0).addTo(map)
             }
         }
@@ -428,15 +435,15 @@ export default function Map({features = []}: Props) {
             'type': 'circle',
             'source': SOURCES.ESTIMATED_SHEEP_POINTS,
             'paint': {
-                'circle-radius': 4,
-                'circle-color': [
+                'circle-radius': 3,
+                'circle-color': 'rgba(0,0,0,0)',
+                'circle-stroke-color': [
                     'case',
                     ['boolean', ['==', ['id'], selectedSheepRttPoint], false],
-                    '#ac0000',
-                    '#0fac00',
+                    'rgba(172,0,0,0.5)',
+                    'rgba(15,172,0,0.5)',
                 ],
-                'circle-stroke-width': 2,
-                'circle-stroke-color': '#333',
+                'circle-stroke-width': 4,
             },
         })
     }, [estimatedSheepPoints, selectedSheepRttPoint])
@@ -460,11 +467,11 @@ export default function Map({features = []}: Props) {
                 'circle-color': [
                     'case',
                     ['boolean', ['==', ['id'], selectedSheepRttPoint], false],
-                    '#a55c62',
-                    '#92a987',
+                    '#ac0000',
+                    '#0fac00',
                 ],
                 'circle-stroke-width': 2,
-                'circle-stroke-color': '#555',
+                'circle-stroke-color': '#333',
             },
         })
     }, [actualSheepPoints, selectedSheepRttPoint])
@@ -474,7 +481,7 @@ export default function Map({features = []}: Props) {
 
         const totalErrorLength = estimatedSheepPoints.features.reduce((acc, curr) => {
             const point2 = actualSheepPoints.features.find(p => `${p.id}` === `${curr.id}`)
-            if (!point2) throw new Error()
+            if (!point2) return acc
             const distance = turf.distance(curr.geometry.coordinates, point2.geometry.coordinates, {units: "meters"})
             return acc + distance
         }, 0)

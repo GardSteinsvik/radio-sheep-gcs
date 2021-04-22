@@ -41,13 +41,17 @@ import {createArmCommand, createMissionStartCommand, createRequestProtocolVersio
 import {EmitterChannels} from './emitter-channels'
 import {format} from 'date-fns'
 import {GpsRawInt} from './messages/gps-raw-int'
+import {ParamSet} from './messages/param-set'
+import {MavParamType} from './enums/mav-param-type'
+import {ParamValue} from './messages/param-value'
 
 enum MavLinkVersion {
     MAVLink1 = 254,
     MAVLink2 = 253,
 }
 
-let MAV_SYSTEM_ID = 1
+let mavFound = false
+let MAV_SYSTEM_ID = -1
 const MAV_COMP_ID = MavComponent.MAV_COMP_ID_AUTOPILOT1
 
 const emitter = new events.EventEmitter()
@@ -147,15 +151,18 @@ function startConnection(address: string, sourcePort: number) {
         console.error('MAVLink parser/packer error:', e);
     })
 
-    mavLink.once('HEARTBEAT', (heartbeat: Heartbeat) => {
-        emitter.emit(EmitterChannels.STATUS_TEXT, `First heartbeat received. Setting target system id to ${heartbeat._system_id}.`)
-        MAV_SYSTEM_ID = heartbeat._system_id
-        sendMavlinkMessage(createRequestProtocolVersionCommand(MAV_SYSTEM_ID, MAV_COMP_ID))
-    })
-
     mavLink.on('HEARTBEAT', (heartbeat: Heartbeat) => {
         lastHeartbeats[`S${heartbeat._system_id}-C${heartbeat._component_id}`] = format(new Date(), 'HH:mm:ss')
-        if (heartbeat._system_id === MAV_SYSTEM_ID) {
+
+        if (!mavFound && heartbeat.autopilot !== MavAutopilot.MAV_AUTOPILOT_INVALID) {
+            emitter.emit(EmitterChannels.STATUS_TEXT, `First heartbeat received. Setting target system id to ${heartbeat._system_id}.`)
+            MAV_SYSTEM_ID = heartbeat._system_id
+            sendMavlinkMessage(createRequestProtocolVersionCommand(MAV_SYSTEM_ID, MAV_COMP_ID))
+            emitter.emit(EmitterChannels.STATUS_DATA, {autopilot: heartbeat.autopilot})
+            mavFound = true
+        }
+
+        if (heartbeat._system_id === MAV_SYSTEM_ID && heartbeat._component_id === MAV_COMP_ID) {
             missingHeartbeatCount = 0
             const droneArmed = !!(heartbeat.base_mode & MavModeFlag.MAV_MODE_FLAG_SAFETY_ARMED)
             emitter.emit(EmitterChannels.STATUS_DATA, {systemStatus: heartbeat.system_status, armed: droneArmed})
@@ -263,7 +270,7 @@ function startConnection(address: string, sourcePort: number) {
             }
             case MavCmd.MAV_CMD_COMPONENT_ARM_DISARM: {
                 if (commandAck.result !== MavResult.MAV_RESULT_ACCEPTED) {
-                    emitter.emit(EmitterChannels.STATUS_TEXT, 'Arming/disarming failed.')
+                    emitter.emit(EmitterChannels.STATUS_TEXT, 'Arming failed.')
                 }
                 break
             }
@@ -503,6 +510,38 @@ function startMission() {
     sendMavlinkMessage(createMissionStartCommand(MAV_SYSTEM_ID, MAV_COMP_ID))
 }
 
+function setParameter(name: string, value: number) {
+    emitter.emit(EmitterChannels.STATUS_TEXT, `Setting param ${name} with value ${value}`)
+    sendMavlinkMessage(Object.assign(new ParamSet(GcsValues.SYSTEM_ID, GcsValues.COMPONENT_ID), {
+        target_system: MAV_SYSTEM_ID,
+        target_component: MAV_COMP_ID,
+        param_id:  name,
+        param_value: value,
+        param_type: MavParamType.MAV_PARAM_TYPE_ENUM_END,
+    }))
+
+    let abortTimeout = setTimeout(stopListeners, GcsValues.TRANSMISSION_TIMEOUT)
+
+    const paramValueListener = (paramValue: ParamValue) => {
+        if (paramValue.param_id === name) {
+            clearTimeout(abortTimeout)
+            if (paramValue.param_value === value) {
+                emitter.emit(EmitterChannels.STATUS_TEXT, 'Param set.')
+            } else {
+                emitter.emit(EmitterChannels.STATUS_TEXT, 'Setting param failed. Previous value kept.')
+            }
+            emitter.emit(EmitterChannels.DRONE_PARAMETER, {[paramValue.param_id]: paramValue.param_value})
+            setTimeout(stopListeners, 100)
+        }
+    }
+
+    function stopListeners() {
+        mavLink.removeListener('PARAM_VALUE', paramValueListener)
+    }
+
+    mavLink.on('PARAM_VALUE', paramValueListener)
+}
+
 const mav = {
     emitter,
     messageCounts,
@@ -515,6 +554,7 @@ const mav = {
     downloadMission,
     clearMission,
     startMission,
+    setParameter,
 }
 
 export default mav;

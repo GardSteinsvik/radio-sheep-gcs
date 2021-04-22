@@ -1,12 +1,12 @@
 import React from 'react'
 import {makeStyles} from "@material-ui/core/styles";
-import {Paper, Slider, Switch, Typography} from '@material-ui/core';
+import {Button, Paper, Slider, Switch, Typography} from '@material-ui/core'
 import {MapParameters} from "@interfaces/MapParameters";
 import {useDispatch, useSelector} from "react-redux";
 import {selectMapParameters, setMapParameters} from "@slices/mapParametersSlice";
 import {selectSelectedSheepRttPoint, setSelectedSheepRttPoint} from "@slices/selectedSheepRttPointSlice";
 import {FeatureCollection, Point} from "geojson";
-import {selectSheepRttPoints} from "@slices/sheepRttPointsSlice";
+import {removeSheepRttPoints, selectSheepRttPoints} from "@slices/sheepRttPointsSlice"
 import SheepUpload from "@/components/SheepUpload/SheepUpload";
 import SheepPointsEstimation from "@/components/SheepPointsEstimation/SheepPointsEstimation";
 import SheepPointSaveLoad from '@/components/MapControl/SheepPointSaveLoad'
@@ -94,6 +94,7 @@ export default function MapControl() {
                 <SheepPointsEstimation/>
             </div>
             <div className={classes.formSection}>
+                <Button onClick={() => dispatch(removeSheepRttPoints())}>Clear sheep RTT data</Button>
                 <SheepPointSaveLoad />
             </div>
         </Paper>

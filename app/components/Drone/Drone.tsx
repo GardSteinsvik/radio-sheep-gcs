@@ -8,18 +8,18 @@ import {
     LinearProgress,
     TextField,
     Typography,
-    useTheme
-} from "@material-ui/core";
+    useTheme,
+} from "@material-ui/core"
 import mav from '../../api/mav-connection'
-import {useDispatch, useSelector} from "react-redux";
-import {makeStyles, Theme} from "@material-ui/core/styles";
+import {useDispatch, useSelector} from "react-redux"
+import {makeStyles, Theme} from "@material-ui/core/styles"
 import {selectDroneStatus, setDroneStatus} from '@slices/droneStatusSlice'
 import {addStatusText, selectStatusTexts} from '@slices/statusTextsSlice'
 import {selectCompletedPoints} from '@slices/completedPointsSlice'
 import {selectFlightParameters} from '@slices/flightParametersSlice'
-import {SheepRttData} from "@/api/messages/sheep-rtt-data";
+import {SheepRttData} from "@/api/messages/sheep-rtt-data"
 import {addRssiData, storeSheepRttPoint} from "@slices/sheepRttPointsSlice"
-import {Feature, Point} from "geojson";
+import {Feature, Point} from "geojson"
 import {EmitterChannels} from '@/api/emitter-channels'
 import {GlobalPositionInt} from '@/api/messages/global-position-int'
 import {GcsValues} from '@/api/gcs-values'
@@ -96,7 +96,7 @@ export default function Drone() {
         })
 
         mav.emitter.on(EmitterChannels.RSSI_DATA, (sheepRttData: SheepRttData) => {
-            dispatch(addRssiData([sheepRttData.seq-1, sheepRttData.dis]))
+            dispatch(addRssiData([sheepRttData.seq-1, sheepRttData.dis >= 128 ? sheepRttData.dis - 256 : sheepRttData.dis]))
         })
 
         return () => {
@@ -181,25 +181,16 @@ export default function Drone() {
                                 <>
                                     <Button variant={"contained"} color={"inherit"} onClick={() => mav.closeConnection()}>Disconnect</Button>
                                     <div>
-                                        {!droneStatus.armed ? <Button onClick={() => mav.armDrone()}>Arm drone</Button> : <Button onClick={() => mav.armDrone()}>Disarm drone</Button>}
+                                        <Button onClick={() => mav.armDrone()} disabled={droneStatus.armed}>Arm drone</Button>
                                     </div>
                                 </>
                             )}
-                        </div>
-                        <div>
-                            <div><strong>Status: </strong></div>
-                            <textarea style={{width: '100%', height: '28rem', fontFamily: '"Courier New", Courier, monospace', color: 'white', backgroundColor: '#333', resize: 'none'}}
-                                      value={statusTexts.join('\n')}
-                                      onChange={() => {}}
-                            />
-                            <div style={{display: 'flex', justifyContent: 'flex-start', textAlign: 'left'}}>
-                                <pre>Drone data: {JSON.stringify(droneStatus, null, 1)}</pre>
-                            </div>
                         </div>
                         <Button onClick={() => mav.uploadMission(flightParameters, completedPoints)}>Upload mission</Button>
                         <Button onClick={() => mav.startMission()}>Start mission</Button>
                         <Button onClick={() => mav.clearMission()}>Clear mission</Button>
                         <Button onClick={() => mav.downloadMission()}>Download mission</Button>
+                        <Button onClick={() => mav.setParameter('SIM_SPEEDUP', 1)}>Set param</Button>
                         <Button disabled={!completedPoints.features[0]} onClick={() => mav.sendMavlinkMessage(Object.assign(new GlobalPositionInt(GcsValues.SYSTEM_ID, GcsValues.COMPONENT_ID), {
                             time_boot_ms: 1000,
                             lat: completedPoints.features[0]?.geometry.coordinates[1],
@@ -211,6 +202,16 @@ export default function Drone() {
                             vz: 0.01,
                             hdg: 1,
                         }))}>Send GPS</Button>
+                        <div>
+                            <div><strong>Status: </strong></div>
+                            <textarea style={{width: '100%', height: '28rem', fontFamily: '"Courier New", Courier, monospace', color: 'white', backgroundColor: '#333', resize: 'none'}}
+                                      value={statusTexts.join('\n')}
+                                      onChange={() => {}}
+                            />
+                            <div style={{display: 'flex', justifyContent: 'flex-start', textAlign: 'left'}}>
+                                <pre>Drone data: {JSON.stringify(droneStatus, null, 1)}</pre>
+                            </div>
+                        </div>
                         <div style={{display: 'flex', justifyContent: 'flex-start', textAlign: 'left'}}>
                             <pre>Heartbeats: {JSON.stringify(mav.lastHeartbeats, null, 1)}</pre>
                         </div>

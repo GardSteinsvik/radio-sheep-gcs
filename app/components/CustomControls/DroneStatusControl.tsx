@@ -25,12 +25,10 @@ function getGpsFixTypeDescription(fixType: GpsFixType | undefined): string {
         case GpsFixType.GPS_FIX_TYPE_ENUM_END:
         default:
             return '-';
-
     }
 }
 
 export class DroneStatusControl {
-    // private map: mapboxgl.Map | undefined;
     private container: HTMLElement | undefined;
     private droneStatus: DroneStatus | undefined;
     private lastUpdate: number = 0
@@ -45,8 +43,6 @@ export class DroneStatusControl {
     }
 
     onAdd(_: mapboxgl.Map){
-        // this.map = map;
-
         this.container = document.createElement('div');
 
         if (!this.droneStatus) return this.container
@@ -72,6 +68,5 @@ export class DroneStatusControl {
     }
     onRemove(){
         this.container?.parentNode?.removeChild(this.container);
-        // this.map = undefined;
     }
 }

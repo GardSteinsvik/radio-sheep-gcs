@@ -1,10 +1,12 @@
 import {MavState} from "../enums/mav-state";
 import {GpsFixType} from '../enums/gps-fix-type'
+import {MavAutopilot} from '../enums/mav-autopilot'
 
 export interface DroneStatus {
     connected?: boolean,
     armed?: boolean,
     systemStatus?: MavState,
+    autopilot?: MavAutopilot,
     latitude?: number;
     longitude?: number;
     altitude?: number;
