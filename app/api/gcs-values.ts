@@ -5,5 +5,4 @@ export enum GcsValues {
     TRANSMISSION_TIMEOUT = 1500, // ms
     MISSION_ITEM_TIMEOUT = 250, // ms
     MAX_RETRIES = 5,
-    RSSI_ENABLED = 1,
 }

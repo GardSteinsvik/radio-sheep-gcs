@@ -2,10 +2,12 @@ import React, {useEffect, useState} from 'react'
 import {
     Badge,
     Button,
+    ButtonGroup,
     createStyles,
     Drawer,
     IconButton,
     LinearProgress,
+    Paper,
     TextField,
     Typography,
     useTheme,
@@ -18,11 +20,13 @@ import {addStatusText, selectStatusTexts} from '@slices/statusTextsSlice'
 import {selectCompletedPoints} from '@slices/completedPointsSlice'
 import {selectFlightParameters} from '@slices/flightParametersSlice'
 import {SheepRttData} from "@/api/messages/sheep-rtt-data"
-import {addRssiData, storeSheepRttPoint} from "@slices/sheepRttPointsSlice"
+import {storeSheepRttPoint} from "@slices/sheepRttPointsSlice"
 import {Feature, Point} from "geojson"
 import {EmitterChannels} from '@/api/emitter-channels'
-import {GlobalPositionInt} from '@/api/messages/global-position-int'
-import {GcsValues} from '@/api/gcs-values'
+import {ParamValue} from '@/api/messages/param-value'
+import {setDroneParameter} from '@slices/droneParametersSlice'
+import ParamDialog from '@/components/Drone/ParamDialog'
+import {MavParamType} from '@/api/enums/mav-param-type'
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -51,8 +55,8 @@ export default function Drone() {
     const classes = useStyles(theme)
     const dispatch = useDispatch()
 
-    const [mavAddress, setMavAddress] = useState('192.168.38.2')
-    const [mavPort, setMavPort] = useState(5760)
+    const [mavAddress, setMavAddress] = useState('127.0.0.1')
+    const [mavPort, setMavPort] = useState(14550)
     const [connecting, setConnecting] = useState(false)
 
     const statusTexts = useSelector(selectStatusTexts)
@@ -84,7 +88,8 @@ export default function Drone() {
                 properties: {
                     alt: sheepRttData.alt / 1e3,
                     tid: sheepRttData.tid,
-                    dis: sheepRttData.dis * 5,
+                    dis: sheepRttData.dis,
+                    rssi: sheepRttData.rssi,
                 },
                 geometry: {
                     type: "Point",
@@ -95,8 +100,20 @@ export default function Drone() {
             dispatch(storeSheepRttPoint(sheepRttFeature))
         })
 
-        mav.emitter.on(EmitterChannels.RSSI_DATA, (sheepRttData: SheepRttData) => {
-            dispatch(addRssiData([sheepRttData.seq-1, sheepRttData.dis >= 128 ? sheepRttData.dis - 256 : sheepRttData.dis]))
+        mav.emitter.on(EmitterChannels.DRONE_PARAMETER, (paramValue: ParamValue) => {
+            if (paramValue._system_id) {
+                dispatch(setDroneParameter({
+                    targetSystemId: paramValue._system_id,
+                    targetComponentId: paramValue._component_id,
+                    droneParameter: {
+                        [paramValue.param_id]: {
+                            value: paramValue.param_value,
+                            type: paramValue.param_type,
+                            index: paramValue.param_index,
+                        },
+                    },
+                }))
+            }
         })
 
         return () => {
@@ -160,6 +177,10 @@ export default function Drone() {
         </div>
     )
 
+    function handleParamSet(targetSystemId: number, targetComponentId: number, name: string, value: number, type: MavParamType) {
+        mav.setParameter(targetSystemId, targetComponentId, name, value, type)
+    }
+
     return (
         <>
             <Badge color={droneStatus.connected ? 'secondary' : 'error'} overlap={"circle"} badgeContent={' '} variant={"dot"}>
@@ -186,22 +207,27 @@ export default function Drone() {
                                 </>
                             )}
                         </div>
-                        <Button onClick={() => mav.uploadMission(flightParameters, completedPoints)}>Upload mission</Button>
-                        <Button onClick={() => mav.startMission()}>Start mission</Button>
-                        <Button onClick={() => mav.clearMission()}>Clear mission</Button>
-                        <Button onClick={() => mav.downloadMission()}>Download mission</Button>
-                        <Button onClick={() => mav.setParameter('SIM_SPEEDUP', 1)}>Set param</Button>
-                        <Button disabled={!completedPoints.features[0]} onClick={() => mav.sendMavlinkMessage(Object.assign(new GlobalPositionInt(GcsValues.SYSTEM_ID, GcsValues.COMPONENT_ID), {
-                            time_boot_ms: 1000,
-                            lat: completedPoints.features[0]?.geometry.coordinates[1],
-                            lon: completedPoints.features[0]?.geometry.coordinates[0],
-                            alt: 10,
-                            relative_alt: 1,
-                            vx: 0.01,
-                            vy: 0.01,
-                            vz: 0.01,
-                            hdg: 1,
-                        }))}>Send GPS</Button>
+                        <Paper variant={'outlined'} style={{padding: '1rem', marginBottom: '1rem'}}>
+                            <Typography variant={'h6'} component={'p'}>Mission actions</Typography>
+                            <ButtonGroup size={'small'}>
+                                <Button onClick={() => mav.uploadMission(flightParameters, completedPoints)}>Upload mission</Button>
+                                <Button onClick={() => mav.startMission()}>Start mission</Button>
+                                <Button onClick={() => mav.clearMission()}>Clear mission</Button>
+                                <Button onClick={() => mav.downloadMission()}>Download mission</Button>
+                            </ButtonGroup>
+                        </Paper>
+
+                        <Paper variant={'outlined'} style={{padding: '1rem', marginBottom: '1rem'}}>
+                            <Typography variant={'h6'} component={'p'}>Parameter actions</Typography>
+                            <ButtonGroup size={'small'}>
+                                <Button onClick={() => mav.getParameters(1)}>Request all params C1</Button>
+                                <Button onClick={() => mav.getParameters(99)}>Request all params C99</Button>
+                            </ButtonGroup>
+                            <div style={{marginTop: '1rem'}}>
+                                <ParamDialog handleParamSet={handleParamSet}/>
+                            </div>
+                        </Paper>
+
                         <div>
                             <div><strong>Status: </strong></div>
                             <textarea style={{width: '100%', height: '28rem', fontFamily: '"Courier New", Courier, monospace', color: 'white', backgroundColor: '#333', resize: 'none'}}

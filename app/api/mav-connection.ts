@@ -33,7 +33,6 @@ import {BatteryStatus} from './messages/battery-status'
 import {SheepRttAck} from './messages/sheep-rtt-ack'
 import {SheepRttData} from './messages/sheep-rtt-data'
 import {Data16} from './messages/data16'
-import {Data32} from './messages/data32'
 import {Statustext} from './messages/statustext'
 import {MavModeFlag} from './enums/mav-mode-flag'
 import {GcsValues} from './gcs-values'
@@ -44,6 +43,9 @@ import {GpsRawInt} from './messages/gps-raw-int'
 import {ParamSet} from './messages/param-set'
 import {MavParamType} from './enums/mav-param-type'
 import {ParamValue} from './messages/param-value'
+import {Data64} from './messages/data64'
+import {ParamRequestList} from './messages/param-request-list'
+import {bitwiseFloat32ToInt32, bitwiseInt32ToFloat32} from '../utils/castingFunctions'
 
 enum MavLinkVersion {
     MAVLink1 = 254,
@@ -102,7 +104,6 @@ function breatheInBreatheOut() {
 }
 
 function startConnection(address: string, sourcePort: number) {
-    socket.close()
     socketAddress = address
     socketSourcePort = sourcePort
     socket = dgram.createSocket('udp4')
@@ -211,7 +212,7 @@ function startConnection(address: string, sourcePort: number) {
             'SENSOR_OFFSETS',
             'POSITION_TARGET_GLOBAL_INT',
             'MISSION_ITEM_REACHED',
-            'DATA32',
+            'DATA64',
             'SHEEP_RTT_DATA',
             'FENCE_STATUS',
             'GPS_GLOBAL_ORIGIN',
@@ -284,22 +285,18 @@ function startConnection(address: string, sourcePort: number) {
         }
     })
 
-    mavLink.on('DATA32', async (data32: Data32) => {
-        if (data32.type !== 129) {
+    mavLink.on('DATA64', async (data64: Data64) => {
+        if (data64.type !== 129) {
             return
         }
 
-        const parsedMessages: MAVLinkMessage[] = await mavLink.parse(Buffer.from(data32.data))
+        const parsedMessages: MAVLinkMessage[] = await mavLink.parse(Buffer.from(data64.data))
 
         const sheepRttData: SheepRttData = parsedMessages.pop() as SheepRttData
 
         if (!sheepRttData) return
 
-        if (GcsValues.RSSI_ENABLED && sheepRttData.seq % 2 === 1) {
-            emitter.emit(EmitterChannels.SHEEP_DATA, sheepRttData)
-        } else {
-            emitter.emit(EmitterChannels.RSSI_DATA, sheepRttData)
-        }
+        emitter.emit(EmitterChannels.SHEEP_DATA, sheepRttData)
 
         const sheepRttAckBuffer: Buffer = mavLink.pack([Object.assign(new SheepRttAck(GcsValues.SYSTEM_ID, GcsValues.COMPONENT_ID), {seq: sheepRttData.seq})])
 
@@ -308,6 +305,24 @@ function startConnection(address: string, sourcePort: number) {
             len: sheepRttAckBuffer.length,
             data: sheepRttAckBuffer,
         }))
+    })
+
+    mavLink.on('PARAM_VALUE', (paramValue: ParamValue) => {
+        let castedValue = paramValue.param_value
+        const isArdupilot = paramValue._component_id === 1
+
+        if (!isArdupilot) {
+            if (paramValue.param_type === MavParamType.MAV_PARAM_TYPE_INT32) {
+                castedValue = bitwiseFloat32ToInt32(paramValue.param_value)
+            } else {
+                console.log(`Type ${paramValue.param_type} not implemented for non ArduPilot. No casting.`)
+            }
+        }
+
+        const castedParamValue = JSON.parse(JSON.stringify(paramValue)) as ParamValue
+        castedParamValue.param_value = castedValue
+
+        emitter.emit(EmitterChannels.DRONE_PARAMETER, castedParamValue)
     })
 }
 
@@ -340,7 +355,7 @@ function uploadMission(flightParameters: FlightParameters, completedPoints: Feat
         createWaypointCommand(0, startPoint.geometry.coordinates[1], startPoint.geometry.coordinates[0], 0), // Dummy waypoint that is ignored by ArduPilot
         createDoChangeSpeedCommand(flightParameters.velocity ?? 5),
         createTakeOffCommand(startPoint.geometry.coordinates[1], startPoint.geometry.coordinates[0], flightParameters.elevation ?? 0),
-        ...completedPoints.features.map(point => createWaypointCommand(flightParameters.acceptanceRadius ?? 10, point.geometry.coordinates[1], point.geometry.coordinates[0], flightParameters.elevation + (point.properties?.altitude ?? 0))),
+        ...completedPoints.features.map(point => createWaypointCommand(flightParameters.acceptanceRadius ?? 10, point.geometry.coordinates[1], point.geometry.coordinates[0], (flightParameters?.elevation ?? 0) + Math.max(0, (point.properties?.altitude ?? 0)))),
         createLandCommand(stopPoint.geometry.coordinates[1], stopPoint.geometry.coordinates[0]),
     ].map(assignSeqNumber)
 
@@ -510,14 +525,34 @@ function startMission() {
     sendMavlinkMessage(createMissionStartCommand(MAV_SYSTEM_ID, MAV_COMP_ID))
 }
 
-function setParameter(name: string, value: number) {
-    emitter.emit(EmitterChannels.STATUS_TEXT, `Setting param ${name} with value ${value}`)
-    sendMavlinkMessage(Object.assign(new ParamSet(GcsValues.SYSTEM_ID, GcsValues.COMPONENT_ID), {
+function getParameters(targetComponentId: number) {
+    sendMavlinkMessage(Object.assign(new ParamRequestList(GcsValues.SYSTEM_ID, GcsValues.COMPONENT_ID), {
         target_system: MAV_SYSTEM_ID,
-        target_component: MAV_COMP_ID,
+        target_component: targetComponentId,
+    }))
+}
+
+function setParameter(targetSystemId: number, targetComponentId: number, name: string, inputValue: number, type: MavParamType) {
+    let castedInputValue = inputValue
+
+    const isArdupilot = targetComponentId === 1
+
+    if (!isArdupilot) {
+        if (type === MavParamType.MAV_PARAM_TYPE_INT32) {
+            castedInputValue = bitwiseInt32ToFloat32(inputValue)
+        } else {
+            // console.log(`Type ${type} not implemented for non ArduPilot. No casting.`)
+        }
+    }
+
+
+    emitter.emit(EmitterChannels.STATUS_TEXT, `Setting param ${name} with value ${inputValue}`)
+    sendMavlinkMessage(Object.assign(new ParamSet(GcsValues.SYSTEM_ID, GcsValues.COMPONENT_ID), {
+        target_system: targetSystemId,
+        target_component: targetComponentId,
         param_id:  name,
-        param_value: value,
-        param_type: MavParamType.MAV_PARAM_TYPE_ENUM_END,
+        param_value: castedInputValue,
+        param_type: type,
     }))
 
     let abortTimeout = setTimeout(stopListeners, GcsValues.TRANSMISSION_TIMEOUT)
@@ -525,12 +560,23 @@ function setParameter(name: string, value: number) {
     const paramValueListener = (paramValue: ParamValue) => {
         if (paramValue.param_id === name) {
             clearTimeout(abortTimeout)
-            if (paramValue.param_value === value) {
+
+            let castedReceivedValue = paramValue.param_value
+            const isArdupilot = paramValue._component_id === 1
+
+            if (!isArdupilot) {
+                if (paramValue.param_type === MavParamType.MAV_PARAM_TYPE_INT32) {
+                    castedReceivedValue = bitwiseFloat32ToInt32(paramValue.param_value)
+                } else {
+                    // console.log(`Type ${paramValue.param_type} not implemented for non ArduPilot. No casting.`)
+                }
+            }
+
+            if (castedReceivedValue === inputValue) {
                 emitter.emit(EmitterChannels.STATUS_TEXT, 'Param set.')
             } else {
-                emitter.emit(EmitterChannels.STATUS_TEXT, 'Setting param failed. Previous value kept.')
+                emitter.emit(EmitterChannels.STATUS_TEXT, `Setting param to ${inputValue} failed. Previous value ${castedReceivedValue} kept.`)
             }
-            emitter.emit(EmitterChannels.DRONE_PARAMETER, {[paramValue.param_id]: paramValue.param_value})
             setTimeout(stopListeners, 100)
         }
     }
@@ -555,6 +601,7 @@ const mav = {
     clearMission,
     startMission,
     setParameter,
+    getParameters
 }
 
 export default mav;

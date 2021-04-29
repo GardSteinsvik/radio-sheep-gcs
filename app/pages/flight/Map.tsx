@@ -42,6 +42,7 @@ const LAYERS = ({
     COMPLETED_POINTS: 'completed-points',
     SHEEP_RTT_POINTS: 'sheep-rtt-points',
     ESTIMATED_SHEEP_POINTS: 'estimated-sheep-points',
+    ESTIMATED_SHEEP_POINTS_UNCERTAINTY: 'estimated-sheep-points-uncertainty',
     ACTUAL_SHEEP_POINTS: 'actual-sheep-points',
 })
 
@@ -157,7 +158,7 @@ export default function Map({features = []}: Props) {
                 container: mapContainer.current,
                 // style: 'mapbox://styles/mapbox/outdoors-v11', // Requires API key
                 style: topo4,
-                center: [10.3951, 63.4305],
+                center: [9.095142, 62.692966],
                 zoom: 12.5,
             })
 
@@ -421,19 +422,28 @@ export default function Map({features = []}: Props) {
     }, [sheepRttPoints, selectedSheepRttPoint])
 
     useEffect(() => {
-        if (map?.getLayer(SOURCES.ESTIMATED_SHEEP_POINTS)) map?.removeLayer(SOURCES.ESTIMATED_SHEEP_POINTS)
+        if (map?.getLayer(LAYERS.ESTIMATED_SHEEP_POINTS)) map?.removeLayer(LAYERS.ESTIMATED_SHEEP_POINTS)
+        if (map?.getLayer(LAYERS.ESTIMATED_SHEEP_POINTS_UNCERTAINTY)) map?.removeLayer(LAYERS.ESTIMATED_SHEEP_POINTS_UNCERTAINTY)
 
         if (map?.getSource(SOURCES.ESTIMATED_SHEEP_POINTS)) map?.removeSource(SOURCES.ESTIMATED_SHEEP_POINTS)
 
+        const uncertaintyCircles = estimatedSheepPoints.features.map(point => turf.circle(point, point.properties?.uncertainty || 0.1, {units: 'meters'}) as Feature<Polygon>)
+
         map?.addSource(SOURCES.ESTIMATED_SHEEP_POINTS, {
             type: 'geojson',
-            data: estimatedSheepPoints,
+            data: {
+                type: 'FeatureCollection',
+                features: [
+                    ...estimatedSheepPoints.features,
+                    ...uncertaintyCircles,
+                ],
+            },
         })
 
         map?.addLayer({
             'id': LAYERS.ESTIMATED_SHEEP_POINTS,
-            'type': 'circle',
             'source': SOURCES.ESTIMATED_SHEEP_POINTS,
+            'type': 'circle',
             'paint': {
                 'circle-radius': 3,
                 'circle-color': 'rgba(0,0,0,0)',
@@ -445,11 +455,22 @@ export default function Map({features = []}: Props) {
                 ],
                 'circle-stroke-width': 4,
             },
+            'filter': ['==', '$type', 'Point']
+        })
+        map?.addLayer({
+            'id': LAYERS.ESTIMATED_SHEEP_POINTS_UNCERTAINTY,
+            'source': SOURCES.ESTIMATED_SHEEP_POINTS,
+            'type': 'fill',
+            'paint': {
+                'fill-opacity': 0.1,
+                'fill-color': '#339966'
+            },
+            'filter': ['==', '$type', 'Polygon']
         })
     }, [estimatedSheepPoints, selectedSheepRttPoint])
 
     useEffect(() => {
-        if (map?.getLayer(SOURCES.ACTUAL_SHEEP_POINTS)) map?.removeLayer(SOURCES.ACTUAL_SHEEP_POINTS)
+        if (map?.getLayer(LAYERS.ACTUAL_SHEEP_POINTS)) map?.removeLayer(LAYERS.ACTUAL_SHEEP_POINTS)
 
         if (map?.getSource(SOURCES.ACTUAL_SHEEP_POINTS)) map?.removeSource(SOURCES.ACTUAL_SHEEP_POINTS)
 
@@ -475,20 +496,6 @@ export default function Map({features = []}: Props) {
             },
         })
     }, [actualSheepPoints, selectedSheepRttPoint])
-
-    useEffect(() => {
-        if (estimatedSheepPoints.features.length === 0 || actualSheepPoints.features.length === 0) return
-
-        const totalErrorLength = estimatedSheepPoints.features.reduce((acc, curr) => {
-            const point2 = actualSheepPoints.features.find(p => `${p.id}` === `${curr.id}`)
-            if (!point2) return acc
-            const distance = turf.distance(curr.geometry.coordinates, point2.geometry.coordinates, {units: "meters"})
-            return acc + distance
-        }, 0)
-
-        console.log('Total error length', totalErrorLength)
-
-    }, [estimatedSheepPoints, actualSheepPoints])
 
     return <div style={{position: 'absolute', top: 0, bottom: 0, width: '100%', borderRadius: 8}} ref={mapContainerRef} />
 }

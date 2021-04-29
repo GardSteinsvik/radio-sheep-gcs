@@ -79,6 +79,7 @@ export default function MapControl() {
                         max={Math.max(...sheepIdList)}
                         marks={sheepIdList.map(id => ({value: id, label: ''}))}
                     />
+                    <Typography gutterBottom>Number of samples: {sheepRttPoints.features.filter(f => f.properties?.tid === selectedSheepRttPoint).length}/{sheepRttPoints.features.length}</Typography>
                 </div>
             )}
             <div className={classes.formSection}>
@@ -94,7 +95,7 @@ export default function MapControl() {
                 <SheepPointsEstimation/>
             </div>
             <div className={classes.formSection}>
-                <Button onClick={() => dispatch(removeSheepRttPoints())}>Clear sheep RTT data</Button>
+                <Button onClick={() => confirm('Are you sure you want to remove the sheep data?') && dispatch(removeSheepRttPoints())}>Clear sheep RTT data</Button>
                 <SheepPointSaveLoad />
             </div>
         </Paper>

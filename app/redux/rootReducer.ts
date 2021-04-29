@@ -1,18 +1,19 @@
-import {combineReducers} from 'redux';
-import {connectRouter} from 'connected-react-router';
-import {History} from 'history';
-import selectedAreaReducer from './slices/selectedAreaSlice';
-import selectedPointReducer from './slices/selectedPointSlice';
+import {combineReducers} from 'redux'
+import {connectRouter} from 'connected-react-router'
+import {History} from 'history'
+import selectedAreaReducer from './slices/selectedAreaSlice'
+import selectedPointReducer from './slices/selectedPointSlice'
 import completedPointsReducer from './slices/completedPointsSlice'
-import statusTextsReducer from "./slices/statusTextsSlice";
+import statusTextsReducer from "./slices/statusTextsSlice"
 import droneStatusReducer from './slices/droneStatusSlice'
-import flightParametersReducer from "./slices/flightParametersSlice";
-import elevationProfileSlice from "@slices/elevationProfileSlice";
-import mapParametersSlice from "@slices/mapParametersSlice";
-import sheepRttPointsSlice from "@slices/sheepRttPointsSlice";
-import selectedSheepRttPointSlice from "@slices/selectedSheepRttPointSlice";
-import estimatedSheepPointsSlice from "@slices/estimatedSheepPointsSlice";
-import actualSheepPointsSlice from "@slices/actualSheepPointsSlice";
+import flightParametersReducer from "./slices/flightParametersSlice"
+import elevationProfileSlice from "@slices/elevationProfileSlice"
+import mapParametersSlice from "@slices/mapParametersSlice"
+import sheepRttPointsSlice from "@slices/sheepRttPointsSlice"
+import selectedSheepRttPointSlice from "@slices/selectedSheepRttPointSlice"
+import estimatedSheepPointsSlice from "@slices/estimatedSheepPointsSlice"
+import actualSheepPointsSlice from "@slices/actualSheepPointsSlice"
+import droneParametersSlice from '@slices/droneParametersSlice'
 
 export default function createRootReducer(history: History) {
     return combineReducers({
@@ -29,5 +30,6 @@ export default function createRootReducer(history: History) {
         selectedSheepRttPoint: selectedSheepRttPointSlice,
         estimatedSheepPoints: estimatedSheepPointsSlice,
         actualSheepPoints: actualSheepPointsSlice,
+        droneParameters: droneParametersSlice,
     });
 }
