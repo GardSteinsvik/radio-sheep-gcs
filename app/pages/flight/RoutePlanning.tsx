@@ -10,7 +10,6 @@ import {readFile, writeFile} from 'fs'
 import {FlightData} from '@interfaces/FlightData'
 import {selectSelectedArea} from '@slices/selectedAreaSlice'
 import {selectSelectedPoint} from '@slices/selectedPointSlice'
-import {AllGeoJSON} from '@turf/turf'
 import * as turf from '@turf/turf'
 import {getPointsWithAltitude} from '@/api/api'
 import {setElevationProfile} from '@slices/elevationProfileSlice'
@@ -62,8 +61,6 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
     const flightParameters: FlightParameters = useSelector(selectFlightParameters)
     const completedPoints: FeatureCollection<Point> = useSelector(selectCompletedPoints)
 
-    const [searchWidth, setSearchWidth] = useState<number>(0)
-    const [searchHeight, setSearchHeight] = useState<number>(0)
     const [routeLength, setRouteLength] = useState<number>(0)
     const [missionTime, setMissionTime] = useState<number>(0)
 
@@ -127,6 +124,9 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
         })
     }
 
+    /**
+     * Generate waypoint effect
+     */
     useEffect(() => {
         if (!selectedArea) {
             setFeaturesToDraw([])
@@ -135,64 +135,85 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
 
         const featuresToRender: Feature[] = []
 
-        const data: AllGeoJSON = selectedArea as AllGeoJSON
-        const bbox = turf.bbox(data) // [minX, minY, maxX, maxY]
+        const borderBbox = turf.square(turf.bbox(turf.transformScale(selectedArea, 3, {origin: 'center'}))) // [minX, minY, maxX, maxY]
+        const verticalBorderLineString1 = turf.lineString([[borderBbox[0], borderBbox[1]], [borderBbox[0], borderBbox[3]]])
+        const verticalBorderLineString2 = turf.lineString([[borderBbox[2], borderBbox[1]], [borderBbox[2], borderBbox[3]]])
+        const yLength = turf.length(verticalBorderLineString1, {units: 'meters'})
+        const distanceBetweenLines = 2 * (flightParameters.searchRadius ?? 1) - (flightParameters.searchRadiusOverlap ?? 0)
+        const lines: Feature<LineString>[] = []
 
-        const bboxPolygon: Feature<Polygon> = turf.bboxPolygon(bbox) as Feature<Polygon>;
-        // featuresToRender.push(bboxPolygon)
-
-        const xLength = turf.distance(turf.point(bboxPolygon.geometry.coordinates[0][0]), turf.point(bboxPolygon.geometry.coordinates[0][1]), {units: 'meters'})
-        const yLength = turf.distance(turf.point(bboxPolygon.geometry.coordinates[0][1]), turf.point(bboxPolygon.geometry.coordinates[0][2]), {units: 'meters'})
-        setSearchWidth(xLength)
-        setSearchHeight(yLength)
-
-        const grid = turf.pointGrid(bbox, ((flightParameters.searchRadius ?? 0) * 2) - (flightParameters.searchRadiusOverlap ?? 0), {units: "meters"}).features as Feature<Point>[]
-
-        const sortedGrid: Feature<Point>[] = []
-        const colCount = Math.ceil(yLength/(((flightParameters.searchRadius ?? 0) * 2) - (flightParameters.searchRadiusOverlap ?? 0)))
-        let buffer: Feature<Point>[] = []
-        let flip = false
-        let i = 0
-        while (sortedGrid.length < grid.length) {
-            if (flip) {
-                buffer.unshift(grid[i])
-            } else {
-                buffer.push(grid[i])
-            }
-
-            if (buffer.length >= colCount) {
-                sortedGrid.push(...buffer)
-                buffer = []
-            }
-
-            if (++i % colCount === 0) {
-                flip = !flip
+        for (let i = 0; i < yLength / distanceBetweenLines; i++) {
+            const point1 = turf.along(verticalBorderLineString1, i * distanceBetweenLines, {units: 'meters'})
+            const point2 = turf.along(verticalBorderLineString2, i * distanceBetweenLines, {units: 'meters'})
+            if (point1.geometry?.coordinates && point2.geometry?.coordinates) {
+                lines.push({
+                    type: 'Feature',
+                    id: i,
+                    properties: {},
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: [
+                            point1.geometry.coordinates,
+                            point2.geometry.coordinates
+                        ]
+                    }
+                })
             }
         }
+
+        turf.transformRotate({
+            type: 'FeatureCollection',
+            features: lines
+        }, flightParameters.pathRotation ?? 0, {mutate: true})
+
+        const polygonLine = turf.polygonToLine(selectedArea)
+        const waypoints: Feature<Point>[] = []
+
+        lines.forEach((line, i) => {
+            const intersectingPoints = turf.lineIntersect(line, polygonLine)
+            if (intersectingPoints.features.length >= 2) {
+                const [startPoint, stopPoint] = intersectingPoints.features as Feature<Point>[]
+                if (i % 2 === 0) {
+                    waypoints.push(startPoint, stopPoint)
+                } else {
+                    waypoints.push(stopPoint, startPoint)
+                }
+            }
+        })
 
         if (selectedPoint) {
-            sortedGrid.unshift(selectedPoint)
-            sortedGrid.push(selectedPoint)
+            const firstPoint = waypoints[0]
+            const lastPoint = waypoints[waypoints.length-1]
+
+            if (firstPoint && lastPoint && turf.distance(firstPoint, selectedPoint, {units: 'meters'}) > turf.distance(lastPoint, selectedPoint, {units: 'meters'})) {
+                waypoints.reverse()
+            }
+
+            waypoints.unshift(selectedPoint)
+            waypoints.push(selectedPoint)
         }
 
-        setSortedPoints(sortedGrid.map((point, i) => ({...point, id: `${i}`})))
+        setSortedPoints(waypoints.map((point, i) => ({...point, id: `${i}`})))
 
-        const line: Feature<LineString> = ({
+        // featuresToRender.push(polygonLine as Feature<LineString>)
+        featuresToRender.push({
             type: "Feature",
             geometry: {
                 type: "LineString",
-                coordinates: sortedGrid.map((point) => point.geometry.coordinates)
+                coordinates: waypoints.map((point) => point.geometry.coordinates)
             },
             properties: {}
         })
-        featuresToRender.push(line)
 
         setRouteLength(0)
 
         setFeaturesToDraw(featuresToRender)
         dispatch(removeCompletedPoints())
-    }, [selectedArea, selectedPoint, flightParameters.searchRadius, flightParameters.searchRadiusOverlap])
+    }, [selectedArea, selectedPoint, flightParameters.searchRadius, flightParameters.searchRadiusOverlap, flightParameters.pathRotation])
 
+    /**
+     * Fetch elevation effect
+     */
     useEffect(() => {
         if (sortedPoints.length === 0 || !selectedPoint) return;
 
@@ -207,12 +228,18 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
         })
     }, [sortedPoints, selectedPoint])
 
+    /**
+     * Calculate mission time effect
+     */
     useEffect(() => {
         if (flightParameters.velocity) {
             setMissionTime((routeLength / flightParameters.velocity)/60)
         }
     }, [flightParameters.velocity, routeLength])
 
+    /**
+     * Calculate route length effect
+     */
     useEffect(() => {
         if (completedPoints.features.length < 2 || completedPoints.features.length !== sortedPoints.length) return
 
@@ -230,6 +257,9 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
 
     }, [completedPoints, sortedPoints, flightParameters])
 
+    /**
+     * Elevation profile effect
+     */
     useEffect(() => {
         if (!selectedArea || !selectedPoint) return
 
@@ -255,7 +285,7 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
                 <Divider style={{marginBottom: '1rem'}}/>
                 <div className={classes.formSection}>
                     <Typography id="search-elevation-slider" gutterBottom>
-                        Drone elevation ({flightParameters.elevation}m)
+                        🏔 Drone elevation ({flightParameters.elevation}m)
                     </Typography>
                     <Slider
                         aria-labelledby={'search-elevation-slider'}
@@ -270,7 +300,7 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
                 </div>
                 <div className={classes.formSection}>
                     <Typography id="search-radius-slider" gutterBottom>
-                        Search radius ({flightParameters.searchRadius}m)
+                        ⚪️ Search radius ({flightParameters.searchRadius}m)
                     </Typography>
                     <Slider
                         aria-labelledby={'search-radius-slider'}
@@ -285,7 +315,7 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
                 </div>
                 <div className={classes.formSection}>
                     <Typography id="search-radius-overlap-slider" gutterBottom>
-                        Search radius overlap ({flightParameters.searchRadiusOverlap}m)
+                        🔲 Search radius overlap ({flightParameters.searchRadiusOverlap}m)
                     </Typography>
                     <Slider
                         aria-labelledby={'search-radius-overlap-slider'}
@@ -299,8 +329,23 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
                     />
                 </div>
                 <div className={classes.formSection}>
+                    <Typography id="path-rotation-slider" gutterBottom>
+                        🔄 Path rotation ({flightParameters.pathRotation}º)
+                    </Typography>
+                    <Slider
+                        aria-labelledby={'path-rotation-slider'}
+                        className={classes.slider}
+                        value={flightParameters.pathRotation}
+                        onChange={(_, value) => dispatch(setFlightParameters({pathRotation: +value}))}
+                        step={15}
+                        min={0}
+                        max={360}
+                        marks={[0, 180, 360].map(v => ({value: v, label: v + 'º'}))}
+                    />
+                </div>
+                <div className={classes.formSection}>
                     <Typography id="acceptance-radius-slider" gutterBottom>
-                        Acceptance radius ({flightParameters.acceptanceRadius}m)
+                        🛂 Acceptance radius ({flightParameters.acceptanceRadius}m)
                     </Typography>
                     <Slider
                         aria-labelledby={'acceptance-radius-slider'}
@@ -315,7 +360,7 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
                 </div>
                 <div className={classes.formSection}>
                     <Typography id="drone-velocity-slider" gutterBottom>
-                        Drone velocity ({flightParameters.velocity}m/s)
+                        🏎 Drone velocity ({flightParameters.velocity}m/s)
                     </Typography>
                     <Slider
                         aria-labelledby={'drone-velocity-slider'}
@@ -332,7 +377,6 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
                 <div className={classes.formSection}>
                     <Typography gutterBottom>Search area: {selectedArea ? '✅' : '❌'}</Typography>
                     <Typography gutterBottom>Start/end point: {selectedPoint ? '✅' : '❌'}</Typography>
-                    <Typography gutterBottom>Area: {(searchWidth * searchHeight / 1000000).toFixed(0)} km²</Typography>
                     <Typography gutterBottom>Route length: {(routeLength / 1000)?.toFixed(1)} km</Typography>
                     <Typography gutterBottom>Mission time: {missionTime?.toFixed(0)} minutes</Typography>
                 </div>

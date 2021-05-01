@@ -4,4 +4,5 @@ export interface FlightParameters {
     searchRadius?: number,
     searchRadiusOverlap?: number,
     acceptanceRadius?: number,
+    pathRotation?: number,
 }

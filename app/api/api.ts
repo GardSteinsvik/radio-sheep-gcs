@@ -26,7 +26,7 @@ export async function getTiffBlob(bbox: any, xLength: any, yLength: any): Promis
 
 export async function getPointsWithAltitude(pointCollection: FeatureCollection<Point>): Promise<FeatureCollection<Point> | undefined> {
     const coordinatesString = pointCollection.features.map((point: Feature<Point>) => `[${point.geometry.coordinates.join(',')}]`).join(',');
-    return await fetch(`https://wstest.geonorge.no/hoydedata/v1/punkt?koordsys=4258&geojson=true&punkter=[${coordinatesString}]`)
+    return await fetch(`https://ws.geonorge.no/hoydedata/v1/punkt?koordsys=4258&geojson=true&punkter=[${coordinatesString}]`)
         .then(async (response: Response) => {
             if (response.ok) {
                 return await response.json()
