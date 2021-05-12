@@ -4,14 +4,16 @@ import {readInt64LE, readUInt64LE} from '@gardsteinsvik/node-mavlink';
 Message containing a sheepRTT sample. Position of the drone and the distance to the tag with a specific id.
 */
 // seq Sequential sample id (from power on). uint32_t
+// timestamp Timestamp, ms since power on of module. uint32_t
 // lat Latitude, expressed int32_t
 // lon Longitude, expressed int32_t
 // alt Altitude (MSL). Note that virtually all GPS modules provide both WGS84 and MSL. int32_t
-// dis Distance between the drone and the tag. uint16_t
+// dis Distance between the drone and the tag. UINT32_MAX: Tag discovered but unable to measure distance. uint16_t
 // tid Identifier for the tag. uint16_t
 // rssi Sample signal strength. int8_t
 export class SheepRttData extends MAVLinkMessage {
 	public seq!: number;
+	public timestamp!: number;
 	public lat!: number;
 	public lon!: number;
 	public alt!: number;
@@ -20,9 +22,10 @@ export class SheepRttData extends MAVLinkMessage {
 	public rssi!: number;
 	public _message_id: number = 19200;
 	public _message_name: string = 'SHEEP_RTT_DATA';
-	public _crc_extra: number = 25;
+	public _crc_extra: number = 157;
 	public _message_fields: [string, string, boolean, number][] = [
 		['seq', 'uint32_t', false, 0],
+		['timestamp', 'uint32_t', false, 0],
 		['lat', 'int32_t', false, 0],
 		['lon', 'int32_t', false, 0],
 		['alt', 'int32_t', false, 0],

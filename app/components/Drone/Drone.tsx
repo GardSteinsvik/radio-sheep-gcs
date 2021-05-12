@@ -90,6 +90,7 @@ export default function Drone() {
                     tid: sheepRttData.tid,
                     dis: sheepRttData.dis,
                     rssi: sheepRttData.rssi,
+                    timestamp: sheepRttData.timestamp,
                 },
                 geometry: {
                     type: "Point",

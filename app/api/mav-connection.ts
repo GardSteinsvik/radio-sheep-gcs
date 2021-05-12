@@ -142,6 +142,7 @@ function startConnection(address: string, sourcePort: number) {
                     break
             }
             currentMavLinkVersion = mavLinkVersion
+            await mavLink.parse(Buffer.from(data))
         }
     })
 
@@ -295,6 +296,8 @@ function startConnection(address: string, sourcePort: number) {
         const sheepRttData: SheepRttData = parsedMessages.pop() as SheepRttData
 
         if (!sheepRttData) return
+
+        console.log('SheepRtt received', sheepRttData)
 
         emitter.emit(EmitterChannels.SHEEP_DATA, sheepRttData)
 
