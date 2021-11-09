@@ -5,11 +5,6 @@ function createStyle(source: mapboxgl.AnySourceData): mapboxgl.Style {
         'version': 8,
         'sources': {
             'kartverket': source,
-            'countries': {
-                'type': 'vector',
-                'maxzoom': 6,
-                'tiles': [location.origin+__dirname+"/api/countries/{z}/{x}/{y}.pbf"]
-            },
         },
         'layers': [
             {
@@ -20,36 +15,10 @@ function createStyle(source: mapboxgl.AnySourceData): mapboxgl.Style {
                 }
             },
             {
-                "id": "country-lines",
-                "type": "line",
-                "source": "countries",
-                "source-layer": "country",
-                "paint": {
-                    "line-color": "#fff",
-                    "line-width": {
-                        "base":1.5,
-                        "stops": [[0,0],[1,0.8],[2,1]]
-                    }
-                }
-            },
-            {
                 'id': 'topo4',
                 'type': 'raster',
                 'source': 'kartverket',
                 'paint': {},
-            },
-            {
-                "id": "geo-lines",
-                "type": "line",
-                "source": "countries",
-                "source-layer": "geo-lines",
-                "paint": {
-                    "line-color": "#226688",
-                    "line-width": {
-                        "stops": [[0,0.2],[4,1]]
-                    },
-                    "line-dasharray":[6,2]
-                }
             },
         ],
     })

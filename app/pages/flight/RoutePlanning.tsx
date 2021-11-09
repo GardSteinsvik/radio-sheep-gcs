@@ -12,7 +12,6 @@ import {selectSelectedArea} from '@slices/selectedAreaSlice'
 import {selectSelectedPoint} from '@slices/selectedPointSlice'
 import * as turf from '@turf/turf'
 import {getPointsWithAltitude} from '@/api/api'
-import {setElevationProfile} from '@slices/elevationProfileSlice'
 import {format} from 'date-fns'
 
 const useStyles = makeStyles({
@@ -256,27 +255,6 @@ const RoutePlanning = ({setFeaturesToDraw}: {setFeaturesToDraw: Function}) => {
         setRouteLength(calculatedLength)
 
     }, [completedPoints, sortedPoints, flightParameters])
-
-    /**
-     * Elevation profile effect
-     */
-    useEffect(() => {
-        if (!selectedArea || !selectedPoint) return
-
-        const bbox = turf.bbox({
-            type: "FeatureCollection",
-            features: [selectedArea, selectedPoint]
-        })
-
-        const xLength = Math.ceil(turf.distance(turf.point([bbox[0], bbox[1]]), turf.point([bbox[2], bbox[1]]), {units: 'meters'}))
-        const yLength = Math.ceil(turf.distance(turf.point([bbox[0], bbox[1]]), turf.point([bbox[0], bbox[3]]), {units: 'meters'}))
-
-        dispatch(setElevationProfile({
-            bbox,
-            width: xLength,
-            height: yLength,
-        }))
-    }, [selectedArea, selectedPoint])
 
     return (
         <>

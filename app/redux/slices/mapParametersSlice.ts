@@ -3,7 +3,6 @@ import {RootState} from '../store';
 import {MapParameters} from "@interfaces/MapParameters";
 
 const initialValues = ({
-    elevationProfileVisibility: 30,
     grayTone: false,
 })
 

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import {useDispatch} from "react-redux";
-import {setActualSheepPoints} from '@/redux/slices/actualSheepPointsSlice';
+import {useDispatch} from 'react-redux'
+import {setActualSheepPoints} from '@/redux/slices/actualSheepPointsSlice'
 
 const SheepUpload = () => {
     const dispatch = useDispatch()

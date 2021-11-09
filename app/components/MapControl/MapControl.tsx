@@ -1,14 +1,14 @@
 import React from 'react'
-import {makeStyles} from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles"
 import {Button, Paper, Slider, Switch, Typography} from '@material-ui/core'
-import {MapParameters} from "@interfaces/MapParameters";
-import {useDispatch, useSelector} from "react-redux";
-import {selectMapParameters, setMapParameters} from "@slices/mapParametersSlice";
-import {selectSelectedSheepRttPoint, setSelectedSheepRttPoint} from "@slices/selectedSheepRttPointSlice";
-import {FeatureCollection, Point} from "geojson";
+import {MapParameters} from "@interfaces/MapParameters"
+import {useDispatch, useSelector} from "react-redux"
+import {selectMapParameters, setMapParameters} from "@slices/mapParametersSlice"
+import {selectSelectedSheepRttPoint, setSelectedSheepRttPoint} from "@slices/selectedSheepRttPointSlice"
+import {FeatureCollection, Point} from "geojson"
 import {removeSheepRttPoints, selectSheepRttPoints} from "@slices/sheepRttPointsSlice"
-import SheepUpload from "@/components/SheepUpload/SheepUpload";
-import SheepPointsEstimation from "@/components/SheepPointsEstimation/SheepPointsEstimation";
+import SheepUpload from "@/components/SheepUpload/SheepUpload"
+import SheepPointsEstimation from "@/components/SheepPointsEstimation/SheepPointsEstimation"
 import SheepPointSaveLoad from '@/components/MapControl/SheepPointSaveLoad'
 
 const useStyles = makeStyles({
@@ -38,21 +38,6 @@ export default function MapControl() {
 
     return (
         <Paper className={classes.paper} variant={"outlined"}>
-            <div className={classes.formSection}>
-                <Typography id="elevation-profile-visibility-slider" gutterBottom>
-                    Elevation profile visibility {mapParameters.elevationProfileVisibility}%
-                </Typography>
-                <Slider
-                    aria-labelledby={'elevation-profile-visibility-slider'}
-                    className={classes.slider}
-                    value={mapParameters.elevationProfileVisibility}
-                    onChange={(_, value) => dispatch(setMapParameters(Object.assign({}, mapParameters, {elevationProfileVisibility: +value})))}
-                    step={1}
-                    min={0}
-                    max={100}
-                    marks={[0, 50, 100].map(v => ({value: v, label: v + '%'}))}
-                />
-            </div>
             <div className={classes.formSection}>
                 <Typography id="gray-tone-switch" gutterBottom>
                     Gray tone map

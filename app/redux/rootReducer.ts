@@ -7,7 +7,6 @@ import completedPointsReducer from './slices/completedPointsSlice'
 import statusTextsReducer from "./slices/statusTextsSlice"
 import droneStatusReducer from './slices/droneStatusSlice'
 import flightParametersReducer from "./slices/flightParametersSlice"
-import elevationProfileSlice from "@slices/elevationProfileSlice"
 import mapParametersSlice from "@slices/mapParametersSlice"
 import sheepRttPointsSlice from "@slices/sheepRttPointsSlice"
 import selectedSheepRttPointSlice from "@slices/selectedSheepRttPointSlice"
@@ -24,7 +23,6 @@ export default function createRootReducer(history: History) {
         statusTexts: statusTextsReducer,
         droneStatus: droneStatusReducer,
         flightParameters: flightParametersReducer,
-        elevationProfile: elevationProfileSlice,
         mapParameters: mapParametersSlice,
         sheepRttPoints: sheepRttPointsSlice,
         selectedSheepRttPoint: selectedSheepRttPointSlice,

@@ -8,8 +8,6 @@ import {removeSelectedPoint, setSelectedPoint} from '@slices/selectedPointSlice'
 import {selectCompletedPoints} from "@slices/completedPointsSlice"
 import {selectDroneStatus} from "@slices/droneStatusSlice"
 import {DroneStatus} from "@interfaces/DroneStatus"
-import {selectElevationProfile} from "@slices/elevationProfileSlice"
-import {ElevationProfile} from "@interfaces/ElevationProfile"
 import {MapParameters} from "@interfaces/MapParameters"
 import {selectMapParameters} from "@slices/mapParametersSlice"
 import {FlightParameters} from "@interfaces/FlightParameters"
@@ -26,7 +24,6 @@ import MapboxGLButtonControl from '@/components/CustomControls/MapboxGLButtonCon
 const SOURCES = {
     WAYPOINTS: 'waypoints',
     DRONE: 'drone',
-    ELEVATION_PROFILE: 'elevation-profile',
     SHEEP_RTT_POINTS: 'sheep-rtt-points',
     ESTIMATED_SHEEP_POINTS: 'estimated-sheep-points',
     ACTUAL_SHEEP_POINTS: 'actual-sheep-points',
@@ -58,7 +55,6 @@ export default function Map({features = []}: Props) {
     const completedPoints = useSelector(selectCompletedPoints)
     const droneStatus: DroneStatus = useSelector(selectDroneStatus)
     const flightParameters: FlightParameters = useSelector(selectFlightParameters)
-    const elevationProfile: ElevationProfile | undefined = useSelector(selectElevationProfile)
     const sheepRttPoints: FeatureCollection<Point> = useSelector(selectSheepRttPoints)
     const selectedSheepRttPoint: number = useSelector(selectSelectedSheepRttPoint)
     const estimatedSheepPoints: FeatureCollection<Point> = useSelector(selectEstimatedSheepPoints)
@@ -239,10 +235,6 @@ export default function Map({features = []}: Props) {
     }, [map]);
 
     useEffect(() => {
-        map?.setPaintProperty(SOURCES.ELEVATION_PROFILE, 'raster-opacity', mapParameters.elevationProfileVisibility/100)
-    }, [mapParameters.elevationProfileVisibility])
-
-    useEffect(() => {
         map?.setStyle(mapParameters.grayTone ? topo4graatone : topo4)
     }, [mapParameters.grayTone])
 
@@ -353,38 +345,6 @@ export default function Map({features = []}: Props) {
             }
         }
     }, [droneStatus])
-
-    useEffect(() => {
-        if (map?.getLayer(SOURCES.ELEVATION_PROFILE)) {
-            map?.removeLayer(SOURCES.ELEVATION_PROFILE)
-        }
-
-        if (map?.getSource(SOURCES.ELEVATION_PROFILE)) {
-            map?.removeSource(SOURCES.ELEVATION_PROFILE)
-        }
-
-        if (elevationProfile) {
-            const {bbox, height, width} = elevationProfile
-
-            map?.addSource(SOURCES.ELEVATION_PROFILE, {
-                'type': 'image',
-                    'url': `https://wms.geonorge.no/skwms1/wms.hoyde-dom_somlos_prosjekter?REQUEST=GetMap&crs=EPSG:4326&bbox=${bbox[1]},${bbox[0]},${bbox[3]},${bbox[2]}&width=${width}&height=${height}&format=image/jpeg&layers=las_dom_somlos`,
-                    'coordinates': [
-                        [bbox[0], bbox[3]],
-                        [bbox[2], bbox[3]],
-                        [bbox[2], bbox[1]],
-                        [bbox[0], bbox[1]]
-                    ]
-            })
-
-            map?.addLayer({
-                'id': SOURCES.ELEVATION_PROFILE,
-                'source': SOURCES.ELEVATION_PROFILE,
-                'type': 'raster',
-                'paint': { 'raster-opacity': mapParameters.elevationProfileVisibility/100 }
-            })
-        }
-    }, [elevationProfile])
 
     useEffect(() => {
         if (map?.getLayer(SOURCES.SHEEP_RTT_POINTS)) {
