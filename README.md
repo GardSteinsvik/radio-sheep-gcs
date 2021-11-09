@@ -1,7 +1,7 @@
-#Radio Sheep GCS
+# Radio Sheep GCS
 Radio Sheep GCS is a ground control station for managing drone operations with sheep searching related purposes. This project is a part of the course TDT4900 - Computer Science, Master's Thesis at Norwegian University of Science and Technology (NTNU).
 
-##Installation
+## Installation
 Yarn version used is 1.22.17
 
 Node version used is 14.16.1
@@ -16,7 +16,7 @@ Run the following command to start the application:
 
 `yarn dev`
 
-##Pitfalls and limitations
+## Pitfalls and limitations
 * Route parameters should be configured before the route is drawn on the map to avoid excessive API calls to Kartverket. Using the parameter sliders after the route has been drawn might result in incorrect placed waypoints. 
 * Kartverket's elevation API has a hard limit of maximum 50 waypoints per request. If a larger route is requested, the elevation data will be missing.
 * Switching to the gray tone map clears whatever is rendered on the map.
