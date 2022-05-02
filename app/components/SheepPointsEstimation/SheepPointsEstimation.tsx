@@ -90,7 +90,7 @@ function intersectionMean(pointsPerSheep: {[id: string]: Feature<Point>[]}): Fea
         let errorRadius = 0
         let completeIntersection = null
         while (completeIntersection === null) {
-            const circles = rttPoints.map((rttPoint: Feature<Point>) => turf.circle(rttPoint, (rttPoint.properties?.dis ?? 1) + errorRadius, {steps: NUMBER_OF_PARTICLES, units: "meters"})) as Feature<Polygon>[]
+            const circles = rttPoints.map((rttPoint: Feature<Point>) => turf.circle(rttPoint, (rttPoint.properties?.dis || 1) + errorRadius, {steps: NUMBER_OF_PARTICLES, units: "meters"})) as Feature<Polygon>[]
 
             let currentIntersection: Feature<Polygon> | null = circles[0]
             for (let i = 1; i < circles.length; i++) {
