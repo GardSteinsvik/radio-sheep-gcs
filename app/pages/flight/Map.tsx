@@ -52,6 +52,8 @@ export default function Map({features = []}: Props) {
     const dispatch = useDispatch()
     const mapContainerRef = useRef(null);
 
+    const [sheepRTTCounter, setSheepRTTCounter] = useState(0);
+
     const completedPoints = useSelector(selectCompletedPoints)
     const droneStatus: DroneStatus = useSelector(selectDroneStatus)
     const flightParameters: FlightParameters = useSelector(selectFlightParameters)
@@ -239,7 +241,13 @@ export default function Map({features = []}: Props) {
     }, [mapParameters.grayTone])
 
     useEffect(() => {
-        drawFeatures(features)
+        if (sheepRTTCounter >= 5 || sheepRTTCounter == 0) {
+            drawFeatures(features);
+            setSheepRTTCounter(1);
+        }   
+        else {
+            setSheepRTTCounter(sheepRTTCounter + 1);
+        }
     }, [features])
 
     useEffect(() => {
