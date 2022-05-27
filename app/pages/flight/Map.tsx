@@ -379,7 +379,7 @@ export default function Map({features = []}: Props) {
                 'line-width': 1,
             },
         })
-    }, [sheepRttPoints, selectedSheepRttPoint])
+    }, [selectedSheepRttPoint])
 
     useEffect(() => {
         if (map?.getLayer(LAYERS.ESTIMATED_SHEEP_POINTS)) map?.removeLayer(LAYERS.ESTIMATED_SHEEP_POINTS)
