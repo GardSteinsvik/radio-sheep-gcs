@@ -13,6 +13,7 @@ import selectedSheepRttPointSlice from "@slices/selectedSheepRttPointSlice"
 import estimatedSheepPointsSlice from "@slices/estimatedSheepPointsSlice"
 import actualSheepPointsSlice from "@slices/actualSheepPointsSlice"
 import droneParametersSlice from '@slices/droneParametersSlice'
+import clearMapSlice from '@slices/clearMapSlice'
 
 export default function createRootReducer(history: History) {
     return combineReducers({
@@ -29,5 +30,6 @@ export default function createRootReducer(history: History) {
         estimatedSheepPoints: estimatedSheepPointsSlice,
         actualSheepPoints: actualSheepPointsSlice,
         droneParameters: droneParametersSlice,
+        clearMap: clearMapSlice,
     });
 }

@@ -7,6 +7,7 @@ import {selectMapParameters, setMapParameters} from "@slices/mapParametersSlice"
 import {selectSelectedSheepRttPoint, setSelectedSheepRttPoint} from "@slices/selectedSheepRttPointSlice"
 import {FeatureCollection, Point} from "geojson"
 import {removeSheepRttPoints, selectSheepRttPoints} from "@slices/sheepRttPointsSlice"
+import {toggleClear} from "@slices/clearMapSlice"
 import SheepUpload from "@/components/SheepUpload/SheepUpload"
 import SheepPointsEstimation from "@/components/SheepPointsEstimation/SheepPointsEstimation"
 import SheepPointSaveLoad from '@/components/MapControl/SheepPointSaveLoad'
@@ -80,7 +81,7 @@ export default function MapControl() {
                 <SheepPointsEstimation/>
             </div>
             <div className={classes.formSection}>
-                <Button onClick={() => confirm('Are you sure you want to remove the sheep data?') && dispatch(removeSheepRttPoints())}>Clear sheep RTT data</Button>
+                <Button onClick={() => confirm('Are you sure you want to remove the sheep data?') && dispatch(removeSheepRttPoints()) && dispatch(toggleClear())}>Clear sheep RTT data</Button>
                 <SheepPointSaveLoad />
             </div>
         </Paper>
