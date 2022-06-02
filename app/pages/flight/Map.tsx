@@ -52,6 +52,7 @@ export default function Map({features = []}: Props) {
 
     const dispatch = useDispatch()
     const mapContainerRef = useRef(null);
+    const [sheepRTTCounter, setSheepRTTCounter] = useState(0);
     const completedPoints = useSelector(selectCompletedPoints)
     const droneStatus: DroneStatus = useSelector(selectDroneStatus)
     const flightParameters: FlightParameters = useSelector(selectFlightParameters)
